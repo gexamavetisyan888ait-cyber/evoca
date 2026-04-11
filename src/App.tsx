@@ -3,12 +3,14 @@ import Header from './Components/Header/Header';
 // import Footer from './Components/Footer/Footer';
 import HeroSlider from './Components/HomeSection1/HeroSlider';
 import IdentifySection from './Components/HomeSection1/IdentifySection';
+import BestOffers from './Components/CardsUSA/Cards';
 
-// Glxavor ejy, vortegh gtnvum en Slaydery ev QR hatvatsy
+// Glxavor ejy, vortegh gtnvum en bolor glxavor section-nery
 const Home = () => (
   <>
     <HeroSlider />
     <IdentifySection />
+    <BestOffers /> {/* Ավելացված է IdentifySection-ից հետո */}
     <div className="p-10 text-2xl font-bold text-center">
       Bari galust Evocabank
     </div>

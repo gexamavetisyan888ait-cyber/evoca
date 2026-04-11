@@ -13,7 +13,7 @@ const slides = [
     description: "Այս քարտին իր բազմաթիվ առավելություններով կդառնա քո ճամփորդության անբաժան մասնիկը",
     buttonText: "Իմանալ ավելին",
     bg: "bg-[#f3f4f6]",
-    img: "https://www.evocabank.am/storage/banners/March2024/travel-card-arm.png" // Ogtagortsvats e real nkar
+    img: "https://www.evoca.am/images-cache/sliders/1/17480089224912/4012c7541d8db15b5666bb0e4f4bdf7a-576x486.png" // Ogtagortsvats e real nkar
   },
   {
     title: "Կարճ հեռախոսահամար՝ 8444",
@@ -21,7 +21,7 @@ const slides = [
     buttonText: "Իմանալ ավելին",
     bg: "bg-[#1a1a1a]",
     textColor: "text-white",
-    img: "https://www.evocabank.am/storage/banners/January2024/8444-arm.png"
+    img: "https://www.evoca.am/images-cache/sliders/1/17740137222872/7152cafab4609e8483a365f79ecf04cb-577x486.png"
   }
 ];
 
