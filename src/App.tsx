@@ -1,19 +1,51 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Components/Header/Header';
-const Home = () => <div className="p-10 text-2xl font-bold">Glxavor Ej (Անհատ)</div>;
-const Business = () => <div className="p-10 text-2xl font-bold">Biznes Ej</div>;
+// import Footer from './Components/Footer/Footer';
+import HeroSlider from './Components/HomeSection1/HeroSlider';
+import IdentifySection from './Components/HomeSection1/IdentifySection';
+
+// Glxavor ejy, vortegh gtnvum en Slaydery ev QR hatvatsy
+const Home = () => (
+  <>
+    <HeroSlider />
+    <IdentifySection />
+    <div className="p-10 text-2xl font-bold text-center">
+      Bari galust Evocabank
+    </div>
+  </>
+);
+
+const Business = () => (
+  <div className="p-10 text-2xl font-bold min-h-[400px]">
+    Biznes Ej (Aystegh karogh eq avelacnel biznes-in bnorosh komponentner)
+  </div>
+);
 
 function App() {
   return (
     <Router>
-      <Header />
-      <main>
-        <Routes>
-          <Route path="/" element={<Home />} />
-          <Route path="/business" element={<Business />} />
-          <Route path="*" element={<div>404 - Ejy chi gtnvel</div>} />
-        </Routes>
-      </main>
+      <div className="flex flex-col min-h-screen">
+        <Header />
+        
+        <main className="flex-grow">
+          <Routes>
+            {/* Glxavor ejy (Individual) */}
+            <Route path="/" element={<Home />} />
+            
+            {/* Biznes ejy */}
+            <Route path="/business" element={<Business />} />
+            
+            {/* 404 Ej */}
+            <Route path="*" element={
+              <div className="flex items-center justify-center h-[400px] text-2xl font-bold">
+                404 - Ejy chi gtnvel
+              </div>
+            } />
+          </Routes>
+        </main>
+
+        {/* <Footer /> */}
+      </div>
     </Router>
   );
 }
