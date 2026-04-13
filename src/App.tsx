@@ -1,25 +1,34 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import Header from './Components/Header/Header';
-// import Footer from './Components/Footer/Footer';
+import Footer from './Components/Footer/Footer';
 import HeroSlider from './Components/HomeSection1/HeroSlider';
 import IdentifySection from './Components/HomeSection1/IdentifySection';
 import BestOffers from './Components/CardsUSA/Cards';
+import CardSlide from './Components/CardSlide/CardSlide'; // Ավելացրինք նոր սեկցիան
 
 // Glxavor ejy, vortegh gtnvum en bolor glxavor section-nery
 const Home = () => (
   <>
+    {/* 1. Glxavor Slayder */}
     <HeroSlider />
+
+    {/* 3. Biometric Identification (Demsheri animacian) */}
     <IdentifySection />
-    <BestOffers /> {/* Ավելացված է IdentifySection-ից հետո */}
-    <div className="p-10 text-2xl font-bold text-center">
+
+    {/* 4. Best Offers (Manushakaguyn qartery) */}
+    <BestOffers />
+
+    {/* 2. Card Slider (Vertical menu-ov hatvatsy) */}
+    <CardSlide />
+    <div className="p-10 text-2xl font-bold text-center text-gray-800">
       Bari galust Evocabank
     </div>
   </>
 );
 
 const Business = () => (
-  <div className="p-10 text-2xl font-bold min-h-[400px]">
-    Biznes Ej (Aystegh karogh eq avelacnel biznes-in bnorosh komponentner)
+  <div className="p-10 text-2xl font-bold min-h-[400px] flex items-center justify-center">
+    Biznes Ej (Այստեղ կավելացվեն բիզնեսի հետ կապված կոմպոնենտները)
   </div>
 );
 
@@ -27,26 +36,29 @@ function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
+        {/* Navigaciayi hatvatsy */}
         <Header />
-        
+
+        {/* Ejeri parunakutyuny */}
         <main className="flex-grow">
           <Routes>
-            {/* Glxavor ejy (Individual) */}
+            {/* Glxavor ejy */}
             <Route path="/" element={<Home />} />
-            
+
             {/* Biznes ejy */}
             <Route path="/business" element={<Business />} />
-            
-            {/* 404 Ej */}
+
+            {/* 404 Ej - Ete ejy chi gtnvum */}
             <Route path="*" element={
-              <div className="flex items-center justify-center h-[400px] text-2xl font-bold">
-                404 - Ejy chi gtnvel
+              <div className="flex items-center justify-center h-[500px] text-2xl font-bold text-red-500">
+                404 - Էջը չի գտնվել
               </div>
             } />
           </Routes>
         </main>
 
-        {/* <Footer /> */}
+        {/* Footer-y bacvats e amboxjakan tesqi hamar */}
+        <Footer />
       </div>
     </Router>
   );
