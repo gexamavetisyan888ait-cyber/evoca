@@ -5,7 +5,7 @@ import HeroSlider from './Components/HomeSection1/HeroSlider';
 import IdentifySection from './Components/HomeSection1/IdentifySection';
 import BestOffers from './Components/CardsUSA/Cards';
 import CardSlide from './Components/CardSlide/CardSlide'; // Ավելացրինք նոր սեկցիան
-
+import VarkAvand from './Components/VarkAvand/VarkAvand'; // Նոր կոմպոնենտը
 // Glxavor ejy, vortegh gtnvum en bolor glxavor section-nery
 const Home = () => (
   <>
@@ -20,6 +20,7 @@ const Home = () => (
 
     {/* 2. Card Slider (Vertical menu-ov hatvatsy) */}
     <CardSlide />
+        <VarkAvand />
     <div className="p-10 text-2xl font-bold text-center text-gray-800">
       Bari galust Evocabank
     </div>
