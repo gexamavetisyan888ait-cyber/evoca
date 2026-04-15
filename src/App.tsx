@@ -6,21 +6,19 @@ import IdentifySection from './Components/HomeSection1/IdentifySection';
 import BestOffers from './Components/CardsUSA/Cards';
 import CardSlide from './Components/CardSlide/CardSlide'; // Ավելացրինք նոր սեկցիան
 import VarkAvand from './Components/VarkAvand/VarkAvand'; // Նոր կոմպոնենտը
-// Glxavor ejy, vortegh gtnvum en bolor glxavor section-nery
+import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner'
+import HomeCards from './Components/HomeCards/HomeCards'
+import Change from './Components/Change/Change'
 const Home = () => (
   <>
-    {/* 1. Glxavor Slayder */}
     <HeroSlider />
-
-    {/* 3. Biometric Identification (Demsheri animacian) */}
     <IdentifySection />
-
-    {/* 4. Best Offers (Manushakaguyn qartery) */}
     <BestOffers />
-
-    {/* 2. Card Slider (Vertical menu-ov hatvatsy) */}
     <CardSlide />
-        <VarkAvand />
+    <VarkAvand />
+    <Gorcynkerner />
+    <HomeCards />
+    <Change/>
     <div className="p-10 text-2xl font-bold text-center text-gray-800">
       Bari galust Evocabank
     </div>
