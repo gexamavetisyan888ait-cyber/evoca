@@ -4,11 +4,13 @@ import Footer from './Components/Footer/Footer';
 import HeroSlider from './Components/HomeSection1/HeroSlider';
 import IdentifySection from './Components/HomeSection1/IdentifySection';
 import BestOffers from './Components/CardsUSA/Cards';
-import CardSlide from './Components/CardSlide/CardSlide'; // Ավելացրինք նոր սեկցիան
-import VarkAvand from './Components/VarkAvand/VarkAvand'; // Նոր կոմպոնենտը
-import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner'
-import HomeCards from './Components/HomeCards/HomeCards'
-import Change from './Components/Change/Change'
+import CardSlide from './Components/CardSlide/CardSlide';
+import VarkAvand from './Components/VarkAvand/VarkAvand';
+import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner';
+import HomeCards from './Components/HomeCards/HomeCards';
+import Change from './Components/Change/Change';
+import Varker1 from './Components/Varker1/Varker'; // կամ ճիշտ ուղին
+import LoanAbout from './Components/Varker1/LoanAbout';
 const Home = () => (
   <>
     <HeroSlider />
@@ -18,36 +20,25 @@ const Home = () => (
     <VarkAvand />
     <Gorcynkerner />
     <HomeCards />
-    <Change/>
-    <div className="p-10 text-2xl font-bold text-center text-gray-800">
-      Bari galust Evocabank
-    </div>
+    <Change />
   </>
-);
-
-const Business = () => (
-  <div className="p-10 text-2xl font-bold min-h-[400px] flex items-center justify-center">
-    Biznes Ej (Այստեղ կավելացվեն բիզնեսի հետ կապված կոմպոնենտները)
-  </div>
 );
 
 function App() {
   return (
     <Router>
       <div className="flex flex-col min-h-screen">
-        {/* Navigaciayi hatvatsy */}
         <Header />
-
-        {/* Ejeri parunakutyuny */}
         <main className="flex-grow">
           <Routes>
-            {/* Glxavor ejy */}
+            {/* Գլխավոր էջ */}
             <Route path="/" element={<Home />} />
 
-            {/* Biznes ejy */}
-            <Route path="/business" element={<Business />} />
-
-            {/* 404 Ej - Ete ejy chi gtnvum */}
+            {/* Բիզնես և Վարկեր բաժինները տանում են նույն տեղը */}
+            <Route path="/business" element={<Varker1 />} />
+            <Route path="/business-loans" element={<Varker1 />} />
+           <Route path="/loan/:id" element={<LoanAbout />} />
+            {/* 404 Էջ */}
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-bold text-red-500">
                 404 - Էջը չի գտնվել
@@ -55,8 +46,6 @@ function App() {
             } />
           </Routes>
         </main>
-
-        {/* Footer-y bacvats e amboxjakan tesqi hamar */}
         <Footer />
       </div>
     </Router>
