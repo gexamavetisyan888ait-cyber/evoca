@@ -18,6 +18,7 @@ import AnhatVarker from './Components/AnhatVarker/AnhatVarker';
 import CardInfo from './Components/Qarter/CardInfo';
 import CardsPage from './Components/Qarter/CardsPage';
 import EvocaSALARY from './Components/EvocaSALARY/EvocaSALARY';
+import EvocaTOUCH from './Components/EvocaTOUCH/EvocaTOUCH';
 
 const SalaryProject = () => (
   <div className="bg-white">
@@ -62,7 +63,8 @@ function App() {
             <Route path="/business" element={<Varker1 />} />
             <Route path="/business/loans" element={<Varker1 />} />
             <Route path="/loan/:id" element={<LoanAbout />} />
-
+            <Route path="touch" element={<EvocaTOUCH />} />
+           
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
