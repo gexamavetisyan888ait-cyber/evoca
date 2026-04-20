@@ -9,8 +9,14 @@ import VarkAvand from './Components/VarkAvand/VarkAvand';
 import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner';
 import HomeCards from './Components/HomeCards/HomeCards';
 import Change from './Components/Change/Change';
-import Varker1 from './Components/Varker1/Varker'; // կամ ճիշտ ուղին
-import LoanAbout from './Components/Varker1/LoanAbout';
+
+// Էջերի ներմուծում (Imports)
+import Varker1 from './Components/Varker1/Varker'; 
+import LoanAbout from './Components/Varker1/LoanAbout'; 
+import Avandner from './Components/Avandner/Avandner';
+import AvandnerInfo from './Components/Avandner/AvandnerInfo';
+import AnhatVarker from './Components/AnhatVarker/AnhatVarker';
+
 const Home = () => (
   <>
     <HeroSlider />
@@ -33,14 +39,22 @@ function App() {
           <Routes>
             {/* Գլխավոր էջ */}
             <Route path="/" element={<Home />} />
+            
+            {/* Անհատական բաժին */}
+            <Route path="/personal-loans" element={<AnhatVarker />} />
+            <Route path="/deposits" element={<Avandner />} />
+            {/* Ավանդի մանրամասն էջ */}
+            <Route path="/deposit/:id" element={<AvandnerInfo />} />
 
-            {/* Բիզնես և Վարկեր բաժինները տանում են նույն տեղը */}
-            <Route path="/business" element={<Varker1 />} />
-            <Route path="/business-loans" element={<Varker1 />} />
-           <Route path="/loan/:id" element={<LoanAbout />} />
-            {/* 404 Էջ */}
+            {/* Բիզնես բաժին */}
+            <Route path="/business" element={<Varker1 />} /> 
+            <Route path="/business/loans" element={<Varker1 />} />
+            {/* Վարկի մանրամասն էջ */}
+            <Route path="/loan/:id" element={<LoanAbout />} />
+
+            {/* 404 էջ */}
             <Route path="*" element={
-              <div className="flex items-center justify-center h-[500px] text-2xl font-bold text-red-500">
+              <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
               </div>
             } />
