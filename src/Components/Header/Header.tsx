@@ -23,7 +23,7 @@ const Header: React.FC = () => {
       { name: "Հաշիվներ", path: "/accounts" },
       { name: "Փոխանցումներ", path: "/transfers" },
       { name: "Արժեթղթեր", path: "/securities" },
-      { name: "EvocaSALARY", path: "/salary" },
+      { name: "EvocaSALARY", path: "/evoca-salary" },
       { name: "EvocaTOUCH", path: "/touch" }
     ],
     "/business": [
@@ -103,7 +103,7 @@ const Header: React.FC = () => {
           </nav>
         </div>
         <button className="bg-[#6610f2] text-white px-8 py-2.5 rounded-full font-black text-[13px] hover:bg-[#520dc2] transition-all uppercase">
-          Մուտք
+          EvocaOnline
         </button>
       </div>
     </header>

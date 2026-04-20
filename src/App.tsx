@@ -10,12 +10,24 @@ import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner';
 import HomeCards from './Components/HomeCards/HomeCards';
 import Change from './Components/Change/Change';
 
-// Էջերի ներմուծում (Imports)
-import Varker1 from './Components/Varker1/Varker'; 
-import LoanAbout from './Components/Varker1/LoanAbout'; 
+import Varker1 from './Components/Varker1/Varker';
+import LoanAbout from './Components/Varker1/LoanAbout';
 import Avandner from './Components/Avandner/Avandner';
 import AvandnerInfo from './Components/Avandner/AvandnerInfo';
 import AnhatVarker from './Components/AnhatVarker/AnhatVarker';
+import CardInfo from './Components/Qarter/CardInfo';
+import CardsPage from './Components/Qarter/CardsPage';
+import EvocaSALARY from './Components/EvocaSALARY/EvocaSALARY';
+
+const SalaryProject = () => (
+  <div className="bg-white">
+    <div className="max-w-[1140px] mx-auto py-10 px-4">
+      <h1 className="text-4xl font-bold mb-8 uppercase">Evoca Աշխատավարձային Նախագիծ</h1>
+    </div>
+    <EvocaSALARY />
+    <HomeCards />
+  </div>
+);
 
 const Home = () => (
   <>
@@ -37,22 +49,20 @@ function App() {
         <Header />
         <main className="flex-grow">
           <Routes>
-            {/* Գլխավոր էջ */}
             <Route path="/" element={<Home />} />
-            
-            {/* Անհատական բաժին */}
             <Route path="/personal-loans" element={<AnhatVarker />} />
             <Route path="/deposits" element={<Avandner />} />
-            {/* Ավանդի մանրամասն էջ */}
+            
+            {/* Քարտերի հասցեները */}
+            <Route path="/cards" element={<CardsPage />} />
+            <Route path="/card/:id" element={<CardInfo />} />
+            
+            <Route path="/evoca-salary" element={<SalaryProject />} />
             <Route path="/deposit/:id" element={<AvandnerInfo />} />
-
-            {/* Բիզնես բաժին */}
-            <Route path="/business" element={<Varker1 />} /> 
+            <Route path="/business" element={<Varker1 />} />
             <Route path="/business/loans" element={<Varker1 />} />
-            {/* Վարկի մանրամասն էջ */}
             <Route path="/loan/:id" element={<LoanAbout />} />
 
-            {/* 404 էջ */}
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
