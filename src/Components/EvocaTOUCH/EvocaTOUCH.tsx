@@ -58,10 +58,10 @@ const EvocaTOUCH: React.FC = () => {
                 variants={staggerContainer}
                 className="max-w-[1140px] mx-auto px-4 pt-8"
             >
-                <motion.div variants={fadeInUp} className="flex items-center gap-2 text-[11px] text-gray-400 uppercase tracking-widest mb-8">
+                <motion.div  className="flex items-center gap-2 text-[11px] text-gray-400 uppercase tracking-widest mb-8">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-600">EvocaTOUCH</span>
                 </motion.div>
-                <motion.h1 variants={fadeInUp} className="text-[34px] md:text-[50px] font-[900] italic uppercase leading-none mb-10 tracking-tighter">
+                <motion.h1  className="text-[34px] md:text-[50px] font-[900] italic uppercase leading-none mb-10 tracking-tighter">
                     EvocaTOUCH
                 </motion.h1>
             </motion.div>
@@ -74,7 +74,7 @@ const EvocaTOUCH: React.FC = () => {
                 variants={staggerContainer}
                 className="max-w-[1140px] mx-auto px-4 space-y-6 text-[16px] text-gray-600 leading-relaxed"
             >
-                <motion.p variants={fadeInUp}>Շատերին թվում է՝ դժվար ու անիրական է ֆինանսական ոլորտում լինել կրեատիվ, սակայն Evocabank-ին հաջողվում է գտնել out of box լուծումներ:</motion.p>
+                <motion.p >Շատերին թվում է՝ դժվար ու անիրական է ֆինանսական ոլորտում լինել կրեատիվ, սակայն Evocabank-ին հաջողվում է գտնել out of box լուծումներ:</motion.p>
                 
                 <ul className="list-none space-y-4 py-4">
                     {[
