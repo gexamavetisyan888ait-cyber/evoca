@@ -1,68 +1,138 @@
 import React from 'react';
+import { motion } from 'framer-motion';
 
 const offers = [
   {
     category: "Թվային քարտեր",
     title: "Evoca Digital քարտ",
-    desc: "Evoca Digital քարտն առաջին հայացքից EvocaTOUCH հավելվածում սմարթֆոնիդ մեջ հենց և լիարժեք քո վիրտուալ հաշիվը:",
-    img: "https://www.evoca.am/images-cache/news/1/16868326578274/780x585.png" 
+    desc: "Evoca Digital քարտն արդեն հասանելի է EvocaTOUCH հավելվածում։ Ակտիվացրու այն հիմա և ընտրիր քո սիրելի դիզայնը։",
   },
   {
     category: "Նվեր քարտեր",
     title: "Evoca Gift Card",
-    desc: "Գնիր Evoca Gift Card և լավագույն նվերը կլինի քոնը՝ ծախսելով ցանկացած 1 բոլոր առևտրի կետերում:",
-    img: "https://www.evoca.am/images-cache/cards/1/17149864970842/415x261.png"
+    desc: "Գնիր Evoca Gift Card, և լավագույն նվերը կլինի քոնը։ Քարտը հարմար է բոլոր առիթների համար։",
   },
   {
     category: "Նոր հավելված",
     title: "EvocaTOUCH 2",
-    desc: "EvocaTOUCH-ը սովորական բանկային հավելված չէ, այն թարմ է, արագ և հարմար՝ հագեցած նոր լուծումներով:",
-    img: "https://www.evoca.am/images-cache/news/1/16848286806716/780x585.png"
+    desc: "EvocaTOUCH-ը պարզապես բանկային հավելված չէ, վստահ ենք՝ այն քեզ համար դառնալու է ապրելակերպ։",
   },
   {
-    category: "Արագ վճարումներ",
-    title: "Արագ օնլայն վճարումներ",
-    desc: "Կատարիր քո բոլոր վճարումները վայրկյանների մեջ օնլայն եղանակով՝ մոռանալով հերթերի ու ավելորդ ժամանակի մասին:",
-    img: "https://www.evoca.am/images-cache/news/1/17758068998241/439x320.png"
+    category: "Օնլայն վճարումներ",
+    title: "Արագ online վճարումներ",
+    desc: "Կատարիր քո ընթացիկ վճարումները Evocabank-ի online տերմինալի միջոցով՝ պարզ և արագ։",
   }
 ];
 
 const BestOffers: React.FC = () => {
   return (
-    <section className="w-full py-20 bg-[#6610f2] relative overflow-hidden">
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
-        <div className="absolute top-10 left-10 w-32 h-32 border-4 border-white rotate-12"></div>
-        <div className="absolute bottom-20 right-10 w-48 h-48 rounded-full border-4 border-white"></div>
-      </div>
+    <section className="w-full min-h-screen py-20 bg-[#6610f2] relative overflow-hidden flex items-center">
+      
+      {/* Լողացող երկրաչափական պատկերներ (մնացած ֆոնում) */}
+      <motion.div 
+        animate={{ y: [0, -30, 0], x: [0, 10, 0] }}
+        transition={{ duration: 6, repeat: Infinity }}
+        className="absolute top-20 left-[50%] text-white/10 text-6xl z-0"
+      >
+        ▲
+      </motion.div>
+      
+      <motion.div 
+        animate={{ rotate: 360 }}
+        transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
+        className="absolute bottom-20 right-[5%] text-white/05 text-8xl font-black z-0"
+      >
+        +
+      </motion.div>
 
-      <div data-aos="fade-up" className="max-w-[1440px] mx-auto px-6 md:px-20 relative">
-        <h2 className="text-white text-3xl md:text-5xl font-black mb-16">Լավագույնը Evocabank-ից</h2>
-        
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-          {offers.map((item, idx) => (
-            <div 
-              key={idx} 
-              className="bg-white rounded-[2.5rem] p-8 md:p-12 flex flex-col md:flex-row justify-between items-center group hover:shadow-2xl transition-all duration-500 cursor-pointer overflow-hidden"
+      <div className="max-w-[1440px] mx-auto px-6 md:px-20 relative z-10 w-full">
+        <div className="flex flex-col lg:flex-row items-center gap-10">
+          
+          {/* Ձախ մաս - Արձանը, Վերնագիրը և Գլխի Օղակները */}
+          <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-start">
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              whileInView={{ opacity: 1, scale: 1 }}
+              transition={{ duration: 1 }}
+              className="relative w-full max-w-[700px]" // Մեծացված առավելագույն չափս
             >
-              <div className="flex-1 text-center md:text-left">
-                <span className="text-[#6610f2] text-xs font-bold uppercase tracking-widest">{item.category}</span>
-                <h3 className="text-2xl font-black text-[#1a1a1a] mt-2 mb-4 group-hover:text-[#6610f2] transition-colors">{item.title}</h3>
-                <p className="text-gray-500 text-sm leading-relaxed max-w-[250px] mx-auto md:mx-0">
-                  {item.desc}
-                </p>
-              </div>
-              <div className="flex-1 mt-8 md:mt-0 relative">
-                <img 
-                  src={item.img} 
-                  alt={item.title} 
-                  className="w-full max-w-[200px] object-contain transform group-hover:scale-110 group-hover:-rotate-3 transition-all duration-500" 
+              
+              {/* --- Անիմացիոն Օղակներ ԱՐՁԱՆԻԿԻ ԳԼԽԻ ՄՈՏ --- */}
+              {/* Այս div-ը դիրքավորված է արձանի գլխի հատվածում */}
+              <div className="absolute top-[10%] left-[30%] w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 z-10">
+                {/* Մեծ պտտվող օղակ գլխի շուրջ */}
+                <motion.div 
+                  animate={{ rotate: 360 }}
+                  transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-0 border-[1px] border-dashed border-white rounded-full"
+                />
+                {/* Միջին օղակ գլխի շուրջ հակառակ ուղղությամբ */}
+                <motion.div 
+                  animate={{ rotate: -360 }}
+                  transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
+                  className="absolute inset-4 border-[1px] border-white/30 rounded-full"
+                />
+                 {/* Փոքրիկ կետ գլխի վերևում */}
+                <motion.div 
+                  animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
+                  transition={{ duration: 3, repeat: Infinity }}
+                  className="absolute top-0 left-1/2 -translate-x-1/2 w-2 h-2 bg-white rounded-full"
                 />
               </div>
-            </div>
-          ))}
+
+              {/* Նոր, ՄԵԾԱՑՎԱԾ Արձանի նկարը */}
+              <img 
+                src="https://framerusercontent.com/images/1ZtehxKaB95hCfqOHdJsrNNRs.png?lossless=1" 
+                alt="Evoca Statue" 
+                className="w-full h-auto relative z-20 object-contain drop-shadow-2xl grayscale brightness-110" // Ավելացվել էgrayscale և brightness ավելի լավ համադրության համար
+              />
+              
+              {/* Վերնագիրը (մնում է իր տեղում) */}
+              <h2 className="absolute top-[25%] left-[55%] whitespace-nowrap text-white text-[36px] md:text-[60px] font-[900] italic uppercase leading-[0.85] tracking-tighter z-30 drop-shadow-lg">
+                Լավագույնը <br /> Evocabank-ից
+              </h2>
+            </motion.div>
+          </div>
+
+          {/* Աջ մաս - Քարտերը (Grid) - Չափսը փոքրացվել է lg:w-1/2-ի */}
+          <div className="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6 relative z-30">
+            {offers.map((item, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, x: 50 }}
+                whileInView={{ opacity: 1, x: 0 }}
+                transition={{ delay: idx * 0.15, duration: 0.6 }}
+                whileHover={{ 
+                  scale: 1.03,
+                  boxShadow: "0px 25px 50px rgba(0,0,0,0.25)"
+                }}
+                className="bg-white rounded-[2.5rem] p-10 flex flex-col justify-center transition-all cursor-pointer group border border-white/10"
+              >
+                <div className="mb-4">
+                  <span className="text-[#6610f2] text-[10px] font-black uppercase tracking-[0.2em] bg-[#f1edff] px-4 py-1.5 rounded-full">
+                    {item.category}
+                  </span>
+                </div>
+                <h3 className="text-[24px] font-[900] text-[#1a1a1a] mb-4 group-hover:text-[#6610f2] transition-colors leading-tight italic uppercase">
+                  {item.title}
+                </h3>
+                <p className="text-gray-500 text-[15px] leading-relaxed font-medium">
+                  {item.desc}
+                </p>
+              </motion.div>
+            ))}
+          </div>
+
         </div>
       </div>
+
+      {/* Դեկորատիվ ֆոնային շերտ (բաց մանուշակագույն կոր) */}
+      <div className="absolute inset-0 z-0 opacity-15">
+        <svg width="100%" height="100%" viewBox="0 0 1440 800" fill="none" preserveAspectRatio="none">
+          <path d="M-100 800C200 600 400 900 1440 500V800H-100Z" fill="white" />
+        </svg>
+      </div>
+      
     </section>
   );
 };

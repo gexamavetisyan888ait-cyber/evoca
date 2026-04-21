@@ -7,7 +7,6 @@ const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
-  // Փակել մենյուն էջը փոխելիս
   useEffect(() => {
     setIsOpen(false);
     document.body.style.overflow = 'unset';
@@ -65,59 +64,72 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full flex flex-col bg-white sticky top-0 z-[100] shadow-sm font-sans">
+      
       {/* 1. Upper Bar (Desktop) */}
-      <div className="hidden xl:flex w-full h-10 border-b border-gray-100 px-20 items-center justify-between bg-[#f8f9fb]">
-        <div className="flex items-center h-full space-x-6">
-          {topNavLinks.map((link) => (
-            <Link
-              key={link.name}
-              to={link.path}
-              className={`text-[11px] font-[800] transition-all h-full flex items-center relative uppercase tracking-tighter ${
-                currentTopPath === link.path ? "text-[#6610f2]" : "text-gray-400 hover:text-gray-600"
-              }`}
-            >
-              {link.name}
-              {currentTopPath === link.path && <motion.div layoutId="navLine" className="absolute top-0 left-0 w-full h-[3px] bg-[#6610f2]" />}
-            </Link>
-          ))}
-        </div>
-        <div className="flex items-center space-x-6 text-gray-400">
-          <div className="flex items-center space-x-4 border-r pr-4 border-gray-200">
-            <MapPin size={16} className="hover:text-[#6610f2] cursor-pointer" /> 
-            <Globe size={16} className="hover:text-[#6610f2] cursor-pointer" /> 
-            <Search size={16} className="hover:text-[#6610f2] cursor-pointer" />
+      <div className="hidden xl:flex w-full h-10 border-b border-gray-100 bg-[#f8f9fb] justify-center">
+        <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
+          <div className="flex items-center h-full space-x-6">
+            {topNavLinks.map((link) => (
+              <Link
+                key={link.name}
+                to={link.path}
+                className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${
+                  currentTopPath === link.path 
+                    ? "text-[#6610f2]" 
+                    : "text-gray-400 hover:text-[#6610f2]"
+                }`}
+              >
+                {link.name}
+                {currentTopPath === link.path && (
+                  <motion.div layoutId="navLine" className="absolute top-0 left-0 w-full h-[3px] bg-[#6610f2]" />
+                )}
+              </Link>
+            ))}
           </div>
-          <span className="text-[#6610f2] text-[11px] font-black uppercase tracking-widest cursor-pointer">EvocaONLINE</span>
+          <div className="flex items-center space-x-6 text-gray-400">
+            <div className="flex items-center space-x-4 border-r pr-4 border-gray-200">
+              <MapPin size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" /> 
+              <Globe size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" /> 
+              <Search size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
+            </div>
+            <span className="text-gray-400 hover:text-[#6610f2] text-[11px] font-black uppercase tracking-widest cursor-pointer transition-colors">
+              EvocaONLINE
+            </span>
+          </div>
         </div>
       </div>
 
       {/* 2. Main Bar */}
-      <div className="w-full h-16 lg:h-20 px-4 xl:px-20 flex items-center justify-between bg-white relative z-[110]">
-        <div className="flex items-center space-x-12">
-          <Link to="/" className="text-[28px] lg:text-[34px] font-[900] tracking-tighter text-[#4d4d4d]">evoca</Link>
-          <nav className="hidden lg:flex items-center space-x-8">
-            {currentSecondaryMenu.map((item) => (
-              <Link 
-                key={item.name} 
-                to={item.path} 
-                className={`text-[14px] font-[900] uppercase transition-colors ${
-                  location.pathname === item.path ? 'text-[#6610f2]' : 'text-[#1a1a1a] hover:text-[#6610f2]'
-                }`}
-              >
-                {item.name}
-              </Link>
-            ))}
-          </nav>
-        </div>
+      <div className="w-full h-16 lg:h-20 bg-white relative z-[110] flex justify-center">
+        <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
+          <div className="flex items-center space-x-10">
+            <Link to="/" className="text-[28px] lg:text-[34px] font-[900] tracking-tighter text-[#4d4d4d]">evoca</Link>
+            
+            <nav className="hidden lg:flex items-center space-x-8">
+              {currentSecondaryMenu.map((item) => (
+                <Link 
+                  key={item.name} 
+                  to={item.path} 
+                  className={`text-[13px] uppercase transition-all tracking-tight font-semibold ${
+                    location.pathname === item.path 
+                      ? 'text-[#6610f2] font-black' 
+                      : 'text-gray-400 hover:text-[#6610f2]' 
+                  }`}
+                >
+                  {item.name}
+                </Link>
+              ))}
+            </nav>
+          </div>
 
-        <div className="flex items-center gap-4">
-          <button className="hidden sm:block bg-[#6610f2] text-white px-8 py-2.5 rounded-full font-black text-[13px] hover:bg-[#520dc2] transition-all uppercase">
-            EvocaOnline
-          </button>
-          {/* Burger Icon */}
-          <button onClick={toggleMenu} className="lg:hidden p-2 text-[#1a1a1a]">
-            {isOpen ? <X size={30} /> : <Menu size={30} />}
-          </button>
+          <div className="flex items-center gap-4">
+            <button className="hidden sm:block bg-[#6610f2] text-white px-7 py-2 rounded-full font-black text-[12px] hover:bg-[#520dc2] transition-all uppercase shadow-md active:scale-95">
+              EvocaOnline
+            </button>
+            <button onClick={toggleMenu} className="lg:hidden p-2 text-[#1a1a1a]">
+              {isOpen ? <X size={28} /> : <Menu size={28} />}
+            </button>
+          </div>
         </div>
       </div>
 
@@ -154,27 +166,13 @@ const Header: React.FC = () => {
                   key={item.name}
                 >
                   <Link to={item.path} className="flex justify-between items-center group">
-                    <span className="text-2xl font-[900] italic uppercase tracking-tighter text-[#1a1a1a] group-hover:text-[#6610f2]">
+                    <span className="text-2xl font-[700] italic uppercase tracking-tighter text-gray-400 group-hover:text-[#6610f2] transition-colors">
                       {item.name}
                     </span>
                     <ChevronRight size={24} className="text-gray-300" />
                   </Link>
                 </motion.div>
               ))}
-            </div>
-
-            <div className="mt-auto pb-10 flex flex-col gap-8">
-              <div className="grid grid-cols-2 gap-4 border-t pt-8">
-                {topNavLinks.slice(2).map(link => (
-                  <Link key={link.name} to={link.path} className="text-[12px] font-bold text-gray-400 uppercase">{link.name}</Link>
-                ))}
-              </div>
-              <div className="flex items-center justify-between bg-[#f8f9fb] p-4 rounded-2xl">
-                <div className="flex gap-4 text-[#6610f2]">
-                  <MapPin size={22} /> <Globe size={22} /> <Search size={22} />
-                </div>
-                <span className="font-black text-[#6610f2] text-[13px] uppercase">EvocaOnline</span>
-              </div>
             </div>
           </motion.div>
         )}

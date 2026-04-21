@@ -9,7 +9,6 @@ import VarkAvand from './Components/VarkAvand/VarkAvand';
 import Gorcynkerner from './Components/Gorcynkerner/Gorcynkerner';
 import HomeCards from './Components/HomeCards/HomeCards';
 import Change from './Components/Change/Change';
-
 import Varker1 from './Components/Varker1/Varker';
 import LoanAbout from './Components/Varker1/LoanAbout';
 import Avandner from './Components/Avandner/Avandner';
@@ -22,7 +21,9 @@ import EvocaTOUCH from './Components/EvocaTOUCH/EvocaTOUCH';
 import Hashivner from './Components/Hashivner/Hashivner';
 import Poxancumner from './Components/Poxancumner/Poxancumner'
 import Arjetxter from './Components/Arjetxter/Arjetxter'
-
+import Lizing from './Components/Lizing/Lizing'
+import BiznesHashivner from './Components/BiznesHashivner/BiznesHashivner'
+import BiznesAvand from './Components/BiznesAvand/BiznesAvand'
 const SalaryProject = () => (
   <div className="bg-white">
     <div className="max-w-[1140px] mx-auto py-10 px-4">
@@ -56,11 +57,8 @@ function App() {
             <Route path="/" element={<Home />} />
             <Route path="/personal-loans" element={<AnhatVarker />} />
             <Route path="/deposits" element={<Avandner />} />
-            
-            {/* Քարտերի հասցեները */}
             <Route path="/cards" element={<CardsPage />} />
             <Route path="/card/:id" element={<CardInfo />} />
-            
             <Route path="/evoca-salary" element={<SalaryProject />} />
             <Route path="/deposit/:id" element={<AvandnerInfo />} />
             <Route path="/business" element={<Varker1 />} />
@@ -70,7 +68,9 @@ function App() {
             <Route path="/accounts" element={<Hashivner />} />
             <Route path="/transfers" element={<Poxancumner />} />
             <Route path="/securities" element={<Arjetxter />} />
-            
+            <Route path="/business/leasing" element={<Lizing />} />
+            <Route path="/business/accounts" element={<BiznesHashivner />} />
+            <Route path="/business/deposits" element={<BiznesAvand />} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
