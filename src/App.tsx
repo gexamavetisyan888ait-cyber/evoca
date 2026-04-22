@@ -24,6 +24,8 @@ import Arjetxter from './Components/Arjetxter/Arjetxter'
 import Lizing from './Components/Lizing/Lizing'
 import BiznesHashivner from './Components/BiznesHashivner/BiznesHashivner'
 import BiznesAvand from './Components/BiznesAvand/BiznesAvand'
+import ArjetxtiShuka from './Components/ArjetxtiShuka/ArjetxtiShuka'
+
 const SalaryProject = () => (
   <div className="bg-white">
     <div className="max-w-[1140px] mx-auto py-10 px-4">
@@ -71,6 +73,7 @@ function App() {
             <Route path="/business/leasing" element={<Lizing />} />
             <Route path="/business/accounts" element={<BiznesHashivner />} />
             <Route path="/business/deposits" element={<BiznesAvand />} />
+            <Route path="/business/securities" element={<ArjetxtiShuka />} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
