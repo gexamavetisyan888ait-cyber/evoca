@@ -12,7 +12,7 @@ const cardsData = [
 const CardSlider: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 3; // Քանի քարտ երևա միաժամանակ
+  const visibleCount = 3; 
 
   const nextSlide = () => {
     if (startIndex + visibleCount < cardsData.length) {
@@ -26,17 +26,14 @@ const CardSlider: React.FC = () => {
     }
   };
 
-  // Ստանում ենք միայն այն 3 քարտերը, որոնք պետք է երևան
   const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
 
   return (
     <section className="w-full py-20 bg-white select-none">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-12 items-center gap-8">
         
-        {/* Ձախ կողմի ուղղահայաց մենյուն (Thumbs) */}
         <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
           
-          {/* Վերևի սլաք */}
           <button 
             onClick={prevSlide}
             disabled={startIndex === 0}
@@ -63,7 +60,6 @@ const CardSlider: React.FC = () => {
             })}
           </div>
 
-          {/* Ներքևի սլաք */}
           <button 
             onClick={nextSlide}
             disabled={startIndex + visibleCount >= cardsData.length}
@@ -73,7 +69,6 @@ const CardSlider: React.FC = () => {
           </button>
         </div>
 
-        {/* Կենտրոնի Մեծ նկարը */}
         <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[400px]">
           <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
           <img 
@@ -84,7 +79,6 @@ const CardSlider: React.FC = () => {
           />
         </div>
 
-        {/* Աջ կողմի Տեքստը */}
         <div className="col-span-12 md:col-span-3 text-center md:text-left">
           <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none">
             {cardsData[activeTab].title}

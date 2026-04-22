@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
 
-// --- Types ---
 type TabType = 'evoca' | 'special';
 
 interface AccordionProps {
@@ -12,7 +11,6 @@ interface AccordionProps {
   children: React.ReactNode;
 }
 
-// --- Reusable Accordion Component ---
 const AccordionItem: React.FC<AccordionProps> = ({ title, children, isOpen, onClick }) => {
   return (
     <div className="border border-purple-200 rounded-xl mb-4 overflow-hidden bg-white shadow-sm transition-all duration-300">
@@ -50,7 +48,6 @@ const AccordionItem: React.FC<AccordionProps> = ({ title, children, isOpen, onCl
   );
 };
 
-// --- Main Leasing Component ---
 const Leasing: React.FC = () => {
   const [activeTab, setActiveTab] = useState<TabType>('evoca');
   const [openSection, setOpenSection] = useState<string | null>('main');
@@ -62,7 +59,6 @@ const Leasing: React.FC = () => {
   return (
     <div className="w-full min-h-screen bg-white font-sans text-[#1a1a1a] pb-20">
       
-      {/* --- Sticky Tabs (Նոր դիզայն՝ ըստ քո ուղարկած նկարի) --- */}
       <div className="w-full bg-[#6610f2] sticky top-0 md:top-20 z-40 overflow-x-auto scrollbar-hide">
         <div className="max-w-[1200px] mx-auto flex whitespace-nowrap">
           {[
@@ -91,7 +87,6 @@ const Leasing: React.FC = () => {
           animate={{ opacity: 1, y: 0 }}
           className="animate-in fade-in duration-500"
         >
-          {/* Header Section */}
           <h1 className="text-[28px] md:text-[40px] font-black uppercase mb-8 italic leading-none">
             {activeTab === 'evoca' ? 'Evoca Leasing' : 'Հատուկ առաջարկ'}
           </h1>
@@ -102,7 +97,6 @@ const Leasing: React.FC = () => {
 
           {activeTab === 'evoca' ? (
             <div className="space-y-4">
-              {/* --- Section 1: Main Info --- */}
               <AccordionItem 
                 title="Evoca Leasing" 
                 isOpen={openSection === 'main'} 
@@ -155,7 +149,6 @@ const Leasing: React.FC = () => {
                 </div>
               </AccordionItem>
 
-              {/* --- Section 2: Government Project --- */}
               <AccordionItem 
                 title="Տնտեսության Արդիականացման ծրագիր" 
                 isOpen={openSection === 'modern'} 
@@ -169,7 +162,6 @@ const Leasing: React.FC = () => {
             </div>
           ) : (
             <div className="space-y-4">
-              {/* Special Offer: Logi Group */}
               <AccordionItem 
                 title="Լոջիք Գրուպ ՍՊԸ" 
                 isOpen={openSection === 'logiq'} 
@@ -205,7 +197,6 @@ const Leasing: React.FC = () => {
                 </div>
               </AccordionItem>
 
-              {/* Special Offer: Avto Gallery */}
               <AccordionItem 
                 title="Ավտո Գելերի ՓԲԸ" 
                 isOpen={openSection === 'auto'} 

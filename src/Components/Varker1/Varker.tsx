@@ -1,7 +1,6 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-// 1. Տիպերի սահմանում
 export interface LoanType {
   id: number;
   title: string;
@@ -13,7 +12,6 @@ export interface LoanType {
   image: string;
 }
 
-// 2. Տվյալների մասիվը export ենք անում, որ LoanPage-ը տեսնի սա
 export const loans: LoanType[] = [
   { id: 1, title: "Արագ բիզնես վարկ/վարկային գիծ", description: "Արագ ֆինանսավորում Ձեր բիզնեսի զարգացման համար միայն երաշխավորությամբ և ցածր տոկոսադրույքով:", duration: "60 ամիս", amount: "30 մլն ֏", rate: "8.5-14.5%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/17721008940374/415x261.png" },
   { id: 2, title: "Տեքստիլ ոլորտում հումքի ներմուծմանն ուղղված վարկ", description: "Evocabank-ը տրամադրում է բիզնես վարկ՝ տեքստիլ հումքի ներմուծման համար: Զարգացրեք Ձեր բիզնեսը և դարձեք մրցունակ:", duration: "36 ամիս", amount: "500 մլն ֏", rate: "8%", rateLabel: "Տոկոսադրույքի սուբսիդավորում", image: "https://www.evoca.am/images-cache/loans/1/17749381045652/415x261.png" },

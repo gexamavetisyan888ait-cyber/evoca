@@ -29,7 +29,6 @@ const LatestNews: React.FC = () => {
 
   return (
     <section className="py-20 px-4 md:px-20 max-w-[1440px] mx-auto bg-[#f4f6f9]">
-      {/* Header */}
       <div className="flex justify-between items-center mb-10">
         <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a]">
           Վերջին նորությունները
@@ -40,7 +39,6 @@ const LatestNews: React.FC = () => {
         </button>
       </div>
 
-      {/* News Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {news.map((item, idx) => (
           <motion.div 
@@ -48,7 +46,6 @@ const LatestNews: React.FC = () => {
             whileHover={{ y: -12 }}
             className="bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-[0_30px_60px_rgba(125,42,232,0.15)] transition-all duration-500 cursor-pointer group"
           >
-            {/* Image Container */}
             <div className="h-60 overflow-hidden relative">
               <img 
                 src={item.image} 
@@ -57,10 +54,8 @@ const LatestNews: React.FC = () => {
               />
             </div>
 
-            {/* Content */}
             <div className="p-8">
               <div className="flex items-center gap-3 mb-4">
-                {/* Vertical Color Indicator */}
                 <span 
                   className="w-[3px] h-4 rounded-full" 
                   style={{ backgroundColor: item.color }}
@@ -84,7 +79,6 @@ const LatestNews: React.FC = () => {
         ))}
       </div>
 
-      {/* Mobile-only Button */}
       <div className="mt-10 sm:hidden flex justify-center">
         <button className="bg-[#e9e9f2] text-[#555] px-8 py-3 rounded-full font-bold text-sm">
           Բոլոր նորությունները

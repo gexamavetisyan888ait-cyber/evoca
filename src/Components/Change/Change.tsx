@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, MapPin } from 'lucide-react';
+import { ChevronRight, MapPin ,FileText, Download, Monitor, Smartphone, } from 'lucide-react';
+
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+
+import 'swiper/css';
+import 'swiper/css/pagination';
+import 'swiper/css/effect-fade';
 
 const DynamicExchange: React.FC = () => {
   const [activeTab, setActiveTab] = useState('cashless');
@@ -10,6 +17,23 @@ const DynamicExchange: React.FC = () => {
     sell: 394.0,
     symbol: '$'
   });
+  const testimonials = [
+        {
+            name: 'Սուսաննա Վանյան',
+            role: 'Հաճախորդ',
+            text: 'Հայաստանի իրականության մեջ բացառիկ հրաշք բանկ։ Միայն այս հնարավորությունը ընձեռելով երիտասարդ ընտանիքներին ՝ նման ցածր տոկոսով բնակարան ձեռք բերել, արժանի է մեծ հարգանքի։ Շնորհակալ ենք, որ Դուք կաք:',
+        },
+        {
+            name: 'Նունե Գևորգյան',
+            role: 'Հաճախորդ',
+            text: 'Գերազանց սպասարկում, ընտիր ու հավես անձնակազմ Ազատության մասնաճյուղում: Վարկային բաժնից շատ շնորհակալ եմ, վարկս ձևակերպվեց առանց ավելորդ քաշքշուկների` հեշտ, արագ, որակով:',
+        },
+        {
+            name: 'Կամո Թովմասյան',
+            role: 'KAMOBLOG մեդիա-հարթակի հիմնադիր',
+            text: 'Բանկ, որ իր ռեբրենդինգի շքեղ միջոցառմամբ ու աշխատանքային ձևաչափով բանկային ոլորտում ամրապնդեց որակ և ճաշակ թելադրեց։',
+        }
+    ];
 
   const currencies = [
     { code: 'USD', name: 'ԱՄՆ դոլար', buy: 388.0, sell: 394.0, flag: '🇺🇸', symbol: '$' },
@@ -25,7 +49,6 @@ const DynamicExchange: React.FC = () => {
     { purity: 999, price: '56,400' },
   ];
 
-  // Դինամիկ հաշվարկ ըստ ընտրված արժույթի
   const calculateResult = () => {
     const numAmount = Number(amount.replace(/,/g, ''));
     if (isNaN(numAmount) || numAmount === 0) return "0";
@@ -42,7 +65,6 @@ const DynamicExchange: React.FC = () => {
           </p>
 
           <div className="bg-[#f9f9fb] rounded-[40px] p-4 md:p-10 border border-gray-100">
-            {/* Tabs */}
             <div className="flex bg-white rounded-2xl p-1.5 mb-10 w-fit shadow-sm">
               {['cash', 'cashless', 'gold'].map((tab) => (
                 <button
@@ -66,7 +88,6 @@ const DynamicExchange: React.FC = () => {
                   exit={{ opacity: 0, y: -10 }}
                   className="flex flex-col xl:flex-row gap-10"
                 >
-                  {/* Currency Table */}
                   <div className="flex-1">
                     <div className="grid grid-cols-3 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 px-6">
                       <div>Արժույթ</div>
@@ -132,7 +153,6 @@ const DynamicExchange: React.FC = () => {
                   </div>
                 </motion.div>
               ) : (
-                /* Gold Table */
                 <motion.div
                   key="gold-view"
                   initial={{ opacity: 0, y: 10 }}
@@ -158,7 +178,6 @@ const DynamicExchange: React.FC = () => {
           </div>
         </div>
 
-        {/* Right Sidebar */}
         <div className="w-full lg:w-[350px]">
           <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">Մեր հասցեները</h3>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">Բանկի հասցեները, աշխատաժամերը և բանկոմատները:</p>
@@ -188,7 +207,63 @@ const DynamicExchange: React.FC = () => {
         </div>
 
       </div>
+
+            <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
+                <div className="flex justify-center gap-2 mb-12">
+                    {[1, 2, 3, 4, 5].map(s => (
+                        <motion.span 
+                            key={s}
+                            initial={{ opacity: 0, rotate: -180 }}
+                            whileInView={{ opacity: 1, rotate: 0 }}
+                            transition={{ delay: s * 0.1 }}
+                            className="text-yellow-400 text-4xl"
+                        >
+                            ★
+                        </motion.span>
+                    ))}
+                </div>
+
+                <Swiper
+                    modules={[Pagination, Autoplay, EffectFade]}
+                    effect="fade"
+                    fadeEffect={{ crossFade: true }}
+                    speed={1000}
+                    autoplay={{ delay: 5000 }}
+                    pagination={{ clickable: true }}
+                    className="pb-20"
+                >
+                    {testimonials.map((t, idx) => (
+                        <SwiperSlide key={idx}>
+                            <motion.div 
+                                // Սա ստիպում է անիմացիային աշխատել ամեն սլայդը փոխելիս
+                                initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                transition={{ duration: 0.8 }}
+                                className="text-center max-w-3xl mx-auto"
+                            >
+                                <div className="relative inline-block">
+                                    <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
+                                    <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
+                                        {t.text}
+                                    </p>
+                                    <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
+                                </div>
+                                <motion.div 
+                                    initial={{ opacity: 0 }}
+                                    whileInView={{ opacity: 1 }}
+                                    transition={{ delay: 0.5 }}
+                                    className="mt-10"
+                                >
+                                    <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
+                                    <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                                </motion.div>
+                            </motion.div>
+                        </SwiperSlide>
+                    ))}
+                </Swiper>
+            </div>
     </section>
+    
   );
 };
 

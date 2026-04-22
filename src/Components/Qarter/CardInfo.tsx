@@ -1,14 +1,11 @@
 import React, { useEffect, useMemo } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
-// ՈՒՇԱԴՐՈՒԹՅՈՒՆ: Այստեղ փոխվել է հասցեն './CardsPage', որտեղ գտնվում է QARTER_DATA-ն
 import { QARTER_DATA } from './CardsPage'; 
 
-// Swiper
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 
-// Swiper CSS
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -17,22 +14,18 @@ const CardInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
 
-  // Քարտի որոնում QARTER_DATA-ի մեջ
   const card = useMemo(() => {
     return QARTER_DATA.find((item) => item.id === Number(id));
   }, [id]);
 
-  // Այլ քարտեր (սլայդերի համար)
   const otherCards = useMemo(() => {
     return QARTER_DATA.filter((item) => item.id !== Number(id));
   }, [id]);
 
   useEffect(() => {
-    // Երբ id-ն փոխվում է, էջը բարձրանում է վերև
     window.scrollTo({ top: 0, behavior: 'smooth' });
   }, [id]);
 
-  // Եթե քարտը չի գտնվել (սխալ ID-ի դեպքում)
   if (!card) {
     return (
       <div className="flex flex-col items-center justify-center h-[600px] bg-white font-sans">
@@ -49,7 +42,6 @@ const CardInfo: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen font-sans pb-20">
-      {/* Top Header */}
       <div className="bg-[#6610f2] h-[50px] md:h-[60px] flex items-center shadow-lg">
         <div className="max-w-[1200px] mx-auto w-full px-4">
           <span className="text-white font-black text-[10px] uppercase tracking-[0.4em] truncate block">
@@ -58,7 +50,6 @@ const CardInfo: React.FC = () => {
         </div>
       </div>
 
-      {/* Hero Section */}
       <div className="bg-[#f8f9fb]">
         <div className="max-w-[1200px] mx-auto px-4 pt-12 md:pt-20 pb-12 md:pb-16 flex flex-col lg:flex-row items-center justify-between gap-10 md:gap-16">
           <div className="lg:w-1/2 text-center lg:text-left">
@@ -82,7 +73,6 @@ const CardInfo: React.FC = () => {
         </div>
       </div>
 
-      {/* Other Cards Slider */}
       <div className="max-w-[1200px] mx-auto px-4 mt-16 md:mt-24">
         <h2 className="text-2xl md:text-3xl font-black uppercase italic mb-8 md:mb-12">Այլ քարտեր</h2>
         <Swiper

@@ -16,7 +16,6 @@ const Securities: React.FC = () => {
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a]">
-            {/* Header / Breadcrumbs */}
             <div className="max-w-[1140px] mx-auto px-4 pt-10">
                 <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Արժեթղթեր</span>
@@ -30,7 +29,6 @@ const Securities: React.FC = () => {
                     Արժեթղթեր
                 </motion.h1>
 
-                {/* Main Tabs Navigation */}
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
                     {tabs.map((tab, idx) => (
                         <button
@@ -51,7 +49,6 @@ const Securities: React.FC = () => {
 
             <div className="max-w-[1140px] mx-auto px-4 pb-24">
                 <AnimatePresence mode="wait">
-                    {/* SECTION 0: ՆԵՐԴՐՈՒՄԱՅԻՆ ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ */}
                     {activeTab === 0 && (
                         <motion.div key="sec0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="relative w-full h-[300px] md:h-[450px] rounded-[50px] overflow-hidden flex items-center px-8 md:px-16">
@@ -70,7 +67,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* SECTION 1: ՊԱՐՏԱՏՈՄՍԵՐ */}
                     {activeTab === 1 && (
                         <motion.div key="sec1" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="relative w-full h-[300px] md:h-[450px] rounded-[50px] overflow-hidden flex items-center px-8 md:px-16">
@@ -97,7 +93,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* SECTION 2: ՀԿԾ ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ */}
                     {activeTab === 2 && (
                         <motion.div key="sec2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="bg-[#f8f9fb] p-12 rounded-[50px] border border-gray-100">
@@ -111,7 +106,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* SECTION 3: ՌԵՊՈ / ՀԱԿԱԴԱՐՁ ՌԵՊՈ */}
                     {activeTab === 3 && (
                         <motion.div key="sec3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="bg-[#1a1a1a] p-12 rounded-[50px] text-white">
@@ -132,7 +126,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* SECTION 4: EvocaINVEST */}
                     {activeTab === 4 && (
                         <motion.div key="sec4" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12 text-center">
                             <div className="max-w-2xl mx-auto space-y-8">
@@ -155,7 +148,6 @@ const Securities: React.FC = () => {
     );
 };
 
-// Accordion Sub-component
 const AccordionItem = ({ title, content, docs, isOpen, toggle }: any) => (
     <div className="py-2">
         <button onClick={toggle} className="w-full py-8 flex items-center justify-between text-left group">

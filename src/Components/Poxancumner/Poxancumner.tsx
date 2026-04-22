@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, ChevronDown, FileText, Download, Monitor, ExternalLink, TrendingUp, ShieldCheck, Globe } from 'lucide-react';
-// Համոզվեք, որ այս path-ը ճիշտ է ձեր պրոյեկտում
 import HomeCards from '../HomeCards/HomeCards'; 
 
 const Securities: React.FC = () => {
@@ -18,7 +17,6 @@ const Securities: React.FC = () => {
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a]">
-            {/* Header Section */}
             <div className="max-w-[1140px] mx-auto px-4 pt-10">
                 <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Արժեթղթեր</span>
@@ -32,7 +30,6 @@ const Securities: React.FC = () => {
                     Արժեթղթեր
                 </motion.h1>
 
-                {/* Tabs Navigation */}
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
                     {tabs.map((tab, idx) => (
                         <button
@@ -57,11 +54,9 @@ const Securities: React.FC = () => {
                 </div>
             </div>
 
-            {/* Content Section */}
             <div className="max-w-[1140px] mx-auto px-4 pb-24 min-h-[500px]">
                 <AnimatePresence mode="wait">
                     
-                    {/* 1. ՆԵՐԴՐՈՒՄԱՅԻՆ ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ */}
                     {activeTab === 0 && (
                         <motion.div 
                             key="tab-0"
@@ -89,7 +84,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* 2. ՊԱՐՏԱՏՈՄՍԵՐ */}
                     {activeTab === 1 && (
                         <motion.div 
                             key="tab-1"
@@ -122,7 +116,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* 3. ՀԿԾ ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ */}
                     {activeTab === 2 && (
                         <motion.div 
                             key="tab-2"
@@ -152,7 +145,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* 4. ՌԵՊՈ / ՀԱԿԱԴԱՐՁ ՌԵՊՈ */}
                     {activeTab === 3 && (
                         <motion.div 
                             key="tab-3"
@@ -179,7 +171,6 @@ const Securities: React.FC = () => {
                         </motion.div>
                     )}
 
-                    {/* 5. EvocaINVEST */}
                     {activeTab === 4 && (
                         <motion.div 
                             key="tab-4"
@@ -212,10 +203,8 @@ const Securities: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            {/* Հիմա HomeCards-ը կերևա բոլոր տաբերի տակ */}
             <HomeCards />
 
-            {/* Footer / App Download */}
             <div className="w-full bg-[#1a1a1a] py-20 relative overflow-hidden">
                 <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center justify-between gap-12">
                     <div className="text-white space-y-4">
@@ -238,7 +227,6 @@ const Securities: React.FC = () => {
     );
 };
 
-// --- Helper Components ---
 
 const AccordionItem = ({ title, docs, isOpen, toggle }: any) => (
     <div className="py-2 divide-y divide-gray-100 border-t border-b">

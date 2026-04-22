@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
-// Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 
@@ -23,10 +22,8 @@ const EvocaFullLanding: React.FC = () => {
   return (
     <div className="overflow-x-hidden bg-white">
       
-      {/* SECTION 1: HERO SECTION */}
       <section className="relative min-h-[auto] lg:min-h-[700px] bg-[#7d2ae8] pt-12 pb-20 md:pt-20 md:pb-32 px-4 sm:px-8 md:px-12 lg:px-20 rounded-b-[40px] md:rounded-b-[80px] lg:rounded-b-[120px] flex flex-col lg:flex-row items-center justify-between gap-12 overflow-hidden">
         
-        {/* Left Content */}
         <motion.div 
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -58,7 +55,6 @@ const EvocaFullLanding: React.FC = () => {
           </div>
         </motion.div>
 
-        {/* Right Content: Laptop with Video & Phone */}
         <motion.div 
           initial={{ opacity: 0, scale: 0.9 }}
           whileInView={{ opacity: 1, scale: 1 }}
@@ -84,7 +80,6 @@ const EvocaFullLanding: React.FC = () => {
         </motion.div>
       </section>
 
-      {/* SECTION 2: PARTNERS SLIDER */}
       <section className="py-20 md:py-32 px-4 sm:px-8 md:px-12 lg:px-20 max-w-[1440px] mx-auto">
         <div className="flex flex-col lg:flex-row items-center gap-16 lg:gap-24">
           
@@ -102,7 +97,6 @@ const EvocaFullLanding: React.FC = () => {
           </div>
 
           <div className="w-full lg:w-2/3 relative">
-            {/* Hand Overlay with 5 Rings */}
             <div className="absolute -left-20 top-1/2 -translate-y-1/2 z-10 hidden xl:block pointer-events-none">
                <img src="https://lightscamerasocial.com/images/footer-rock.png" alt="Hand" className="w-32 h-auto rotate-12 relative z-20" />
                <div className="absolute inset-0 flex items-center justify-center -left-6 -top-6">

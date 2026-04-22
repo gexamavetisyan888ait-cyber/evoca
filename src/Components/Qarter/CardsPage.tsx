@@ -5,7 +5,6 @@ import {
   Info, CheckCircle2, AlertTriangle
 } from 'lucide-react';
 
-// --- Types ---
 export type TabType = 'qarter' | 'spasarkum' | 'social' | 'benefits';
 export type FilterType = 'բոլորը' | 'premium' | 'նվեր քարտեր' | 'թվային քարտեր' | 'arca' | 'visa' | 'mastercard' | 'unionpay';
 
@@ -19,7 +18,6 @@ export interface CardDataType {
   perks?: { label: string; value: string }[];
 }
 
-// --- Տվյալների զանգվածը (Export const) ---
 export const QARTER_DATA: CardDataType[] = [
   {
     id: 1,
@@ -189,7 +187,6 @@ export const CardsPage: React.FC = () => {
 
   return (
     <div className="w-full min-h-screen bg-white font-sans text-[#1a1a1a]">
-      {/* Sticky Tabs */}
       <div className="w-full bg-[#6610f2] sticky top-0 md:top-20 z-40 overflow-x-auto">
         <div className="max-w-[1200px] mx-auto flex whitespace-nowrap">
           {[
@@ -215,7 +212,6 @@ export const CardsPage: React.FC = () => {
           <div className="animate-in fade-in duration-500">
             <h1 className="text-[28px] md:text-[34px] font-black uppercase mb-8 italic leading-none">Քարտեր</h1>
 
-            {/* Filters */}
             <div className="flex flex-wrap gap-2 mb-10 md:mb-12">
               {['բոլորը', 'premium', 'նվեր քարտեր', 'թվային քարտեր', 'arca', 'visa', 'mastercard', 'unionpay'].map((f) => (
                 <button
@@ -229,7 +225,6 @@ export const CardsPage: React.FC = () => {
               ))}
             </div>
 
-            {/* Grid */}
             <div className="grid grid-cols-1 gap-12 md:gap-16">
               {filteredCards.map((card) => (
                 <div key={card.id} className="flex flex-col md:flex-row gap-6 md:gap-10 items-center py-6 md:py-10 border-b border-gray-100 last:border-0 group">

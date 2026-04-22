@@ -26,7 +26,6 @@ const HeroSection: React.FC = () => {
   return (
     <div className="relative w-full min-h-screen bg-white font-sans overflow-x-hidden">
       
-      {/* Hero Section */}
       <div className="relative w-full h-[650px] lg:h-[800px] bg-[#e9e9e9] overflow-hidden">
         <img 
           src="https://www.evoca.am/images-cache/news/1/17367544923272/780x585.png" 
@@ -54,7 +53,6 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
-      {/* Cards Section */}
       <div className="relative -mt-24 lg:-mt-40 z-20 max-w-[1450px] mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {cards.map((card, index) => (
@@ -65,7 +63,6 @@ const HeroSection: React.FC = () => {
               transition={{ delay: index * 0.15, duration: 0.7 }}
               className="group relative bg-white rounded-[50px] p-10 h-[520px] flex flex-col shadow-[0_15px_50px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_70px_rgba(102,16,242,0.1)] transition-all duration-500 cursor-pointer overflow-hidden border border-gray-50"
             >
-              {/* Textual Content */}
               <div className="mb-4">
                 <span className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.2em] block mb-2">
                   {card.category}
@@ -78,7 +75,6 @@ const HeroSection: React.FC = () => {
                 </p>
               </div>
 
-              {/* Central Image with breathing room */}
               <div className="flex-grow flex items-center justify-center py-6">
                 <img 
                   src={card.image} 
@@ -87,7 +83,6 @@ const HeroSection: React.FC = () => {
                 />
               </div>
 
-              {/* Interactive Footer */}
               <div className="mt-auto pt-6 flex items-center gap-4">
                 <div className="w-12 h-12 rounded-full bg-[#f3ebff] flex items-center justify-center group-hover:bg-[#6610f2] transition-all duration-300">
                   <svg 

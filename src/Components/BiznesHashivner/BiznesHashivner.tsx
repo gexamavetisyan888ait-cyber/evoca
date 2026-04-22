@@ -4,7 +4,6 @@ import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-re
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-// Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
@@ -61,7 +60,6 @@ const Hashivner: React.FC = () => {
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
-            {/* Header & Tabs */}
             <div className="max-w-[1140px] mx-auto px-4 pt-10">
                 <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Հաշիվներ</span>
@@ -82,7 +80,6 @@ const Hashivner: React.FC = () => {
                 </div>
             </div>
 
-            {/* Main Content Sections */}
             <div className="max-w-[1140px] mx-auto px-4 pb-20">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -193,7 +190,6 @@ const Hashivner: React.FC = () => {
                 </div>
             </div>
 
-            {/* Expressive Swiper Section */}
             <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
                 <div className="flex justify-center gap-2 mb-12">
                     {[1, 2, 3, 4, 5].map(s => (

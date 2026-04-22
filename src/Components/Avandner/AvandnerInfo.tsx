@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { deposits } from './Avandner'; // Համոզվիր, որ հասցեն ճիշտ է
-
+import { deposits } from './Avandner'; 
 const AvandnerInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();

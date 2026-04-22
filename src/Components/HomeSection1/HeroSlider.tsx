@@ -2,7 +2,6 @@ import React from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-// Swiper styles
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
@@ -13,7 +12,7 @@ const slides = [
     title: "Evoca Travel Card",
     description: "Այս քարտն իր բազմաթիվ առավելություններով կդառնա քո ճամփորդության անբաժան մասնիկը",
     buttonText: "Իմանալ ավելին",
-    bg: "bg-[#f2f4f7]", // Բաց մոխրագույն
+    bg: "bg-[#f2f4f7]", 
     textColor: "text-[#1a1a1a]",
     img: "https://www.evoca.am/images-cache/sliders/1/17612202124044/b74e87ec0e83aa10cb128d41f0ada026-577x486.png"
   },
@@ -21,7 +20,7 @@ const slides = [
     title: "Առցանց ապառիկ 0%",
     description: "Գնիր հիմա, վճարիր հետո: Ձևակերպիր առցանց ապառիկ վայրկյանների ընթացքում 0% կանխավճարով:",
     buttonText: "Իմանալ ավելին",
-    bg: "bg-[#1a1a1a]", // Սև ֆոն
+    bg: "bg-[#1a1a1a]",
     textColor: "text-white",
     img: "https://www.evoca.am/images-cache/sliders/1/17740137222872/7152cafab4609e8483a365f79ecf04cb-577x486.png"
   },
@@ -64,7 +63,7 @@ const HeroSlider: React.FC = () => {
     <div className="relative w-full h-[550px] md:h-[650px] overflow-hidden">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        effect="fade" // Ավելի սիրուն անցումների համար
+        effect="fade" 
         spaceBetween={0}
         slidesPerView={1}
         navigation={{
@@ -86,7 +85,6 @@ const HeroSlider: React.FC = () => {
             <div className={`w-full h-full flex items-center transition-colors duration-500 ${slide.bg}`}>
               <div className="max-w-[1240px] mx-auto w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 items-center gap-4">
                 
-                {/* Տեքստային հատված */}
                 <div className="z-10 order-2 md:order-1 mt-6 md:mt-0">
                   <h1 className={`text-[40px] md:text-[64px] font-[900] italic uppercase leading-[1.1] mb-6 tracking-tighter ${slide.textColor}`}>
                     {slide.title}
@@ -99,7 +97,6 @@ const HeroSlider: React.FC = () => {
                   </button>
                 </div>
 
-                {/* Նկարի հատված */}
                 <div className="order-1 md:order-2 flex justify-center items-center h-full relative">
                   <img 
                     src={slide.img} 
@@ -114,7 +111,6 @@ const HeroSlider: React.FC = () => {
         ))}
       </Swiper>
 
-      {/* Սլաքներ */}
       <button className="swiper-button-prev-custom absolute left-8 top-1/2 -translate-y-1/2 z-20 text-gray-400 hover:text-[#6610f2] transition-all opacity-30 hover:opacity-100 hidden xl:block">
         <svg width="50" height="50" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M15 18l-6-6 6-6"/></svg>
       </button>

@@ -47,7 +47,6 @@ const Hashivner: React.FC = () => {
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
-            {/* Header & Tabs */}
             <div className="max-w-[1140px] mx-auto px-4 pt-10">
                 <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Հաշիվներ</span>
@@ -68,7 +67,6 @@ const Hashivner: React.FC = () => {
                 </div>
             </div>
 
-            {/* Main Content */}
             <div className="max-w-[1140px] mx-auto px-4 pb-20">
                 <AnimatePresence mode="wait">
                     <motion.div
@@ -115,9 +113,7 @@ const Hashivner: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            {/* 4. The "Magic" Purple Block - Parallax & Floating Elements */}
             <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
-                {/* Floating Background Icons */}
                 <motion.div 
                     animate={{ 
                         y: [0, -40, 0],
@@ -132,7 +128,6 @@ const Hashivner: React.FC = () => {
 
                 <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
                     <div className="w-full md:w-1/2 relative h-[400px]">
-                        {/* Laptop - Sliding from left */}
                         <motion.img 
                             initial={{ x: -150, opacity: 0 }}
                             whileInView={{ x: 0, opacity: 1 }}
@@ -140,7 +135,6 @@ const Hashivner: React.FC = () => {
                             src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg"
                             className="absolute left-0 top-0 w-[80%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-xl"
                         />
-                        {/* Phone - Popping up */}
                         <motion.img 
                             initial={{ y: 150, opacity: 0, scale: 0.5 }}
                             whileInView={{ y: 0, opacity: 1, scale: 1 }}

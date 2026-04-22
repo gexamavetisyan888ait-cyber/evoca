@@ -4,7 +4,6 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { motion, AnimatePresence } from 'framer-motion';
 
-// Swiper styles
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
@@ -34,7 +33,6 @@ const EvocaTOUCH: React.FC = () => {
         }
     ];
 
-    // Animation Variants
     const fadeInUp = {
         hidden: { opacity: 0, y: 60 },
         visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
@@ -50,7 +48,6 @@ const EvocaTOUCH: React.FC = () => {
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
-            {/* 1. Breadcrumbs & Title - Reveal with Stagger */}
             <motion.div 
                 initial="hidden"
                 whileInView="visible"
@@ -66,7 +63,6 @@ const EvocaTOUCH: React.FC = () => {
                 </motion.h1>
             </motion.div>
 
-            {/* 2. Main Content - Smooth Reveal */}
             <motion.div 
                 initial="hidden"
                 whileInView="visible"
@@ -99,7 +95,6 @@ const EvocaTOUCH: React.FC = () => {
                 </ul>
             </motion.div>
 
-            {/* 3. Documents - Hover Lift Effect */}
             <div className="max-w-[1140px] mx-auto px-4 py-16">
                 <motion.h2 initial={{opacity: 0}} whileInView={{opacity: 1}} className="text-[24px] font-black uppercase italic mb-8">Փաստաթղթեր</motion.h2>
                 <div className="grid gap-4">
@@ -122,9 +117,7 @@ const EvocaTOUCH: React.FC = () => {
                 </div>
             </div>
 
-            {/* 4. The "Magic" Purple Block - Parallax & Floating Elements */}
             <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
-                {/* Floating Background Icons */}
                 <motion.div 
                     animate={{ 
                         y: [0, -40, 0],
@@ -139,7 +132,6 @@ const EvocaTOUCH: React.FC = () => {
 
                 <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
                     <div className="w-full md:w-1/2 relative h-[400px]">
-                        {/* Laptop - Sliding from left */}
                         <motion.img 
                             initial={{ x: -150, opacity: 0 }}
                             whileInView={{ x: 0, opacity: 1 }}
@@ -147,7 +139,6 @@ const EvocaTOUCH: React.FC = () => {
                             src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg"
                             className="absolute left-0 top-0 w-[80%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-xl"
                         />
-                        {/* Phone - Popping up */}
                         <motion.img 
                             initial={{ y: 150, opacity: 0, scale: 0.5 }}
                             whileInView={{ y: 0, opacity: 1, scale: 1 }}
@@ -175,7 +166,6 @@ const EvocaTOUCH: React.FC = () => {
                 </div>
             </div>
 
-            {/* 5. Expressive Swiper - Animated Transitions */}
             <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
                 <div className="flex justify-center gap-2 mb-12">
                     {[1, 2, 3, 4, 5].map(s => (

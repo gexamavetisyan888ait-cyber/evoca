@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 
-// --- Types ---
 interface FAQItem {
   question: string;
   answer: React.ReactNode;
 }
 
-// --- FAQ Data ---
 const faqData: FAQItem[] = [
   {
     question: "Ո՞վ կարող է միանալ Evoca աշխատավարձային նախագծին:",
@@ -66,7 +64,6 @@ const EvocaSALARY: React.FC = () => {
 
   return (
     <div className="w-full bg-white font-sans overflow-x-hidden">
-      {/* --- HERO SECTION --- */}
       <section className="max-w-[1200px] mx-auto px-4 py-12 flex flex-col md:flex-row items-center gap-12">
         <div className="flex-1 space-y-6">
           <div className="flex items-center text-sm text-gray-400 gap-2">
@@ -81,7 +78,6 @@ const EvocaSALARY: React.FC = () => {
           </p>
         </div>
         <div className="flex-1 relative">
-            {/* Այստեղ դրվում է դրամապանակի նկարը */}
             <div className="bg-[#6622CC] rounded-3xl p-8 flex justify-center items-center overflow-hidden">
                 <img 
                     src="https://www.evoca.am/images-cache/menu/1/17738355890361/780x585.png" 
@@ -92,13 +88,11 @@ const EvocaSALARY: React.FC = () => {
         </div>
       </section>
 
-      {/* --- BENEFITS SECTION --- */}
       <section className="max-w-[1000px] mx-auto px-4 py-12">
         <p className="text-[16px] text-gray-700 mb-10 text-center leading-relaxed">
             Evoca աշխատավարձային նախագիծը մեկնարկել է նրանց համար, ովքեր, իրենց աշխատավարձը քարտին ստանալուց բացի, ցանկանում են նաև ստանալ <span className="text-[#6622CC] font-bold">նոր հնարավորություններ ու առավելություններ</span>:
         </p>
 
-        {/* Mastercard Gold */}
         <div className="mb-12">
             <h3 className="text-[#6622CC] font-bold text-[18px] mb-4 border-b-2 border-[#6622CC] inline-block pb-1">
                 Բեր աշխատավարձդ Evoca, Տար անվճար Mastercard Gold
@@ -112,7 +106,6 @@ const EvocaSALARY: React.FC = () => {
             </ul>
         </div>
 
-        {/* Evoca Travel Card */}
         <div className="mb-12">
             <h3 className="text-[#6622CC] font-bold text-[18px] mb-4 border-b-2 border-[#6622CC] inline-block pb-1">
                 Բեր աշխատավարձդ Evoca, Տար 50% զեղչով Evoca Travel Card
@@ -130,7 +123,6 @@ const EvocaSALARY: React.FC = () => {
             </ul>
         </div>
 
-        {/* Loans / Վարկեր */}
         <div className="mb-12 bg-gray-50 p-8 rounded-2xl border-l-4 border-[#6622CC]">
             <h3 className="text-[#6622CC] font-bold text-[18px] mb-6 uppercase">Վարկեր ավելի ցածր տոկոսադրույքով</h3>
             <div className="grid md:grid-cols-2 gap-8">
@@ -148,7 +140,6 @@ const EvocaSALARY: React.FC = () => {
         </div>
       </section>
 
-      {/* --- FAQ SECTION --- */}
       <section className="max-w-[1000px] mx-auto px-4 py-16 border-t border-gray-100">
         <h2 className="text-[30px] font-bold text-[#1A1A1A] mb-8">Հաճախ տրվող հարցեր</h2>
         <div className="space-y-2">

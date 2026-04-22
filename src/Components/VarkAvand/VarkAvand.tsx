@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, Info } from 'lucide-react';
 
-// Տիպերի սահմանում
 type Tab = 'loan' | 'deposit';
 
 interface CalculationResult {
@@ -15,27 +14,23 @@ const EvocaCalculator: React.FC = () => {
   const [activeTab, setActiveTab] = useState<Tab>('loan');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
-  // Ընդհանուր սթեյթեր
   const [amount, setAmount] = useState<number>(30333);
   const [rate, setRate] = useState<number>(3);
-  const [term, setTerm] = useState<number>(1); // Վարկի համար՝ ամիս, Ավանդի համար՝ օր
+  const [term, setTerm] = useState<number>(1); 
 
-  // Ավանդի հաշվարկի սթեյթ
   const [depositResults, setDepositResults] = useState({
     daily: 0,
     totalGross: 0,
     totalNet: 0
   });
 
-  // Վարկի հաշվարկի սթեյթ
   const [loanResult, setLoanResult] = useState<CalculationResult | null>(null);
 
-  // Ավանդի ավտոմատ հաշվարկ (Real-time)
   useEffect(() => {
     if (activeTab === 'deposit') {
       const dailyRate = rate / 100 / 365;
       const totalGross = amount * dailyRate * term;
-      const tax = totalGross * 0.10; // 10% եկամտահարկ
+      const tax = totalGross * 0.10; 
       const totalNet = totalGross - tax;
 
       setDepositResults({
@@ -46,7 +41,6 @@ const EvocaCalculator: React.FC = () => {
     }
   }, [amount, rate, term, activeTab]);
 
-  // Վարկի հաշվարկի ֆունկցիա (Annuity բանաձևով)
   const handleCalculateLoan = () => {
     const monthlyRate = rate / 100 / 12;
     const payment = monthlyRate === 0 
@@ -70,7 +64,6 @@ const EvocaCalculator: React.FC = () => {
       
       <div className="w-full max-w-5xl bg-white rounded-[40px] shadow-[0_20px_50px_rgba(0,0,0,0.1)] p-6 md:p-12 border border-gray-50">
         
-        {/* Tab-երի փոխարկիչ */}
         <div className="flex mb-12 bg-gray-100 p-1.5 rounded-2xl w-fit">
           <button 
             onClick={() => { setActiveTab('loan'); setTerm(1); setAmount(30333); }}
@@ -88,9 +81,7 @@ const EvocaCalculator: React.FC = () => {
 
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-16">
           
-          {/* Ձախ մաս՝ Մուտքագրվող տվյալներ */}
           <div className="space-y-12">
-            {/* Գումար */}
             <div className="group">
               <label className="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2 block">
                 {activeTab === 'loan' ? 'Վարկի գումար' : 'Ներդրվող գումար'}
@@ -115,7 +106,6 @@ const EvocaCalculator: React.FC = () => {
               </div>
             </div>
 
-            {/* Տոկոսադրույք */}
             <div className="group">
               <label className="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2 block">Տարեկան տոկոսադրույք</label>
               <div className="flex items-center border-b-2 border-gray-100 group-focus-within:border-[#7d2ae8] py-2 transition-all">
@@ -138,7 +128,6 @@ const EvocaCalculator: React.FC = () => {
               </div>
             </div>
 
-            {/* Ժամկետ */}
             <div className="group">
               <label className="text-xs uppercase tracking-wider text-gray-400 font-bold mb-2 block">
                 {activeTab === 'loan' ? 'Ժամկետ' : 'Ավանդի ժամկետ'}
@@ -167,7 +156,6 @@ const EvocaCalculator: React.FC = () => {
             </div>
           </div>
 
-          {/* Աջ մաս՝ Արդյունքներ */}
           <div className="flex flex-col justify-center">
             {activeTab === 'deposit' ? (
               <div className="bg-[#fafafa] p-10 rounded-[32px] border border-gray-50 space-y-10">
@@ -227,7 +215,6 @@ const EvocaCalculator: React.FC = () => {
         </p>
       </div>
 
-      {/* Մոդալ պատուհան Վարկի համար */}
       <AnimatePresence>
         {isModalOpen && loanResult && (
           <div className="fixed inset-0 z-[100] flex items-center justify-center p-4">

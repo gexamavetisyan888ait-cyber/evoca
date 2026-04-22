@@ -18,14 +18,12 @@ const LoanAbout: React.FC = () => {
 
   return (
     <div className="bg-white min-h-screen font-sans">
-      {/* 1. Purple Header Section */}
       <div className="bg-[#6600cc] h-[60px] flex items-center">
         <div className="max-w-[1200px] mx-auto w-full px-4">
           <span className="text-white font-bold text-sm uppercase tracking-wide">Բիզնես վարկեր</span>
         </div>
       </div>
 
-      {/* 2. Hero Section with Image and Breadcrumbs */}
       <div className="bg-[#f2f4f7] relative overflow-hidden">
         <div className="max-w-[1200px] mx-auto px-4 pt-12 pb-20 relative z-10">
           <div className="flex flex-col lg:flex-row items-center justify-between gap-10">
@@ -47,7 +45,6 @@ const LoanAbout: React.FC = () => {
           </div>
         </div>
 
-        {/* Breadcrumbs Section */}
         <div className="max-w-[1200px] mx-auto px-4 py-6 border-t border-gray-200 flex items-center gap-4 text-[11px] text-gray-400 font-bold uppercase tracking-wider">
            <button onClick={() => navigate(-1)} className="flex items-center gap-2 bg-white px-4 py-2 rounded-lg shadow-sm hover:text-[#6600cc] transition-all">
              ← Վերադառնալ
@@ -60,11 +57,9 @@ const LoanAbout: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Main Content Section */}
       <main className="max-w-[1200px] mx-auto px-4 py-12">
         <div className="flex flex-col lg:flex-row gap-12">
           
-          {/* Left Column: Tabs and Info */}
           <div className="lg:w-2/3">
             <div className="flex gap-8 border-b border-gray-100 mb-8">
               <button 
@@ -96,10 +91,8 @@ const LoanAbout: React.FC = () => {
             </div>
           </div>
 
-          {/* Right Column: Sticky Info Box */}
           <div className="lg:w-1/3">
             <div className="bg-white rounded-[32px] border border-gray-100 p-8 shadow-2xl shadow-gray-200/50 sticky top-10">
-              {/* Currency Selector */}
               <div className="flex justify-center gap-2 mb-10 bg-gray-50 p-1.5 rounded-2xl">
                 {['AMD', 'USD', 'EUR'].map((curr) => (
                   <button
@@ -112,7 +105,6 @@ const LoanAbout: React.FC = () => {
                 ))}
               </div>
 
-              {/* Specs */}
               <div className="space-y-8 mb-10">
                 <div>
                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Մինչև</span>

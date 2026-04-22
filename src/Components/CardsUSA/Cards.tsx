@@ -28,7 +28,6 @@ const BestOffers: React.FC = () => {
   return (
     <section className="w-full min-h-screen py-20 bg-[#6610f2] relative overflow-hidden flex items-center">
       
-      {/* Լողացող երկրաչափական պատկերներ (մնացած ֆոնում) */}
       <motion.div 
         animate={{ y: [0, -30, 0], x: [0, 10, 0] }}
         transition={{ duration: 6, repeat: Infinity }}
@@ -48,31 +47,25 @@ const BestOffers: React.FC = () => {
       <div className="max-w-[1440px] mx-auto px-6 md:px-20 relative z-10 w-full">
         <div className="flex flex-col lg:flex-row items-center gap-10">
           
-          {/* Ձախ մաս - Արձանը, Վերնագիրը և Գլխի Օղակները */}
           <div className="w-full lg:w-1/2 relative flex justify-center lg:justify-start">
             <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               whileInView={{ opacity: 1, scale: 1 }}
               transition={{ duration: 1 }}
-              className="relative w-full max-w-[700px]" // Մեծացված առավելագույն չափս
+              className="relative w-full max-w-[700px]" 
             >
-              
-              {/* --- Անիմացիոն Օղակներ ԱՐՁԱՆԻԿԻ ԳԼԽԻ ՄՈՏ --- */}
-              {/* Այս div-ը դիրքավորված է արձանի գլխի հատվածում */}
+           
               <div className="absolute top-[10%] left-[30%] w-[180px] h-[180px] -translate-x-1/2 -translate-y-1/2 pointer-events-none opacity-60 z-10">
-                {/* Մեծ պտտվող օղակ գլխի շուրջ */}
                 <motion.div 
                   animate={{ rotate: 360 }}
                   transition={{ duration: 20, repeat: Infinity, ease: "linear" }}
                   className="absolute inset-0 border-[1px] border-dashed border-white rounded-full"
                 />
-                {/* Միջին օղակ գլխի շուրջ հակառակ ուղղությամբ */}
                 <motion.div 
                   animate={{ rotate: -360 }}
                   transition={{ duration: 12, repeat: Infinity, ease: "linear" }}
                   className="absolute inset-4 border-[1px] border-white/30 rounded-full"
                 />
-                 {/* Փոքրիկ կետ գլխի վերևում */}
                 <motion.div 
                   animate={{ scale: [1, 1.5, 1], opacity: [0.5, 1, 0.5] }}
                   transition={{ duration: 3, repeat: Infinity }}
@@ -80,21 +73,18 @@ const BestOffers: React.FC = () => {
                 />
               </div>
 
-              {/* Նոր, ՄԵԾԱՑՎԱԾ Արձանի նկարը */}
               <img 
                 src="https://framerusercontent.com/images/1ZtehxKaB95hCfqOHdJsrNNRs.png?lossless=1" 
                 alt="Evoca Statue" 
-                className="w-full h-auto relative z-20 object-contain drop-shadow-2xl grayscale brightness-110" // Ավելացվել էgrayscale և brightness ավելի լավ համադրության համար
+                className="w-full h-auto relative z-20 object-contain drop-shadow-2xl grayscale brightness-110" 
               />
               
-              {/* Վերնագիրը (մնում է իր տեղում) */}
               <h2 className="absolute top-[25%] left-[55%] whitespace-nowrap text-white text-[36px] md:text-[60px] font-[900] italic uppercase leading-[0.85] tracking-tighter z-30 drop-shadow-lg">
                 Լավագույնը <br /> Evocabank-ից
               </h2>
             </motion.div>
           </div>
 
-          {/* Աջ մաս - Քարտերը (Grid) - Չափսը փոքրացվել է lg:w-1/2-ի */}
           <div className="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6 relative z-30">
             {offers.map((item, idx) => (
               <motion.div 
@@ -126,7 +116,6 @@ const BestOffers: React.FC = () => {
         </div>
       </div>
 
-      {/* Դեկորատիվ ֆոնային շերտ (բաց մանուշակագույն կոր) */}
       <div className="absolute inset-0 z-0 opacity-15">
         <svg width="100%" height="100%" viewBox="0 0 1440 800" fill="none" preserveAspectRatio="none">
           <path d="M-100 800C200 600 400 900 1440 500V800H-100Z" fill="white" />

@@ -65,7 +65,6 @@ const Header: React.FC = () => {
   return (
     <header className="w-full flex flex-col bg-white sticky top-0 z-[100] shadow-sm font-sans">
       
-      {/* 1. Upper Bar (Desktop) */}
       <div className="hidden xl:flex w-full h-10 border-b border-gray-100 bg-[#f8f9fb] justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center h-full space-x-6">
@@ -99,7 +98,6 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* 2. Main Bar */}
       <div className="w-full h-16 lg:h-20 bg-white relative z-[110] flex justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center space-x-10">
@@ -133,7 +131,6 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* 3. Mobile Burger Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
