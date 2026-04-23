@@ -24,7 +24,7 @@ const Header: React.FC = () => {
     { name: "Մեր մասին", path: "/about" },
     { name: "Նորություններ", path: "/news" },
     { name: "Բլոգ", path: "/blog" },
-    { name: "Կարիերա", path: "/career" },
+    { name: "Կարիերա", path: "/career" }, // Վերադարձրինք /career հասցեն
   ];
 
   const secondaryMenus: Record<string, { name: string, path: string }[]> = {
@@ -45,18 +45,31 @@ const Header: React.FC = () => {
       { name: "Ավանդներ", path: "/business/deposits" },
       { name: "Արժեթղթի շուկա", path: "/business/securities" },
       { name: "Առևտրի ֆինանսավորում", path: "/business/trade-finance" },
-      { name: "Digital", path: "/business/digital" },
+      { name: "Դիջիթալ", path: "/business/digital" },
       { name: "Այլ", path: "/business/other" }
+    ],
+    "/career": [ // Բանալին դարձրինք /career
+      { name: "Evoca լայֆ", path: "/career/EvocaLife" },
+      { name: "Աշխատանք և պրակտիկա", path: "/career/work" },
     ]
   };
 
   const getCurrentTopPath = () => {
     const path = location.pathname;
-    const personalPaths = ["/personal-loans", "/deposits", "/cards", "/accounts", "/deposit"];
+    
+    // Ստուգում ենք՝ արդյոք հասցեն սկսվում է հիմնական բաժինների անուններով
+    if (path.startsWith("/business")) return "/business";
+    if (path.startsWith("/career")) return "/career"; // Եթե սկսվում է /career-ով, ակտիվ պահիր Կարիերա թեբը
+    if (path.startsWith("/about")) return "/about";
+    if (path.startsWith("/news")) return "/news";
+    if (path.startsWith("/blog")) return "/blog";
+    if (path.startsWith("/instant-payments")) return "/instant-payments";
+
+    // Անհատ բաժնի ենթաէջերը
+    const personalPaths = ["/personal-loans", "/deposits", "/cards", "/accounts", "/transfers", "/securities", "/evoca-salary", "/touch"];
     if (path === "/" || personalPaths.some(p => path.startsWith(p))) return "/";
-    if (path.startsWith("/business") || path.startsWith("/loan")) return "/business";
-    const found = topNavLinks.find(link => link.path !== "/" && path.startsWith(link.path));
-    return found ? found.path : "/";
+
+    return "/";
   };
 
   const currentTopPath = getCurrentTopPath();
@@ -65,13 +78,14 @@ const Header: React.FC = () => {
   return (
     <header className="w-full flex flex-col bg-white sticky top-0 z-[100] shadow-sm font-sans">
       
+      {/* Top Nav (Grey Bar) */}
       <div className="hidden xl:flex w-full h-10 border-b border-gray-100 bg-[#f8f9fb] justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center h-full space-x-6">
             {topNavLinks.map((link) => (
               <Link
                 key={link.name}
-                to={link.path}
+                to={link.path === "/career" ? "/career/EvocaLife" : link.path} // Եթե սեղմում է Կարիերա, տանել միանգամից առաջին ենթաէջը
                 className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${
                   currentTopPath === link.path 
                     ? "text-[#6610f2]" 
@@ -98,6 +112,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* Main Nav (White Bar) */}
       <div className="w-full h-16 lg:h-20 bg-white relative z-[110] flex justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center space-x-10">
@@ -131,6 +146,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
+      {/* Mobile Menu */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -140,12 +156,12 @@ const Header: React.FC = () => {
             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
             className="fixed inset-0 top-0 left-0 w-full h-screen bg-white z-[105] pt-24 px-6 flex flex-col"
           >
-            <div className="flex gap-4 mb-10 overflow-x-auto no-scrollbar">
-              {topNavLinks.slice(0, 2).map((link) => (
+            <div className="flex gap-4 mb-10 overflow-x-auto no-scrollbar pb-2">
+              {topNavLinks.filter(l => ["Անհատ", "Բիզնես", "Կարիերա"].includes(l.name)).map((link) => (
                 <Link
                   key={link.name}
-                  to={link.path}
-                  className={`px-6 py-2 rounded-full text-[12px] font-black uppercase border transition-all ${
+                  to={link.path === "/career" ? "/career/EvocaLife" : link.path}
+                  className={`px-6 py-2 rounded-full text-[12px] font-black uppercase border transition-all shrink-0 ${
                     currentTopPath === link.path ? "bg-[#6610f2] text-white border-[#6610f2]" : "text-gray-400 border-gray-200"
                   }`}
                 >
@@ -154,22 +170,30 @@ const Header: React.FC = () => {
               ))}
             </div>
 
-            <div className="flex flex-col space-y-6">
-              {currentSecondaryMenu.map((item, i) => (
-                <motion.div
-                  initial={{ opacity: 0, x: 20 }}
-                  animate={{ opacity: 1, x: 0 }}
-                  transition={{ delay: i * 0.05 }}
-                  key={item.name}
-                >
-                  <Link to={item.path} className="flex justify-between items-center group">
-                    <span className="text-2xl font-[700] italic uppercase tracking-tighter text-gray-400 group-hover:text-[#6610f2] transition-colors">
-                      {item.name}
-                    </span>
-                    <ChevronRight size={24} className="text-gray-300" />
-                  </Link>
-                </motion.div>
-              ))}
+            <div className="flex flex-col space-y-6 overflow-y-auto pb-10">
+              {currentSecondaryMenu.length > 0 ? (
+                currentSecondaryMenu.map((item, i) => (
+                  <motion.div
+                    initial={{ opacity: 0, x: 20 }}
+                    animate={{ opacity: 1, x: 0 }}
+                    transition={{ delay: i * 0.05 }}
+                    key={item.name}
+                  >
+                    <Link to={item.path} className="flex justify-between items-center group">
+                      <span className={`text-2xl font-[700] italic uppercase tracking-tighter transition-colors ${
+                        location.pathname === item.path ? 'text-[#6610f2]' : 'text-gray-400 group-hover:text-[#6610f2]'
+                      }`}>
+                        {item.name}
+                      </span>
+                      <ChevronRight size={24} className={location.pathname === item.path ? 'text-[#6610f2]' : 'text-gray-300'} />
+                    </Link>
+                  </motion.div>
+                ))
+              ) : (
+                <Link to={currentTopPath} className="text-2xl font-[700] italic uppercase tracking-tighter text-[#6610f2]">
+                  {topNavLinks.find(l => l.path === currentTopPath)?.name}
+                </Link>
+              )}
             </div>
           </motion.div>
         )}
@@ -179,3 +203,5 @@ const Header: React.FC = () => {
 };
 
 export default Header;
+
+

@@ -27,6 +27,9 @@ import BiznesAvand from './Components/BiznesAvand/BiznesAvand'
 import ArjetxtiShuka from './Components/ArjetxtiShuka/ArjetxtiShuka'
 import ArevtriFinans from './Components/ArevtriFInans/ArevtriFInans'
 import Ayl from './Components/Ayl/Ayl'
+import Digital from './Components/Digital/Digital'
+import EvocaLife from './Components/EvocaLife/EvocaLife'
+import Praktika from './Components/Praktika/Praktika'
 const SalaryProject = () => (
   <div className="bg-white">
     <div className="max-w-[1140px] mx-auto py-10 px-4">
@@ -77,6 +80,9 @@ function App() {
             <Route path="/business/securities" element={<ArjetxtiShuka />} />
             <Route path="/business/trade-finance" element={<ArevtriFinans />} />
             <Route path="/business/other" element={<Ayl />} />
+            <Route path="/business/digital" element={<Digital />} />
+            <Route path="/career/EvocaLife" element={<EvocaLife />} />
+            <Route path="/career/work" element={<Praktika />} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել
