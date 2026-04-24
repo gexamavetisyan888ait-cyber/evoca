@@ -84,7 +84,7 @@ function App() {
             <Route path="/business/digital" element={<Digital />} />
             <Route path="/career/EvocaLife" element={<EvocaLife />} />
             <Route path="/career/work" element={<Praktika />} />
-              <Route path="/chat" element={<Chat/>} />
+            <Route path="/chat" element={<Chat/>} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել

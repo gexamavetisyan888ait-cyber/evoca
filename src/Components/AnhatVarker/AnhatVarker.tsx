@@ -32,7 +32,7 @@ const AnhatVarker: React.FC = () => {
 
   // Տվյալների ստացում Firebase Realtime Database-ից
   useEffect(() => {
-    const loansRef = ref(db, 'loans');
+    const loansRef = ref(db, 'varker');
     
     // onValue-ն իրական ժամանակում թարմացնում է տվյալները
     const unsubscribe = onValue(loansRef, (snapshot) => {
