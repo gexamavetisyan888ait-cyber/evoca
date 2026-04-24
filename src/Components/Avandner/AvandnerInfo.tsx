@@ -1,17 +1,46 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { deposits } from './Avandner'; 
+// Firebase ներմուծումներ
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; 
+interface DepositType {
+  id: number | string;
+  title: string;
+  description: string;
+  minAmount: string;
+  amountLabel: string;
+  rate: string;
+  rateLabel: string;
+  image: string;
+}
+
 const AvandnerInfo: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const [deposit, setDeposit] = useState<DepositType | null>(null);
+  const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<'about' | 'terms'>('about');
   const [currency, setCurrency] = useState<'AMD' | 'USD' | 'EUR'>('AMD');
 
-  const deposit = deposits.find((item) => item.id === Number(id));
-
   useEffect(() => {
     window.scrollTo(0, 0);
-  }, []);
+    
+    // Ստանում ենք կոնկրետ ավանդը ըստ ID-ի
+    const depositRef = ref(db, `deposits/${id}`);
+    const unsubscribe = onValue(depositRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setDeposit({ ...data, id: id });
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, [id]);
+
+  if (loading) {
+    return <div className="flex items-center justify-center h-[500px]">Բեռնվում է...</div>;
+  }
 
   if (!deposit) {
     return (
