@@ -1,96 +1,132 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
 
+// Firebase imports
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; 
+
+interface NewsItem {
+  id?: string;
+  title: string;
+  date: string;
+  category: string;
+  image: string;
+  color: string;
+}
+
 const LatestNews: React.FC = () => {
-  const news = [
-    {
-      title: "Կարեն Եղիազարյանը` IMF և WBG Spring Meetings 2026-ին",
-      date: "13.04.2026",
-      category: "Բանկային",
-      image: "https://www.evoca.am/images-cache/news/1/1776162446379/439x320.png",
-      color: "#7d2ae8" 
-    },
-    {
-      title: "Evoca-ն մասնակցում է Leasing Expo 2026-ին",
-      date: "09.04.2026",
-      category: "Կենսակերպ",
-      image: "https://www.evoca.am/images-cache/news/1/17758068998241/439x320.png",
-      color: "#a3ff00" 
-    },
-    {
-      title: "ESG կառավարման համակարգը Evocabank-ում",
-      date: "31.03.2026",
-      category: "Բանկային",
-      image: "https://www.evoca.am/images-cache/news/1/17757342882486/439x320.png",
-      color: "#7d2ae8"
-    }
-  ];
+  const [news, setNews] = useState<NewsItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Բեռնում ենք նորությունները Firebase-ից
+    const newsRef = ref(db, 'latest_news');
+    const unsubscribe = onValue(newsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Եթե տվյալները Firebase-ում օբյեկտ են, վերածում ենք զանգվածի
+        const newsArray = Object.values(data) as NewsItem[];
+        setNews(newsArray);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <section className="py-20 px-4 md:px-20 max-w-[1440px] mx-auto bg-[#f4f6f9]">
-      <div className="flex justify-between items-center mb-10">
-        <h2 className="text-3xl md:text-4xl font-bold text-[#1a1a1a]">
-          Վերջին նորությունները
-        </h2>
-        <button className="hidden sm:flex items-center gap-2 bg-[#e9e9f2] text-[#555] px-6 py-2.5 rounded-full font-bold text-sm hover:bg-[#7d2ae8] hover:text-white transition-all group">
-          Բոլոր նորությունները 
-          <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
-        </button>
+    <section className="py-24 px-4 md:px-20 max-w-[1440px] mx-auto bg-[#f8f9fb]">
+      <div className="flex justify-between items-end mb-12">
+        <div className="space-y-2">
+          <motion.span 
+            initial={{ opacity: 0, x: -20 }}
+            whileInView={{ opacity: 1, x: 0 }}
+            className="text-[11px] font-black uppercase tracking-[0.3em] text-[#7d2ae8]"
+          >
+            Media Center
+          </motion.span>
+          <h2 className="text-[35px] md:text-[50px] font-[1000] text-[#1a1a1a] uppercase italic tracking-tighter leading-none">
+            Վերջին <br className="md:hidden" /> նորությունները
+          </h2>
+        </div>
+        
+        <motion.button 
+          whileHover={{ x: 5 }}
+          className="hidden sm:flex items-center gap-3 bg-white text-[#1a1a1a] px-8 py-4 rounded-full font-black text-[12px] uppercase tracking-widest shadow-sm hover:shadow-md transition-all group border border-gray-100"
+        >
+          Տեսնել բոլորը 
+          <ChevronRight size={18} className="text-[#7d2ae8] group-hover:translate-x-1 transition-transform" />
+        </motion.button>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-        {news.map((item, idx) => (
-          <motion.div 
-            key={idx}
-            whileHover={{ y: -12 }}
-            className="bg-white rounded-[32px] overflow-hidden shadow-sm hover:shadow-[0_30px_60px_rgba(125,42,232,0.15)] transition-all duration-500 cursor-pointer group"
-          >
-            <div className="h-60 overflow-hidden relative">
-              <img 
-                src={item.image} 
-                alt={item.title} 
-                className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700" 
-              />
-            </div>
-
-            <div className="p-8">
-              <div className="flex items-center gap-3 mb-4">
-                <span 
-                  className="w-[3px] h-4 rounded-full" 
-                  style={{ backgroundColor: item.color }}
-                ></span>
-                <span className="text-[11px] font-bold text-gray-400 uppercase tracking-widest">
-                  {item.category}
-                </span>
+      {loading ? (
+        <div className="py-20 text-center font-black text-[#7d2ae8] uppercase italic tracking-widest">
+          Բեռնվում է...
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
+          {news.map((item, idx) => (
+            <motion.div 
+              key={item.id || idx}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              transition={{ delay: idx * 0.1 }}
+              whileHover={{ y: -15 }}
+              className="bg-white rounded-[45px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_rgba(125,42,232,0.12)] transition-all duration-500 cursor-pointer group border border-gray-50"
+            >
+              <div className="h-64 overflow-hidden relative">
+                <img 
+                  src={item.image} 
+                  alt={item.title} 
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" 
+                />
+                <div className="absolute top-6 left-6">
+                  <span 
+                    className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg"
+                    style={{ backgroundColor: item.color }}
+                  >
+                    {item.category}
+                  </span>
+                </div>
               </div>
 
-              <h3 className="text-lg font-bold text-[#1a1a1a] mb-6 leading-tight h-[52px] line-clamp-2">
-                {item.title}
-              </h3>
-
-              <div className="flex justify-between items-center">
-                <p className="text-gray-400 text-sm font-medium">
+              <div className="p-10">
+                <p className="text-gray-400 text-[11px] font-black uppercase tracking-[0.2em] mb-4">
                   {item.date}
                 </p>
-              </div>
-            </div>
-          </motion.div>
-        ))}
-      </div>
 
-      <div className="mt-10 sm:hidden flex justify-center">
-        <button className="bg-[#e9e9f2] text-[#555] px-8 py-3 rounded-full font-bold text-sm">
+                <h3 className="text-[20px] font-[1000] text-[#1a1a1a] mb-8 leading-tight italic uppercase tracking-tighter h-[56px] line-clamp-2 group-hover:text-[#7d2ae8] transition-colors">
+                  {item.title}
+                </h3>
+
+                <div className="flex items-center gap-2 text-[#7d2ae8] font-black text-[11px] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-y-2 group-hover:translate-y-0">
+                  Կարդալ ավելին <ChevronRight size={14} />
+                </div>
+              </div>
+            </motion.div>
+          ))}
+        </div>
+      )}
+
+      <div className="mt-12 sm:hidden flex justify-center">
+        <button className="bg-white border border-gray-100 text-[#1a1a1a] px-10 py-5 rounded-full font-black text-xs uppercase tracking-widest shadow-sm">
           Բոլոր նորությունները
         </button>
       </div>
 
       <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
+        
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
+        }
+
+        section {
+          font-family: 'Montserrat', sans-serif;
         }
       `}</style>
     </section>
