@@ -32,7 +32,7 @@ const WorkAtEvoca: React.FC = () => {
 
     // Տվյալների ստացում Firebase-ից
     useEffect(() => {
-        const jobsRef = ref(db, 'vacancies');
+        const jobsRef = ref(db, 'praktika');
         const unsubscribe = onValue(jobsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
