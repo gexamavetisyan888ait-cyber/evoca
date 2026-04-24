@@ -1,8 +1,11 @@
-import React, { useState, useMemo } from 'react';
+import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { ref, onValue } from "firebase/database";
+// Ներմուծում ենք արդեն իսկ initialize եղած db-ն քո firebase.ts ֆայլից
+import { db } from "../../lib/firebase"; 
 
 export interface LoanType {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   duration: string;
@@ -12,23 +15,6 @@ export interface LoanType {
   image: string;
   category: 'business' | 'consumer' | 'mortgage' | 'car';
 }
-
-export const loans: LoanType[] = [
-  { id: 1, category: 'business', title: "Արագ բիզնես վարկ/վարկային գիծ", description: "Արագ ֆինանսավորում Ձեր բիզնեսի զարգացման համար միայն երաշխավորությամբ և ցածր տոկոսադրույքով:", duration: "60 ամիս", amount: "30 մլն ֏", rate: "8.5-14.5%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/17721008940374/415x261.png" },
-  { id: 2, category: 'business', title: "Տեքստիլ ոլորտում հումքի ներմուծմանն ուղղված վարկ", description: "Evocabank-ը տրամադրում է բիզնես վարկ՝ տեքստիլ հումքի ներմուծման համար: Զարգացրեք Ձեր բիզնեսը և դարձեք մրցունակ:", duration: "36 ամիս", amount: "500 մլն ֏", rate: "8%", rateLabel: "Տոկոսադրույքի սուբսիդավորում", image: "https://www.evoca.am/images-cache/loans/1/17749381045652/415x261.png" },
-  { id: 3, category: 'business', title: "Գյուղատնտեսական վարկեր", description: "Աջակցություն գյուղատնտեսությամբ զբաղվող տնտեսվարողներին՝ արտադրության ընդլայնման նպատակով:", duration: "84 ամիս", amount: "100 մլն ֏", rate: "2-5%", rateLabel: "Արտոնյալ տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148637167789/415x261.jpg" },
-  { id: 4, category: 'business', title: "Առևտրային վարկեր", description: "Շրջանառու միջոցների համալրման և առևտրային գործունեության ընդլայնման համար նախատեսված վարկեր:", duration: "48 ամիս", amount: "200 մլն ֏", rate: "12-16%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148653401062/415x261.jpg" },
-  { id: 5, category: 'business', title: "ՓՄՁ զարգացման վարկ", description: "Փոքր և միջին ձեռնարկությունների համար նախատեսված ճկուն ֆինանսավորման պայմաններ:", duration: "60 ամիս", amount: "80 մլն ֏", rate: "13%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16507186179774/415x261.png" },
-  { id: 6, category: 'business', title: "Էներգաարդյունավետ վարկեր", description: "Ներդրեք էներգախնայող տեխնոլոգիաներ Ձեր բիզնեսում և նվազեցրեք ծախսերը պետական աջակցությամբ:", duration: "60 ամիս", amount: "150 մլն ֏", rate: "10%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148661034998/415x261.jpg" },
-  { id: 7, category: 'business', title: "ՏՏ ոլորտի աջակցման վարկ", description: "Հատուկ պայմաններ տեղեկատվական տեխնոլոգիաների ոլորտում գործող ստարտափների և ընկերությունների համար:", duration: "36 ամիս", amount: "50 մլն ֏", rate: "9%", rateLabel: "Հատուկ սակագին", image: "https://www.evoca.am/images-cache/loans/1/1614870243661/415x261.jpg" },
-  { id: 8, category: 'business', title: "Արտահանման ֆինանսավորում", description: "Արտահանման ծավալների մեծացման և միջազգային շուկաներ դուրս գալու համար նախատեսված գործիքներ:", duration: "24 ամիս", amount: "300 մլն ֏", rate: "7-11%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148681592638/415x261.jpg" },
-  { id: 9, category: 'business', title: "Լիզինգ", description: "Ձեռք բերեք նոր սարքավորումներ, տեխնիկա կամ տրանսպորտային միջոցներ շահավետ լիզինգային պայմաններով:", duration: "60 ամիս", amount: "Անսահմանափակ", rate: "11-13%", rateLabel: "Լիզինգի տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148706367372/415x261.jpg" },
-  { id: 10, category: 'consumer', title: "Բիզնես քարտեր (Overdraft)", description: "Կարճաժամկետ ֆինանսական խնդիրների արագ լուծում Ձեր բիզնես հաշվին կցված վարկային գծի միջոցով:", duration: "12 ամիս", amount: "10 մլն ֏", rate: "15%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/1614869229831/415x261.jpg" },
-  { id: 11, category: 'business', title: "Կանանց ձեռներեցության աջակցություն", description: "Հատուկ վարկային ծրագրեր կին ձեռներեցների կողմից ղեկավարվող բիզնեսների զարգացման համար:", duration: "48 ամիս", amount: "40 մլն ֏", rate: "10.5%", rateLabel: "Արտոնյալ պայմաններ", image: "https://www.evoca.am/images-cache/loans/1/16148678149192/415x261.jpg" },
-  { id: 12, category: 'business', title: "Արտադրական հզորությունների թարմացում", description: "Վարկեր արտադրական գծերի արդիականացման և նոր տեխնոլոգիաների ներդրման համար:", duration: "72 ամիս", amount: "400 մլն ֏", rate: "11%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148665659945/415x261.jpg" },
-  { id: 13, category: 'business', title: "Վերականգնվող էներգետիկայի վարկ", description: "Ֆինանսավորում արևային կայանների և այլընտրանքային էներգիայի աղբյուրների տեղադրման համար:", duration: "120 ամիս", amount: "250 մլն ֏", rate: "9-12%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16148696068365/415x261.jpg" },
-  { id: 14, category: 'mortgage', title: "Բիզնես հիփոթեք", description: "Վարկեր բիզնես տարածքների, գրասենյակների կամ պահեստների ձեռքբերման և վերանորոգման համար:", duration: "180 ամիս", amount: "600 մլն ֏", rate: "11.5%", rateLabel: "Տարեկան տոկոսադրույք", image: "https://www.evoca.am/images-cache/loans/1/16394873850552/415x261.png" },
-];
 
 const filters = [
   { label: 'Բոլորը', value: 'all' },
@@ -40,22 +26,54 @@ const filters = [
 
 const AnhatVarker: React.FC = () => {
   const navigate = useNavigate();
+  const [loans, setLoans] = useState<LoanType[]>([]);
   const [activeFilter, setActiveFilter] = useState('all');
+  const [loading, setLoading] = useState(true);
 
+  // Տվյալների ստացում Firebase Realtime Database-ից
+  useEffect(() => {
+    const loansRef = ref(db, 'loans');
+    
+    // onValue-ն իրական ժամանակում թարմացնում է տվյալները
+    const unsubscribe = onValue(loansRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Փոխակերպում ենք Firebase-ի օբյեկտը զանգվածի (Array)
+        const loansList: LoanType[] = Object.keys(data).map((key) => ({
+          ...data[key],
+          id: data[key].id || key, 
+        }));
+        setLoans(loansList);
+      } else {
+        setLoans([]);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Firebase error:", error);
+      setLoading(false);
+    });
+
+    // Մաքրում ենք listener-ը, երբ կոմպոնենտը դադարում է գոյություն ունենալ
+    return () => unsubscribe();
+  }, []);
+
+  // Ֆիլտրացիայի տրամաբանություն
   const filteredLoans = useMemo(() => {
     if (activeFilter === 'all') return loans;
     return loans.filter(loan => loan.category === activeFilter);
-  }, [activeFilter]);
+  }, [activeFilter, loans]);
 
   return (
     <div className="bg-white min-h-screen font-sans pb-20">
       <div className="max-w-[1200px] mx-auto px-4 pt-16">
+        {/* Վերնագիր */}
         <div className="flex border-b-[3px] border-[#6610f2] mb-10">
           <div className="bg-[#6610f2] text-white px-8 py-3 font-black text-sm uppercase tracking-widest italic rounded-t-lg cursor-default">
             Անհատ վարկեր
           </div>
         </div>
 
+        {/* Ֆիլտրեր */}
         <div className="flex flex-wrap gap-3 mb-16">
           {filters.map((f) => (
             <button
@@ -73,10 +91,18 @@ const AnhatVarker: React.FC = () => {
       </div>
 
       <main className="max-w-[1200px] mx-auto px-4 space-y-24">
-        {filteredLoans.length > 0 ? (
+        {loading ? (
+          /* Loading սփիններ */
+          <div className="text-center py-32">
+             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6610f2] mx-auto mb-4"></div>
+             <p className="text-gray-400 font-bold italic uppercase tracking-widest">Բեռնվում է...</p>
+          </div>
+        ) : filteredLoans.length > 0 ? (
+          /* Վարկերի ցուցակ */
           filteredLoans.map((loan) => (
             <section key={loan.id} className="flex flex-col md:flex-row items-center gap-10 lg:gap-20 border-b border-gray-50 pb-20 last:border-0 group">
               
+              {/* Նկարի բաժին */}
               <div className="w-full md:w-[350px] lg:w-[420px] flex-shrink-0">
                 <div className="bg-[#f8f9fb] rounded-[50px] p-10 aspect-square flex justify-center items-center overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500">
                   <img
@@ -88,6 +114,7 @@ const AnhatVarker: React.FC = () => {
                 </div>
               </div>
 
+              {/* Ինֆորմացիայի բաժին */}
               <div className="flex-1">
                 <h2 className="text-[28px] lg:text-[38px] font-[900] italic uppercase text-[#1a1a1a] mb-6 leading-[1.1] tracking-tighter group-hover:text-[#6610f2] transition-colors">
                   {loan.title}
@@ -106,7 +133,7 @@ const AnhatVarker: React.FC = () => {
                     <span className="text-gray-400 text-[10px] uppercase font-black block mb-2 tracking-widest">Մինչև</span>
                     <div className="text-[#6610f2] text-3xl font-[900] italic tracking-tight">{loan.amount}</div>
                     <span className="text-gray-400 text-[11px] font-bold block mt-1 leading-tight">
-                      Սահմանաչափ կամ <br /> համժեք արտարժույթ
+                      Սահմանաչափ
                     </span>
                   </div>
                   <div className="col-span-2 lg:col-span-1 border-l-2 border-gray-100 pl-4">

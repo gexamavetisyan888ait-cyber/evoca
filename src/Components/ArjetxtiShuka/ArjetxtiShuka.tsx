@@ -1,94 +1,120 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; // Համոզվիր, որ հասցեն ճիշտ է
+
+// Տիպերի սահմանում (TypeScript interface)
+interface SecurityTab {
+  id: string;
+  title: string;
+  description: string;
+  bullet_points?: string[];
+  markets?: { name: string; platform: string }[];
+  services_list?: string[];
+  benefits_label?: string;
+  highlight_text?: string;
+  reports?: { label: string }[];
+}
 
 const SecuritiesMarket: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const [tabs, setTabs] = useState<SecurityTab[]>([]);
+  const [loading, setLoading] = useState(true);
 
-  const tabs = [
-    {
-      title: "Ներդրումային Ծառայություններ",
-      content: (
-        <div className="space-y-6">
-          <p>Արժեթղթերի շուկան ֆինանսական շուկայի մի հատված է, որտեղ իրականացվում է արժեթղթերի թողարկումը և շրջանառությունը:</p>
-          <p>Արժեթղթերի շուկայի հիմնական գործառույթը տնտեսության մեջ ազատ դրամական միջոցների վերաբաշխումն է և դրանց ուղղումը դեպի ներդրումային ոլորտ:</p>
+  // Տվյալների ստացում Firebase-ից
+  useEffect(() => {
+    // Ենթադրենք բազայում 'securities_market' ճյուղի տակ է
+    const securitiesRef = ref(db, 'arjetxtiShuka');
+    
+    const unsubscribe = onValue(securitiesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedData: SecurityTab[] = Object.keys(data).map(key => ({
+          ...data[key],
+          id: key
+        }));
+        setTabs(formattedData);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  // JSX-ի դինամիկ գեներացում ըստ Firebase-ի տվյալների
+  const renderContent = (tab: SecurityTab) => {
+    return (
+      <div className="space-y-6">
+        <p>{tab.description}</p>
+
+        {/* Կետերով ցուցակ (Ներդրումային ծառայություններ) */}
+        {tab.bullet_points && (
           <ul className="list-none space-y-4">
-            <li className="flex items-start gap-3">
-              <span className="text-[#6610f2] font-bold">•</span>
-              <span>Կապիտալի ներգրավում</span>
-            </li>
-            <li className="flex items-start gap-3">
-              <span className="text-[#6610f2] font-bold">•</span>
-              <span>Ներդրումների իրականացում</span>
-            </li>
+            {tab.bullet_points.map((point, i) => (
+              <li key={i} className="flex items-start gap-3">
+                <span className="text-[#6610f2] font-bold">•</span>
+                <span>{point}</span>
+              </li>
+            ))}
           </ul>
-        </div>
-      )
-    },
-    {
-      title: "Պարտատոմսեր",
-      content: (
-        <div className="space-y-6">
-          <p>Բանկը մատուցում է բրոքերային ծառայություններ թե՛ տեղական, թե՛ միջազգային ֆինանսական շուկաներում:</p>
-          <p>Մենք հնարավորություն ենք տալիս իրականացնել գործարքներ բաժնետոմսերով, պարտատոմսերով և այլ ֆինանսական գործիքներով հետևյալ հարթակներում.</p>
+        )}
+
+        {/* Շուկաների ցանց (Պարտատոմսեր) */}
+        {tab.markets && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
-            <div className="p-4 bg-[#f8f9fb] rounded-2xl border border-gray-100">
-              <h5 className="font-bold text-[#1a1a1a] mb-2 uppercase italic">Հայաստանյան շուկա</h5>
-              <p className="text-sm text-gray-500">Հայաստանի ֆոնդային բորսա (AMX)</p>
-            </div>
-            <div className="p-4 bg-[#f8f9fb] rounded-2xl border border-gray-100">
-              <h5 className="font-bold text-[#1a1a1a] mb-2 uppercase italic">Միջազգային շուկաներ</h5>
-              <p className="text-sm text-gray-500">NYSE, NASDAQ, LSE և այլն</p>
-            </div>
+            {tab.markets.map((m, i) => (
+              <div key={i} className="p-4 bg-[#f8f9fb] rounded-2xl border border-gray-100">
+                <h5 className="font-bold text-[#1a1a1a] mb-2 uppercase italic">{m.name}</h5>
+                <p className="text-sm text-gray-500">{m.platform}</p>
+              </div>
+            ))}
           </div>
-        </div>
-      )
-    },
-    {
-      title: "ՀԿԴ ծառայություններ",
-      content: (
-        <div className="space-y-6">
-          <p>Որպես պահառու՝ Բանկն իրականացնում է Ձեր արժեթղթերի անվտանգ պահպանումը և դրանց նկատմամբ իրավունքների հաշվառումը:</p>
-          <p>Մեր ծառայությունները ներառում են.</p>
+        )}
+
+        {/* Ծառայությունների ցանկ (ՀԿԴ) */}
+        {tab.services_list && (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
-            {["Արժեթղթերի հաշվառում", "Գործարքների սպասարկում", "Եկամուտների հավաքագրում", "Կորպորատիվ գործողություններ"].map((item, i) => (
+            {tab.services_list.map((item, i) => (
               <li key={i} className="flex items-center gap-2 text-gray-600">
                 <div className="w-1.5 h-1.5 rounded-full bg-[#6610f2]" />
                 {item}
               </li>
             ))}
           </ul>
-        </div>
-      )
-    },
-    {
-      title: "Ռեպո/Հակադարձ Ռեպո գործարքներ",
-      content: (
-        <div className="space-y-6">
-          <p>Ներդրումային ֆոնդերը թույլ են տալիս ներդրողներին միավորել իրենց միջոցները պրոֆեսիոնալ կառավարման ներքո:</p>
-          <p className="font-bold text-[#1a1a1a] italic uppercase">Առավելությունները.</p>
-          <div className="bg-[#f3ebff] p-6 rounded-[30px]">
-            <p className="text-[#6610f2] font-medium italic">Դիվերսիֆիկացված պորտֆել, պրոֆեսիոնալ կառավարում և միջոցների բարձր իրացվելիություն:</p>
+        )}
+
+        {/* Շեշտված տեքստ (Ռեպո) */}
+        {tab.highlight_text && (
+          <div className="space-y-4">
+            <p className="font-bold text-[#1a1a1a] italic uppercase">{tab.benefits_label}</p>
+            <div className="bg-[#f3ebff] p-6 rounded-[30px]">
+              <p className="text-[#6610f2] font-medium italic">{tab.highlight_text}</p>
+            </div>
           </div>
-        </div>
-      )
-    },
-    {
-      title: "EvocaINVEST",
-      content: (
-        <div className="space-y-6">
-          <p>Համաձայն գործող օրենսդրության՝ Բանկը հրապարակում է բրոքերային և պահառության գործունեության վերաբերյալ պարբերական հաշվետվություններ:</p>
+        )}
+
+        {/* Հաշվետվություններ (EvocaINVEST) */}
+        {tab.reports && (
           <div className="space-y-3">
-            {[1, 2, 3].map((i) => (
+            {tab.reports.map((report, i) => (
               <div key={i} className="flex justify-between items-center p-4 border border-gray-100 rounded-2xl hover:bg-gray-50 transition-colors cursor-pointer group">
-                <span className="font-bold text-[#1a1a1a]">Հաշվետվություն 202{i} - Եռամսյակ {i}</span>
+                <span className="font-bold text-[#1a1a1a]">{report.label}</span>
                 <span className="text-[#6610f2] group-hover:translate-x-1 transition-transform">PDF →</span>
               </div>
             ))}
           </div>
-        </div>
-      )
-    }
-  ];
+        )}
+      </div>
+    );
+  };
+
+  if (loading) return (
+    <div className="min-h-[400px] flex items-center justify-center">
+      <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-[#6610f2]"></div>
+    </div>
+  );
+
+  if (tabs.length === 0) return null;
 
   return (
     <div className="w-full bg-white font-sans py-16 lg:py-24 overflow-hidden">
@@ -103,10 +129,11 @@ const SecuritiesMarket: React.FC = () => {
 
         <div className="flex flex-col lg:flex-row gap-16">
           
+          {/* Sidebar */}
           <div className="w-full lg:w-1/3 flex flex-col border-l border-gray-100">
             {tabs.map((tab, index) => (
               <button
-                key={index}
+                key={tab.id}
                 onClick={() => setActiveTab(index)}
                 className={`group relative text-left py-6 px-8 transition-all duration-300 ${
                   activeTab === index 
@@ -128,6 +155,7 @@ const SecuritiesMarket: React.FC = () => {
             ))}
           </div>
 
+          {/* Tab Content */}
           <div className="w-full lg:w-2/3 min-h-[400px]">
             <AnimatePresence mode="wait">
               <motion.div
@@ -139,11 +167,9 @@ const SecuritiesMarket: React.FC = () => {
                 className="text-[#4d4d4d] text-lg leading-[1.6] font-medium"
               >
                 <h3 className="text-3xl font-[900] italic uppercase text-[#1a1a1a] mb-8 tracking-tighter">
-                  {tabs[activeTab].title}
+                  {tabs[activeTab]?.title}
                 </h3>
-                {tabs[activeTab].content}
-                
-        
+                {tabs[activeTab] && renderContent(tabs[activeTab])}
               </motion.div>
             </AnimatePresence>
           </div>

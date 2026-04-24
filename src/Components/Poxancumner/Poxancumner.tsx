@@ -67,7 +67,7 @@ const Securities: React.FC = () => {
                         >
                             <div className="relative w-full h-[300px] md:h-[450px] rounded-[50px] overflow-hidden flex items-center px-8 md:px-16">
                                 <div className="absolute inset-0 z-0">
-                                    <img src="https://www.evoca.am/images-cache/menu/1/1611582806371/1920x530.jpg" className="w-full h-full object-cover" alt="Investment" />
+                                    <img src="https://www.evoca.am/images-cache/menu/1/16115828343472/780x585.jpg" className="w-full h-full object-cover" alt="Investment" />
                                     <div className="absolute inset-0 bg-black/40" />
                                 </div>
                                 <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">Ներդրումային <br/> ծառայություններ</h2>

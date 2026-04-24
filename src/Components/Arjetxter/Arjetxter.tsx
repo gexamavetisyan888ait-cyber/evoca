@@ -6,7 +6,7 @@ const Securities: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-    const tabs = [
+    const tabs1 = [
         "Ներդրումային ծառայություններ",
         "Պարտատոմսեր",
         "ՀԿԾ ծառայություններ",
@@ -30,7 +30,7 @@ const Securities: React.FC = () => {
                 </motion.h1>
 
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
-                    {tabs.map((tab, idx) => (
+                    {tabs1.map((tab, idx) => (
                         <button
                             key={idx}
                             onClick={() => { setActiveTab(idx); setOpenAccordion(null); }}
