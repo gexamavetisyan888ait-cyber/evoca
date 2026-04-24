@@ -1,18 +1,42 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// Firebase ներմուծումներ
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; // Համոզվիր, որ սա քո firebase config-ի ճիշտ հասցեն է
 
-const cardsData = [
-  { id: 1, name: "Visa Business", title: "Evoca Travel Card", thumb: "https://www.evoca.am/images-cache/cards/1/17479817930565/415x261.jpg", mainImg: "https://www.evoca.am/images-cache/cards/1/17479817930565/415x261.jpg" },
-  { id: 2, name: "Evoca Gift", title: "Evoca Gift Card", thumb: "https://www.evoca.am/images-cache/cards/1/17149865646885/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17149865646885/415x261.png" },
-  { id: 3, name: "Digital Gift", title: "Digital Gift Card 1", thumb: "https://www.evoca.am/images-cache/cards/1/17282986912132/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17282986912132/415x261.png" },
-  { id: 4, name: "Digital Gift 2", title: "Digital Gift Card 2", thumb: "https://www.evoca.am/images-cache/cards/1/1772717001933/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/1772717001933/415x261.png" },
-  { id: 5, name: "Digital Gift 3", title: "Digital Gift Card 3", thumb: "https://www.evoca.am/images-cache/cards/1/17527569508235/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17527569508235/415x261.png" },
-  { id: 6, name: "Digital Gift 4", title: "Digital Gift Card 4", thumb: "https://www.evoca.am/images-cache/cards/1/17655348192361/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17655348192361/415x261.png" }
-];
+interface CardItem {
+  id: number | string;
+  name: string;
+  title: string;
+  thumb: string;
+  mainImg: string;
+}
 
 const CardSlider: React.FC = () => {
+  const [cardsData, setCardsData] = useState<CardItem[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
-  const visibleCount = 3; 
+  const [loading, setLoading] = useState(true);
+  const visibleCount = 3;
+
+  useEffect(() => {
+    // Միանում ենք Firebase-ի 'cards' ճյուղին
+    const cardsRef = ref(db, 'cards');
+    
+    const unsubscribe = onValue(cardsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Եթե Firebase-ում տվյալները օբյեկտ են, դարձնում ենք զանգված
+        const formattedData: CardItem[] = Array.isArray(data) 
+          ? data 
+          : Object.keys(data).map(key => ({ ...data[key], firebaseId: key }));
+        
+        setCardsData(formattedData);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const nextSlide = () => {
     if (startIndex + visibleCount < cardsData.length) {
@@ -28,10 +52,19 @@ const CardSlider: React.FC = () => {
 
   const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
 
+  if (loading || cardsData.length === 0) {
+    return (
+      <div className="w-full py-20 text-center font-black text-[#6610f2] animate-pulse">
+        Բեռնվում է...
+      </div>
+    );
+  }
+
   return (
-    <section className="w-full py-20 bg-white select-none">
+    <section className="w-full py-20 bg-white select-none overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-12 items-center gap-8">
         
+        {/* SIDEBAR NAVIGATION */}
         <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
           
           <button 
@@ -49,8 +82,10 @@ const CardSlider: React.FC = () => {
                 <div 
                   key={card.id}
                   onClick={() => setActiveTab(globalIndex)}
-                  className={`cursor-pointer transition-all duration-300 flex flex-col items-center p-2 rounded-xl ${
-                    activeTab === globalIndex ? "opacity-100 scale-105 bg-gray-50 shadow-sm" : "opacity-40 scale-95 hover:opacity-70"
+                  className={`cursor-pointer transition-all duration-300 flex flex-col items-center p-2 rounded-xl border-2 ${
+                    activeTab === globalIndex 
+                    ? "opacity-100 scale-105 bg-gray-50 shadow-sm border-[#6610f2]" 
+                    : "opacity-40 scale-95 hover:opacity-70 border-transparent"
                   }`}
                 >
                   <img src={card.thumb} alt={card.name} className="w-24 md:w-32 h-auto rounded-md shadow-sm" />
@@ -69,18 +104,20 @@ const CardSlider: React.FC = () => {
           </button>
         </div>
 
+        {/* MAIN IMAGE DISPLAY */}
         <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[400px]">
           <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
           <img 
             key={activeTab}
             src={cardsData[activeTab].mainImg} 
-            alt="Main Card" 
+            alt={cardsData[activeTab].title} 
             className="w-full max-w-[480px] object-contain animate-cardSwap"
           />
         </div>
 
+        {/* INFO SECTION */}
         <div className="col-span-12 md:col-span-3 text-center md:text-left">
-          <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none">
+          <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none tracking-tighter">
             {cardsData[activeTab].title}
           </h2>
           <button className="bg-[#6610f2] text-white px-10 py-4 rounded-full font-black italic uppercase hover:bg-[#520dc2] transition-all shadow-xl active:scale-95 tracking-wide">
