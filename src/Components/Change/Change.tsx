@@ -1,53 +1,91 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, MapPin ,FileText, Download, Monitor, Smartphone, } from 'lucide-react';
-
+import { ChevronRight, MapPin } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+
+// Firebase ներմուծումներ
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; // Ստուգիր քո ֆայլի ճիշտ հասցեն
 
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
+// Տիպերի սահմանում
+interface Currency {
+  code: string;
+  name: string;
+  buy: number;
+  sell: number;
+  flag: string;
+  symbol: string;
+}
+
+interface GoldRate {
+  purity: number;
+  price: string | number;
+}
+
+interface Testimonial {
+  id?: string;
+  name: string;
+  role: string;
+  text: string;
+}
+
 const DynamicExchange: React.FC = () => {
   const [activeTab, setActiveTab] = useState('cashless');
   const [amount, setAmount] = useState<string>('0');
+  
+  // Տվյալների state-եր
+  const [currencies, setCurrencies] = useState<Currency[]>([]);
+  const [goldRates, setGoldRates] = useState<GoldRate[]>([]);
+  const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [selectedCurrency, setSelectedCurrency] = useState({
     code: 'USD',
     sell: 394.0,
     symbol: '$'
   });
-  const testimonials = [
-        {
-            name: 'Սուսաննա Վանյան',
-            role: 'Հաճախորդ',
-            text: 'Հայաստանի իրականության մեջ բացառիկ հրաշք բանկ։ Միայն այս հնարավորությունը ընձեռելով երիտասարդ ընտանիքներին ՝ նման ցածր տոկոսով բնակարան ձեռք բերել, արժանի է մեծ հարգանքի։ Շնորհակալ ենք, որ Դուք կաք:',
-        },
-        {
-            name: 'Նունե Գևորգյան',
-            role: 'Հաճախորդ',
-            text: 'Գերազանց սպասարկում, ընտիր ու հավես անձնակազմ Ազատության մասնաճյուղում: Վարկային բաժնից շատ շնորհակալ եմ, վարկս ձևակերպվեց առանց ավելորդ քաշքշուկների` հեշտ, արագ, որակով:',
-        },
-        {
-            name: 'Կամո Թովմասյան',
-            role: 'KAMOBLOG մեդիա-հարթակի հիմնադիր',
-            text: 'Բանկ, որ իր ռեբրենդինգի շքեղ միջոցառմամբ ու աշխատանքային ձևաչափով բանկային ոլորտում ամրապնդեց որակ և ճաշակ թելադրեց։',
+
+  useEffect(() => {
+    // 1. Բեռնում ենք Փոխարժեքները
+    const currenciesRef = ref(db, 'exchange_rates');
+    const unsubCurrencies = onValue(currenciesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setCurrencies(Object.values(data));
+        // Սահմանում ենք default ընտրված արժույթը առաջինը եկածից
+        const first = Object.values(data)[0] as Currency;
+        if (first) {
+          setSelectedCurrency({ code: first.code, sell: first.sell, symbol: first.symbol });
         }
-    ];
+      }
+    });
 
-  const currencies = [
-    { code: 'USD', name: 'ԱՄՆ դոլար', buy: 388.0, sell: 394.0, flag: '🇺🇸', symbol: '$' },
-    { code: 'EUR', name: 'Եվրո', buy: 412.0, sell: 424.0, flag: '🇪🇺', symbol: '€' },
-    { code: 'RUB', name: 'Ռուսական ռուբլի', buy: 4.12, sell: 4.35, flag: '🇷🇺', symbol: '₽' },
-  ];
+    // 2. Բեռնում ենք Ոսկու գները
+    const goldRef = ref(db, 'gold_rates');
+    const unsubGold = onValue(goldRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) setGoldRates(Object.values(data));
+    });
 
-  const goldRates = [
-    { purity: 375, price: '21,100' },
-    { purity: 500, price: '28,200' },
-    { purity: 583, price: '32,900' },
-    { purity: 750, price: '42,300' },
-    { purity: 999, price: '56,400' },
-  ];
+    // 3. Բեռնում ենք Կարծիքները
+    const testimonialsRef = ref(db, 'testimonials');
+    const unsubTestimonials = onValue(testimonialsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) setTestimonials(Object.values(data));
+      setLoading(false);
+    });
+
+    return () => {
+      unsubCurrencies();
+      unsubGold();
+      unsubTestimonials();
+    };
+  }, []);
 
   const calculateResult = () => {
     const numAmount = Number(amount.replace(/,/g, ''));
@@ -55,12 +93,14 @@ const DynamicExchange: React.FC = () => {
     return (numAmount / selectedCurrency.sell).toFixed(2);
   };
 
+  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8]">Բեռնվում է...</div>;
+
   return (
     <section className="py-16 px-4 md:px-20 max-w-[1440px] mx-auto bg-white font-sans">
       <div className="flex flex-col lg:flex-row gap-12">
         
         <div className="flex-1">
-          <p className="text-[#1a1a1a] text-[13px] font-medium opacity-70 mb-8 max-w-3xl">
+          <p className="text-[#1a1a1a] text-[13px] font-medium opacity-70 mb-8 max-w-3xl leading-relaxed">
             20,000 ԱՄՆ դոլարից ավել կամ դրան հարժեք այլ արտարժույթի փոխարկման դեպքում գործարքը հաստատվում է Բանկի հայեցողությամբ և Բանկի կողմից որոշված փոխարժեքով:
           </p>
 
@@ -116,7 +156,6 @@ const DynamicExchange: React.FC = () => {
                     </div>
                   </div>
 
-                  {/* DYNAMIC CONVERTER */}
                   <div className="w-full xl:w-80 flex flex-col gap-4 justify-center">
                     <div className="bg-white p-7 rounded-[32px] border border-gray-100 shadow-sm focus-within:border-[#7d2ae8] transition-all">
                       <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Ունեմ (AMD)</label>
@@ -125,8 +164,6 @@ const DynamicExchange: React.FC = () => {
                           type="text" 
                           value={amount}
                           onChange={(e) => setAmount(e.target.value)}
-                          onFocus={() => amount === '0' && setAmount('')}
-                          onBlur={() => amount === '' && setAmount('0')}
                           className="bg-transparent font-black text-3xl text-[#1a1a1a] w-full outline-none" 
                         />
                         <span className="text-[#7d2ae8] font-bold text-xl">֏</span>
@@ -178,6 +215,7 @@ const DynamicExchange: React.FC = () => {
           </div>
         </div>
 
+        {/* Address Sidebar */}
         <div className="w-full lg:w-[350px]">
           <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">Մեր հասցեները</h3>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">Բանկի հասցեները, աշխատաժամերը և բանկոմատները:</p>
@@ -205,65 +243,68 @@ const DynamicExchange: React.FC = () => {
             ԴԻՏԵԼ ՔԱՐՏԵԶԸ <ChevronRight size={18} />
           </button>
         </div>
-
       </div>
 
-            <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
-                <div className="flex justify-center gap-2 mb-12">
-                    {[1, 2, 3, 4, 5].map(s => (
-                        <motion.span 
-                            key={s}
-                            initial={{ opacity: 0, rotate: -180 }}
-                            whileInView={{ opacity: 1, rotate: 0 }}
-                            transition={{ delay: s * 0.1 }}
-                            className="text-yellow-400 text-4xl"
-                        >
-                            ★
-                        </motion.span>
-                    ))}
-                </div>
-
-                <Swiper
-                    modules={[Pagination, Autoplay, EffectFade]}
-                    effect="fade"
-                    fadeEffect={{ crossFade: true }}
-                    speed={1000}
-                    autoplay={{ delay: 5000 }}
-                    pagination={{ clickable: true }}
-                    className="pb-20"
+      {/* Testimonials Swiper */}
+      <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc] mt-16 rounded-[40px]">
+        <div className="flex justify-center gap-2 mb-12">
+            {[1, 2, 3, 4, 5].map(s => (
+                <motion.span 
+                    key={s}
+                    initial={{ opacity: 0, rotate: -180 }}
+                    whileInView={{ opacity: 1, rotate: 0 }}
+                    transition={{ delay: s * 0.1 }}
+                    className="text-yellow-400 text-4xl"
                 >
-                    {testimonials.map((t, idx) => (
-                        <SwiperSlide key={idx}>
-                            <motion.div 
-                                // Սա ստիպում է անիմացիային աշխատել ամեն սլայդը փոխելիս
-                                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{ duration: 0.8 }}
-                                className="text-center max-w-3xl mx-auto"
-                            >
-                                <div className="relative inline-block">
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
-                                    <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
-                                        {t.text}
-                                    </p>
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
-                                </div>
-                                <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 }}
-                                    className="mt-10"
-                                >
-                                    <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
-                                    <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
-                                </motion.div>
-                            </motion.div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            </div>
+                    ★
+                </motion.span>
+            ))}
+        </div>
+
+        <Swiper
+            modules={[Pagination, Autoplay, EffectFade]}
+            effect="fade"
+            fadeEffect={{ crossFade: true }}
+            speed={1000}
+            autoplay={{ delay: 5000 }}
+            pagination={{ clickable: true }}
+            className="pb-20"
+        >
+            {testimonials.map((t, idx) => (
+                <SwiperSlide key={idx}>
+                    <motion.div 
+                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                        className="text-center max-w-3xl mx-auto"
+                    >
+                        <div className="relative inline-block">
+                            <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
+                            <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
+                                {t.text}
+                            </p>
+                            <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
+                        </div>
+                        <motion.div 
+                            initial={{ opacity: 0 }}
+                            whileInView={{ opacity: 1 }}
+                            transition={{ delay: 0.5 }}
+                            className="mt-10"
+                        >
+                            <h4 className="text-[#7d2ae8] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
+                            <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                        </motion.div>
+                    </motion.div>
+                </SwiperSlide>
+            ))}
+        </Swiper>
+      </div>
+
+      <style>{`
+        .swiper-pagination-bullet { width: 40px; height: 4px; border-radius: 2px; transition: all 0.5s !important; }
+        .swiper-pagination-bullet-active { background: #7d2ae8 !important; width: 60px; }
+      `}</style>
     </section>
-    
   );
 };
 
