@@ -1,108 +1,150 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-react';
+import { Monitor, ChevronRight, Plus, Minus } from 'lucide-react';
+
+// Firebase imports
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; 
+
+interface AccordionItem {
+    id: number;
+    title: string;
+    content: string;
+}
+
+interface Section {
+    id?: string;
+    title: string;
+    img: string;
+    desc: string;
+    list: string[];
+    accordions: AccordionItem[];
+}
 
 const Hashivner: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+    const [sections, setSections] = useState<Section[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const tabs = [
-        "Հաշիվների բացում և սպասարկում",
-        "Առարկայազուրկ մետաղական հաշիվներ",
-        "Ոչ ռեզիդենտ հաճախորդների հեռավար սպասարկում"
-    ];
+    useEffect(() => {
+        // Բեռնում ենք հաշիվների տվյալները Firebase-ից
+        const accountsRef = ref(db, 'accounts_data');
+        const unsubscribe = onValue(accountsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                setSections(Object.values(data));
+            }
+            setLoading(false);
+        });
 
-    const sections = [
-        {
-            title: "Հաշիվների բացում և սպասարկում",
-            img: "https://www.evoca.am/images-cache/menu/1/16111691720299/780x585.jpg",
-            desc: "Evocabank-ում հաշիվ բացելը պարզ է և արագ: Մենք առաջարկում ենք ֆիզիկական անձանց ընթացիկ և խնայողական հաշիվների բացման և սպասարկման լայն հնարավորություններ տարբեր արժույթներով:",
-            list: ["Հաշիվներ AMD, USD, EUR, RUR և այլ արժույթներով", "Անվճար մուտք EvocaTOUCH հավելվածին", "Արագ և ապահով գործարքների իրականացում"],
-            accordions: [
-                { id: 1, title: "ՀԱՇՎԻ ԲԱՑՄԱՆ ՀԱՄԱՐ ԱՆՀՐԱԺԵՇՏ ՓԱՍՏԱԹՂԹԵՐ", content: "Ֆիզիկական անձանց համար անհրաժեշտ է ներկայացնել անձը հաստատող փաստաթուղթ և ՀԾՀ:" },
-                { id: 2, title: "ՍԱԿԱԳՆԵՐ ԵՎ ԴՐՈՒՅՔՆԵՐ", content: "Մանրամասն սակագները ներկայացված են ստորև բերված ֆայլերում:" }
-            ]
-        },
-        {
-            title: "Առարկայազուրկ մետաղական հաշիվներ",
-            img: "https://www.evoca.am/images-cache/menu/1/17092121924185/780x585.png",
-            desc: "Առարկայազուրկ մետաղական հաշիվը հաշիվ է, որտեղ հաշվառվում է Ձեր ոսկին՝ առանց դրա ձուլակտորների առկայության:",
-            list: ["999.9 հարգի ոսկու հաշվառում", "Անկանխիկ ոսկու առք և վաճառք", "Անվճար սպասարկում և ապահովություն"],
-            accordions: [
-                { id: 3, title: "ԻՆՉ Է ՄԵՏԱՂԱԿԱՆ ՀԱՇԻՎԸ", content: "Սա Ձեր միջոցները ոսկու տեսքով պահելու միջոց է:" },
-                { id: 4, title: "ՍԱԿԱԳՆԵՐ", content: "Գործում են բանկի կողմից սահմանված հատուկ սակագներ:" }
-            ]
-        },
-        {
-            title: "Ոչ ռեզիդենտ հաճախորդների հեռավար սպասարկում",
-            img: "https://www.evoca.am/images-cache/menu/1/17510033256067/780x585.png",
-            desc: "Evocabank-ը առաջարկում է հեռահար հաշիվների բացման և սպասարկման լուծումներ ոչ ռեզիդենտ հաճախորդների համար:",
-            list: ["Հեռահար նույնականացում", "Առցանց հաշիվների բացում", "Անձնական մենեջերի աջակցություն"],
-            accordions: [
-                { id: 5, title: "ԴԻՄԵԼՈՒ ԿԱՐԳԸ", content: "Դիմումն ընդունվում է առցանց տարբերակով:" },
-                { id: 6, title: "ՊԱՀԱՆՋՎՈՂ ՓԱՍՏԱԹՂԹԵՐ", content: "Օտարերկրյա անձնագիր և հարակից փաստաթղթեր:" }
-            ]
-        }
-    ];
+        return () => unsubscribe();
+    }, []);
+
+    if (loading) {
+        return <div className="w-full h-screen flex justify-center items-center font-black text-[#6610f2] uppercase italic">Բեռնվում է...</div>;
+    }
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
-            <div className="max-w-[1140px] mx-auto px-4 pt-10">
-                <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
-                    <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Հաշիվներ</span>
+            {/* Breadcrumbs & Header */}
+            <div className="max-w-[1140px] mx-auto px-4 pt-16">
+                <div className="flex items-center gap-2 text-[10px] text-gray-300 uppercase tracking-[0.2em] mb-8 font-black">
+                    <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-[#6610f2]">Հաշիվներ</span>
                 </div>
-                <h1 className="text-[36px] md:text-[50px] font-[900] italic uppercase leading-none mb-12 tracking-tighter">Հաշիվներ</h1>
+                <h1 className="text-[40px] md:text-[65px] font-[1000] italic uppercase leading-none mb-12 tracking-tighter">Հաշիվներ</h1>
                 
+                {/* Tabs */}
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
-                    {tabs.map((tab, idx) => (
+                    {sections.map((section, idx) => (
                         <button
                             key={idx}
                             onClick={() => { setActiveTab(idx); setOpenAccordion(null); }}
-                            className={`pb-4 text-[13px] font-black uppercase italic tracking-wider whitespace-nowrap relative transition-all ${activeTab === idx ? "text-[#6610f2]" : "text-gray-400 hover:text-gray-600"}`}
+                            className={`pb-6 text-[13px] font-black uppercase italic tracking-wider whitespace-nowrap relative transition-all duration-300 ${activeTab === idx ? "text-[#6610f2]" : "text-gray-300 hover:text-gray-500"}`}
                         >
-                            {tab}
-                            {activeTab === idx && <motion.div layoutId="tabLine" className="absolute bottom-0 left-0 right-0 h-[3px] bg-[#6610f2]" />}
+                            {section.title}
+                            {activeTab === idx && (
+                                <motion.div 
+                                    layoutId="tabLine" 
+                                    className="absolute bottom-0 left-0 right-0 h-[4px] bg-[#6610f2] rounded-t-full" 
+                                />
+                            )}
                         </button>
                     ))}
                 </div>
             </div>
 
-            <div className="max-w-[1140px] mx-auto px-4 pb-20">
+            {/* Content Section */}
+            <div className="max-w-[1140px] mx-auto px-4 pb-32">
                 <AnimatePresence mode="wait">
                     <motion.div
                         key={activeTab}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-16"
+                        initial={{ opacity: 0, x: 20 }}
+                        animate={{ opacity: 1, x: 0 }}
+                        exit={{ opacity: 0, x: -20 }}
+                        transition={{ duration: 0.5 }}
+                        className="grid grid-cols-1 lg:grid-cols-2 gap-20"
                     >
-                        <div className="space-y-10">
-                            <div className="rounded-[45px] overflow-hidden shadow-2xl"><img src={sections[activeTab].img} className="w-full h-auto" alt="" /></div>
-                            <div className="space-y-6">
-                                <h2 className="text-[26px] font-black italic uppercase text-[#6610f2]">{sections[activeTab].title}</h2>
-                                <p className="text-gray-500 leading-relaxed text-[17px]">{sections[activeTab].desc}</p>
-                                <ul className="space-y-4">
+                        {/* Left Side: Info */}
+                        <div className="space-y-12">
+                            <motion.div 
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                className="rounded-[60px] overflow-hidden shadow-2xl bg-gray-50"
+                            >
+                                <img src={sections[activeTab].img} className="w-full h-auto object-cover" alt={sections[activeTab].title} />
+                            </motion.div>
+                            
+                            <div className="space-y-8">
+                                <h2 className="text-[30px] font-[1000] italic uppercase text-[#1a1a1a] leading-tight">
+                                    {sections[activeTab].title}
+                                </h2>
+                                <p className="text-gray-500 leading-relaxed text-[18px] font-medium italic">
+                                    {sections[activeTab].desc}
+                                </p>
+                                <ul className="space-y-5">
                                     {sections[activeTab].list.map((item, i) => (
-                                        <li key={i} className="flex items-center gap-4 font-bold text-[14px]">
-                                            <span className="w-2 h-2 rounded-full bg-[#6610f2]" /> {item}
+                                        <li key={i} className="flex items-center gap-4 font-black uppercase text-[12px] text-gray-700 tracking-tight">
+                                            <span className="w-2.5 h-2.5 rounded-full bg-[#6610f2]" /> {item}
                                         </li>
                                     ))}
                                 </ul>
-                                <button className="bg-[#6610f2] text-white px-12 py-5 rounded-full font-black uppercase text-[12px] tracking-widest">Դառնալ հաճախորդ</button>
+                                <motion.button 
+                                    whileHover={{ scale: 1.05 }}
+                                    whileTap={{ scale: 0.95 }}
+                                    className="bg-[#6610f2] text-white px-14 py-6 rounded-full font-[1000] uppercase text-[11px] tracking-[0.2em] shadow-lg shadow-[#6610f2]/30"
+                                >
+                                    Դառնալ հաճախորդ
+                                </motion.button>
                             </div>
                         </div>
 
-                        <div className="divide-y divide-gray-100">
+                        {/* Right Side: Accordions */}
+                        <div className="divide-y divide-gray-100 bg-[#fcfcfc] rounded-[50px] p-8 md:p-12 self-start">
                             {sections[activeTab].accordions.map((item) => (
-                                <div key={item.id}>
-                                    <button onClick={() => setOpenAccordion(openAccordion === item.id ? null : item.id)} className="w-full py-7 flex items-center justify-between text-left group">
-                                        <span className={`text-[16px] font-black uppercase italic ${openAccordion === item.id ? "text-[#6610f2]" : "text-gray-800"}`}>{item.title}</span>
-                                        <motion.div animate={{ rotate: openAccordion === item.id ? 180 : 0 }} className={`p-1.5 rounded-full ${openAccordion === item.id ? "bg-[#6610f2] text-white" : "bg-gray-100 text-gray-400"}`}></motion.div>
+                                <div key={item.id} className="border-b border-gray-50 last:border-0">
+                                    <button 
+                                        onClick={() => setOpenAccordion(openAccordion === item.id ? null : item.id)} 
+                                        className="w-full py-8 flex items-center justify-between text-left group"
+                                    >
+                                        <span className={`text-[15px] font-[1000] uppercase italic tracking-tighter transition-colors ${openAccordion === item.id ? "text-[#6610f2]" : "text-gray-800"}`}>
+                                            {item.title}
+                                        </span>
+                                        <div className={`transition-all duration-300 ${openAccordion === item.id ? "rotate-90 text-[#6610f2]" : "text-gray-300"}`}>
+                                            {openAccordion === item.id ? <Minus size={20} /> : <Plus size={20} />}
+                                        </div>
                                     </button>
                                     <AnimatePresence>
                                         {openAccordion === item.id && (
-                                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pb-8 text-gray-500 text-[16px]">
-                                                {item.content}
+                                            <motion.div 
+                                                initial={{ height: 0, opacity: 0 }} 
+                                                animate={{ height: "auto", opacity: 1 }} 
+                                                exit={{ height: 0, opacity: 0 }} 
+                                                className="overflow-hidden"
+                                            >
+                                                <p className="pb-8 text-gray-400 font-bold italic text-[16px] leading-relaxed">
+                                                    {item.content}
+                                                </p>
                                             </motion.div>
                                         )}
                                     </AnimatePresence>
@@ -113,56 +155,48 @@ const Hashivner: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
+            {/* Bottom Banner */}
+            <div className="w-full bg-[#6610f2] py-32 relative overflow-hidden">
                 <motion.div 
-                    animate={{ 
-                        y: [0, -40, 0],
-                        rotate: [0, 10, 0],
-                        opacity: [0.1, 0.3, 0.1]
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-10 left-[10%] text-white"
+                    animate={{ y: [0, -40, 0], opacity: [0.1, 0.2, 0.1] }}
+                    transition={{ duration: 8, repeat: Infinity }}
+                    className="absolute -top-10 -left-10 text-white"
                 >
-                    <Monitor size={120} />
+                    <Monitor size={250} />
                 </motion.div>
 
-                <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
-                    <div className="w-full md:w-1/2 relative h-[400px]">
-                        <motion.img 
-                            initial={{ x: -150, opacity: 0 }}
-                            whileInView={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 1, type: "spring" }}
-                            src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg"
-                            className="absolute left-0 top-0 w-[80%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-xl"
-                        />
-                        <motion.img 
-                            initial={{ y: 150, opacity: 0, scale: 0.5 }}
-                            whileInView={{ y: 0, opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
-                            src="https://www.evoca.am/images-cache/banners/1/16153622710205/140x300.jpg"
-                            className="absolute right-10 bottom-0 w-[30%] drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-20 border-4 border-[#1a1a1a] rounded-[2rem]"
-                        />
+                <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10 gap-16">
+                    <div className="w-full md:w-1/2 flex justify-center">
+                        <motion.div 
+                            initial={{ y: 50, opacity: 0 }}
+                            whileInView={{ y: 0, opacity: 1 }}
+                            className="relative"
+                        >
+                            <img 
+                                src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg" 
+                                className="w-[400px] rounded-[40px] shadow-2xl border-4 border-white/10" 
+                                alt="App"
+                            />
+                        </motion.div>
                     </div>
 
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        className="w-full md:w-1/2 text-white text-center md:text-left mt-10 md:mt-0"
-                    >
-                        <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6 leading-tight">Օնլայն բանկինգ</h2>
-                        <p className="text-white/80 mb-8 text-lg">Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:</p>
-                        <motion.button 
-                            whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px rgba(255,255,255,0.5)" }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest"
-                        >
-                            Դառնալ հաճախորդ
-                        </motion.button>
-                    </motion.div>
+                    <div className="w-full md:w-1/2 text-white text-center md:text-left">
+                        <h2 className="text-[40px] md:text-[60px] font-[1000] uppercase italic mb-6 leading-[0.9]">
+                            Evoca<br/>Online
+                        </h2>
+                        <p className="text-white/70 mb-10 text-xl font-bold italic">
+                            Կառավարի՛ր հաշիվներդ աշխարհի ցանկացած կետից:
+                        </p>
+                        <button className="bg-white text-[#6610f2] px-14 py-6 rounded-full font-[1000] uppercase text-[11px] tracking-[0.2em] hover:bg-gray-100 transition-colors">
+                            Միանալ հիմա
+                        </button>
+                    </div>
                 </div>
             </div>
 
             <style>{`
+                @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
+                .font-sans { font-family: 'Montserrat', sans-serif; }
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
             `}</style>
