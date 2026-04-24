@@ -1,16 +1,37 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, Pagination } from 'swiper/modules';
 import { UploadCloud, RefreshCw, ChevronDown } from 'lucide-react';
 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; 
+import { ref, onValue } from 'firebase/database';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 import 'swiper/css/pagination';
 
+// Տիպերի սահմանում
+interface BenefitType {
+  title: string;
+  img: string;
+}
+
+interface FaqType {
+  question: string;
+  answer: string;
+}
+
 const EvocaLife: React.FC = () => {
+    // ՈՒՂՂՈՒՄ: Սկզբնական արժեքը դրված է 'culture', որպեսզի էջը դատարկ չլինի
     const [activeTab, setActiveTab] = useState('culture');
     const [openFaq, setOpenFaq] = useState<number | null>(null);
+    
+    // Դինամիկ տվյալների state-եր
+    const [benefitIcons, setBenefitIcons] = useState<BenefitType[]>([]);
+    const [faqs, setFaqs] = useState<FaqType[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const tabs = [
         { id: 'culture', label: 'Մշակույթ' },
@@ -19,36 +40,25 @@ const EvocaLife: React.FC = () => {
         { id: 'hiring', label: 'Ինչպես ընդունվել աշխատանքի' },
     ];
 
-    const benefitIcons = [
-        { title: "Առողջության ապահովագրություն", img: "https://www.evoca.am/images-cache/benefits/1/17431437867453/120x120.png" },
-        { title: "Ճամփորդական ապահովագրություն", img: "https://www.evoca.am/images-cache/benefits/1/1743143856123/120x120.png" },
-        { title: "Evocabank-ի ծառայությունների արտոնյալ պայմաններ", img: "https://www.evoca.am/images-cache/benefits/1/17431582596354/120x120.png" },
-        { title: "Կորպորատիվ զեղչեր", img: "https://www.evoca.am/images-cache/benefits/1/17431582659146/120x120.png" },
-        { title: "Տոնական և տարեվերջյան բոնուսներ", img: "https://www.evoca.am/images-cache/benefits/1/17431581917652/120x120.png" },
-        { title: "Պարգևատրումներ ծննդյան օրերին", img: "https://www.evoca.am/images-cache/benefits/1/174314403471/120x120.png" },
-        { title: "Days-off", img: "https://www.evoca.am/images-cache/benefits/1/17431442426277/120x120.png" },
-        { title: "Սպորտային փաթեթ", img: "https://www.evoca.am/images-cache/benefits/1/17431443089347/120x120.png" },
-        { title: "Շարունակական կրթության և մասնագիտական զարգացման լայն հնարավորություն", img: "https://www.evoca.am/images-cache/benefits/1/17431453776119/120x120.png" }
-    ];
+    // Firebase-ից տվյալների ստացում
+    useEffect(() => {
+        const careerRef = ref(db, 'career_page');
+        
+        const unsubscribe = onValue(careerRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.benefits) setBenefitIcons(data.benefits);
+                if (data.faqs) setFaqs(data.faqs);
+            }
+            setLoading(false);
+        });
 
-    const faqs = [
-        {
-            question: "Ինչպե՞ս դիմել Evocabank-ում աշխատելու համար",
-            answer: "Evocabank-ում առկա թափուր հաստիքներին կարող եք ծանոթանալ մեր կայքի «Կարիերա» բաժնում կամ դիմել առցանց հայտի միջոցով՝ կցելով Ձեր ինքնակենսագրականը (CV):"
-        },
-        {
-            question: "Ի՞նչ փուլերից է բաղկացած հարցազրույցի գործընթացը",
-            answer: "Գործընթացը սովորաբար բաղկացած է մի քանի փուլից՝ CV-ների զտում, հեռախոսազրույց, մասնագիտական թեստավորում (ըստ անհրաժեշտության) և անհատական հարցազրույց Մարդկային ռեսուրսների կառավարման բաժնի ու տվյալ ոլորտի ղեկավարի հետ:"
-        },
-        {
-            question: "Արդյո՞ք կա փորձաշրջան և ինչպես է այն վճարվում",
-            answer: "Այո, բոլոր նոր աշխատակիցների համար սահմանվում է փորձաշրջան, որը լիովին վճարվում է համաձայն ՀՀ աշխատանքային օրենսդրության և Բանկի ներքին քաղաքականության:"
-        }
-    ];
+        return () => unsubscribe();
+    }, []);
 
-    // Հայտի ձևի կոմպոնենտ (Reusable Form)
+    // Հայտի ձևի կոմպոնենտ
     const ApplicationForm = () => (
-        <section className="max-w-[1450px] mx-auto px-6">
+        <section className="max-w-[1450px] mx-auto px-6 mt-20">
             <div className="max-w-4xl mx-auto bg-[#f8f9fb] rounded-[60px] p-12 md:p-16 border border-gray-100 shadow-inner">
                 <h3 className="text-4xl md:text-5xl font-[1000] italic uppercase text-center text-[#6610f2] mb-12 tracking-tighter">Դառնալ թիմի անդամ</h3>
                 <form className="grid grid-cols-1 md:grid-cols-2 gap-8">
@@ -76,6 +86,8 @@ const EvocaLife: React.FC = () => {
         </section>
     );
 
+    if (loading) return <div className="py-40 text-center font-[1000] italic text-[#6610f2]">ԲԵՌՆՎՈՒՄ Է...</div>;
+
     return (
         <div className="bg-white min-h-screen font-sans overflow-x-hidden pb-20">
             {/* 1. HEADER TABS */}
@@ -100,7 +112,6 @@ const EvocaLife: React.FC = () => {
             </div>
 
             <AnimatePresence mode="wait">
-                {/* --- ՄՇԱԿՈՒՅԹ ԲԱԺԻՆ --- */}
                 {activeTab === 'culture' && (
                     <motion.div key="culture" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full space-y-20 pb-20">
                         <section className="w-full h-[500px] md:h-[650px] relative overflow-hidden px-6">
@@ -118,7 +129,6 @@ const EvocaLife: React.FC = () => {
                                 <img src="https://www.evoca.am/file_manager/Career/evoca-girl.jpg" className="w-full h-full object-cover shadow-2xl" alt="Team member" />
                             </div>
                         </section>
-
                         <section className="max-w-[1450px] mx-auto px-6">
                             <div className="flex flex-col md:flex-row items-center justify-between gap-8 h-auto md:h-[600px]">
                                 <div className="w-full md:w-[25%] h-[350px] md:h-[75%] rounded-[50px] overflow-hidden border border-gray-100 p-2 bg-white shadow-lg">
@@ -133,7 +143,6 @@ const EvocaLife: React.FC = () => {
                             </div>
                         </section>
 
-                        {/* ՄՇԱԿՈՒՅԹԻ SWIPER */}
                         <section className="max-w-[1450px] mx-auto px-6 py-10">
                             <Swiper
                                 modules={[Navigation, Autoplay, Pagination]}
@@ -152,13 +161,13 @@ const EvocaLife: React.FC = () => {
                                     { title: "ԱԶԱՏՈՒԹՅՈՒՆ", desc: "Ստեղծագործական մտքի համար սահմաններ չկան:" }
                                 ].map((item, i) => (
                                     <SwiperSlide key={i}>
-                                        <motion.div className="bg-[#f8f9fb] p-10 md:p-14 rounded-[55px] h-[480px] md:h-[550px] flex flex-col justify-between transition-all duration-300 group border border-gray-100 hover:bg-[#6610f2] hover:shadow-2xl">
+                                        <div className="bg-[#f8f9fb] p-10 md:p-14 rounded-[55px] h-[480px] md:h-[550px] flex flex-col justify-between transition-all duration-300 group border border-gray-100 hover:bg-[#6610f2] hover:shadow-2xl">
                                             <div className="text-[70px] md:text-[90px] font-[1000] italic leading-none text-white transition-colors group-hover:text-white/20" style={{ WebkitTextStroke: '2px #dee2e6' }}>0{i + 1}</div>
                                             <div className="space-y-4">
                                                 <h4 className="text-2xl md:text-3xl font-[1000] italic uppercase text-[#1a1a1a] transition-colors group-hover:text-white leading-none">{item.title}</h4>
                                                 <p className="text-gray-500 font-medium italic text-[16px] md:text-[18px] transition-colors group-hover:text-white/90">{item.desc}</p>
                                             </div>
-                                        </motion.div>
+                                        </div>
                                     </SwiperSlide>
                                 ))}
                             </Swiper>
@@ -166,7 +175,6 @@ const EvocaLife: React.FC = () => {
                     </motion.div>
                 )}
 
-                {/* --- ԱՌԱՎԵԼՈՒԹՅՈՒՆՆԵՐ ԲԱԺԻՆ --- */}
                 {activeTab === 'benefits' && (
                     <motion.div key="benefits" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }} className="w-full space-y-24">
                         <section className="w-full h-[500px] md:h-[600px] bg-[#6610f2] relative overflow-hidden px-6">
@@ -174,11 +182,10 @@ const EvocaLife: React.FC = () => {
                             <div className="max-w-[1450px] mx-auto h-full relative flex items-center">
                                 <div className="bg-white rounded-[50px] p-12 md:p-16 shadow-2xl max-w-2xl">
                                     <h2 className="text-[40px] md:text-[50px] font-[1000] italic uppercase text-[#1a1a1a] leading-none mb-6">Առավելություններ</h2>
-                                    <p className="text-[#4d4d4d] text-lg font-medium italic">Միացիր թիմին, որի ամենամեծ ակտիվը ներգրավված և երջանիկ աշխատակիցներն են։</p>
+                                    <p className="text-[#4d4d4d] text-lg font-medium italic">Միացիր թիմին, որի ամենամեց ակտիվը ներգրավված և երջանիկ աշխատակիցներն են։</p>
                                 </div>
                             </div>
                         </section>
-
                         <section className="max-w-[1450px] mx-auto px-6">
                             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-x-10 gap-y-20">
                                 {benefitIcons.map((icon, idx) => (
@@ -189,13 +196,10 @@ const EvocaLife: React.FC = () => {
                                 ))}
                             </div>
                         </section>
-
-                        {/* ՀԱՅՏԻ ՈՒՂԱՐԿՄԱՆ ՀԱՏՎԱԾ */}
                         <ApplicationForm />
                     </motion.div>
                 )}
 
-                {/* --- ՀԱՃԱԽ ՏՐՎՈՂ ՀԱՐՑԵՐ (FAQ) --- */}
                 {activeTab === 'faq' && (
                     <motion.div key="faq" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full space-y-24">
                         <section className="w-full h-[500px] md:h-[600px] relative overflow-hidden px-6">
@@ -209,7 +213,6 @@ const EvocaLife: React.FC = () => {
                                 </div>
                             </div>
                         </section>
-
                         <section className="max-w-[1000px] mx-auto px-6 space-y-4">
                             {faqs.map((faq, idx) => (
                                 <div key={idx} className="border-b border-gray-100 last:border-0">
@@ -227,104 +230,43 @@ const EvocaLife: React.FC = () => {
                                 </div>
                             ))}
                         </section>
-
-                        {/* ՀԱՅՏԻ ՈՒՂԱՐԿՄԱՆ ՀԱՏՎԱԾ */}
                         <ApplicationForm />
                     </motion.div>
                 )}
-                {/* --- ԻՆՉՊԵՍ ԸՆԴՈՒՆՎԵԼ ԱՇԽԱՏԱՆՔԻ (HIRING PROCESS) --- */}
-{activeTab === 'hiring' && (
-    <motion.div key="hiring" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full space-y-24">
-        
-        {/* 1. Full-width նկար վրան գրվածքով */}
-        <section className="w-full h-[500px] md:h-[650px] relative overflow-hidden px-6">
-            <div className="w-full h-full rounded-[60px] overflow-hidden relative">
-                <img 
-                    src="https://www.evoca.am/images-cache/menu/1/16200303976398/1200x630.jpg" 
-                    className="w-full h-full object-cover" 
-                    alt="Hiring Process" 
-                />
-                <div className="absolute inset-0 bg-black/20 flex items-center px-12">
-                    <div className="bg-white rounded-[50px] p-12 md:p-16 shadow-2xl max-w-2xl">
-                        <h2 className="text-[40px] md:text-[50px] font-[1000] italic uppercase text-[#1a1a1a] leading-none mb-6">
-                            Ինչպես ընդունվել աշխատանքի
-                        </h2>
-                        <p className="text-[#4d4d4d] text-lg font-medium italic">
-                            Մենք փնտրում ենք տաղանդավոր և մոտիվացված անհատների, ովքեր պատրաստ են կերտել թվային բանկինգի ապագան մեզ հետ միասին։
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
 
-        {/* 2. Dropdown ինֆորմացիա (Hiring Steps) */}
-        <section className="max-w-[1100px] mx-auto px-6 space-y-6">
-            <h3 className="text-3xl md:text-4xl font-[1000] italic uppercase text-[#1a1a1a] mb-10 text-center tracking-tighter">
-                Ընտրության փուլերը
-            </h3>
-            
-            {[
-                {
-                    title: "Առաջին փուլ ` Դիմում",
-                    content: "Evocabank-ում աշխատանքի դիմելիս թեկնածուի ճանապարհը սկսվում է հայտի ներկայացումից, որն իրականացվում է կամ ներքոնշյալ հայտը լրացնելով կամ cv@evocabank.am էլ. հասցեին Ձեր ինքնակենսագրականն ուղարկելով:"
-                },
-                {
-                    title: "Երկրորդ փուլ ` Հարցազրույցներ",
-                    content: "Եթե ինքնակենսագրականում նշված Ձեր փորձը համապատասխանել է պահանջներին, ապա Evocabank-ի հարցազրուցավարը կապ կհաստատի Ձեզ հետ: Սովորաբար, Evoca-ում հարցազրույցների գործընթացն անցնում է երեք փուլով:"
-                },
-                {
-                    title: "Երրորդ փուլ ` Թեստավորում և ամփոփում",
-                    content: "Թեստավորումից և հարցազրույցների ավարտից հետո այն մարդիկ, ում հետ զրուցել եք, իրենց կարծիքն են հայտնում Ձեր հետ ունեցած հարցազրույցի արդյունքների վերաբերյալ, և մենք գնահատում ենք, թե արդյոք հաջողակ կլինեք տվյալ դերում:"
-                },
-                {
-                    title: "Չորրորդ փուլ ` Ստուգումներ",
-                    content: "Աշխատանքի պայմանական առաջարկ կատարելուց հետո, Evoca-ն իրականացնում է դիմորդի վերաբերյալ պարտադիր ստուգումներ: Կատարվում են 4 հիմնական տեսակների ստուգումներ` քրեական պատմության, կրթության, աշխատանքային պատմության և referral ստուգումներ:"
-                },
-                {
-                    title: "Հինգերորդ փուլ ` Աշխատանքի արաջարկ",
-                    content: "Ստուգումների դրական արդյունքներ ստանալուց հետո մեր թիմը կապ կհաստատի Ձեզ հետ և կներկայացնի աշխատանքի առաջարկ: Ձեր կողմից այն ընդունվելուց հետո կիրականացվենի փաստաթղթային ձևակերպումները և կամփոփվեն այլ մանրամասներ: Բարի գալուստ Evocabank!"
-                }
-            ].map((step, idx) => (
-                <div key={idx} className="bg-[#f8f9fb] rounded-[35px] overflow-hidden border border-gray-100">
-                    <button 
-                        onClick={() => setOpenFaq(openFaq === idx + 10 ? null : idx + 10)} 
-                        className="w-full flex items-center justify-between p-8 md:p-10 text-left group"
-                    >
-                        <span className={`text-xl md:text-2xl font-[1000] italic uppercase transition-colors ${openFaq === idx + 10 ? 'text-[#6610f2]' : 'text-[#1a1a1a]'}`}>
-                            {step.title}
-                        </span>
-                        <motion.div 
-                            animate={{ rotate: openFaq === idx + 10 ? 180 : 0 }}
-                            className={`p-3 rounded-full transition-colors ${openFaq === idx + 10 ? 'bg-[#6610f2] text-white' : 'bg-white text-[#1a1a1a]'}`}
-                        >
-                            <ChevronDown size={24} />
-                        </motion.div>
-                    </button>
-                    <AnimatePresence>
-                        {openFaq === idx + 10 && (
-                            <motion.div 
-                                initial={{ height: 0, opacity: 0 }} 
-                                animate={{ height: "auto", opacity: 1 }} 
-                                exit={{ height: 0, opacity: 0 }}
-                                className="overflow-hidden"
-                            >
-                                <p className="px-10 pb-10 text-gray-500 text-lg font-medium italic leading-relaxed">
-                                    {step.content}
-                                </p>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
-                </div>
-            ))}
-        </section>
-
-        {/* 3. Աշխատանքի հայտ (Application Form) */}
-        <div className="pt-10">
-            <ApplicationForm />
-        </div>
-
-    </motion.div>
-)}
+                {activeTab === 'hiring' && (
+                    <motion.div key="hiring" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full space-y-24">
+                        <section className="w-full h-[500px] md:h-[650px] relative overflow-hidden px-6">
+                            <div className="w-full h-full rounded-[60px] overflow-hidden relative">
+                                <img src="https://www.evoca.am/images-cache/menu/1/16200303976398/1200x630.jpg" className="w-full h-full object-cover" alt="Hiring Process" />
+                                <div className="absolute inset-0 bg-black/20 flex items-center px-12">
+                                    <div className="bg-white rounded-[50px] p-12 md:p-16 shadow-2xl max-w-2xl">
+                                        <h2 className="text-[40px] md:text-[50px] font-[1000] italic uppercase text-[#1a1a1a] leading-none mb-6">Ինչպես ընդունվել աշխատանքի</h2>
+                                        <p className="text-[#4d4d4d] text-lg font-medium italic">Մենք փնտրում ենք տաղանդավոր և մոտիվացված անհատների, ովքեր պատրաստ են կերտել թվային բանկինգի ապագան մեզ հետ միասին։</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                        <section className="max-w-[1100px] mx-auto px-6 space-y-6">
+                            {[
+                                { title: "Առաջին փուլ ` Դիմում", content: "Evocabank-ում աշխատանքի դիմելիս թեկնածուի ճանապարհը սկսվում է հայտի ներկայացումից..." },
+                                { title: "Երկրորդ փուլ ` Հարցազրույցներ", content: "Եթե ինքնակենսագրականում նշված Ձեր փորձը համապատասխանել է պահանջներին..." },
+                                { title: "Երրորդ փուլ ` Թեստավորում և ամփոփում", content: "Թեստավորումից և հարցազրույցների ավարտից հետո..." },
+                                { title: "Չորրորդ փուլ ` Ստուգումներ", content: "Աշխատանքի պայմանական առաջարկ կատարելուց հետո..." },
+                                { title: "Հինգերորդ փուլ ` Աշխատանքի առաջարկ", content: "Ստուգումների դրական արդյունքներ ստանալուց հետո..." }
+                            ].map((step, idx) => (
+                                <div key={idx} className="bg-[#f8f9fb] rounded-[35px] overflow-hidden border border-gray-100">
+                                    <button onClick={() => setOpenFaq(openFaq === idx + 10 ? null : idx + 10)} className="w-full flex items-center justify-between p-8 md:p-10 text-left group">
+                                        <span className={`text-xl md:text-2xl font-[1000] italic uppercase transition-colors ${openFaq === idx + 10 ? 'text-[#6610f2]' : 'text-[#1a1a1a]'}`}>{step.title}</span>
+                                        <motion.div animate={{ rotate: openFaq === idx + 10 ? 180 : 0 }} className={`p-3 rounded-full transition-colors ${openFaq === idx + 10 ? 'bg-[#6610f2] text-white' : 'bg-white text-[#1a1a1a]'}`}><ChevronDown size={24} /></motion.div>
+                                    </button>
+                                    <AnimatePresence>{openFaq === idx + 10 && (<motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden"><p className="px-10 pb-10 text-gray-500 text-lg font-medium italic leading-relaxed">{step.content}</p></motion.div>)}</AnimatePresence>
+                                </div>
+                            ))}
+                        </section>
+                        <ApplicationForm />
+                    </motion.div>
+                )}
             </AnimatePresence>
 
             <style>{`

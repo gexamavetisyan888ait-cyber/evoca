@@ -1,9 +1,29 @@
-
 import React, { useState } from 'react';
-import { motion, AnimatePresence,  } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'
+import { ref, push, set } from "firebase/database";
+// ------------------------
 
 const OtherServicesTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
+
+  // Ֆունկցիա՝ Firebase-ում հետաքրքրվածության հայտ գրանցելու համար
+  const handleRegisterInterest = async (serviceTitle: string) => {
+    try {
+      const interestRef = ref(db, 'ayl');
+      const newInterestRef = push(interestRef);
+      await set(newInterestRef, {
+        service: serviceTitle,
+        timestamp: Date.now(),
+        status: 'new_lead'
+      });
+      alert("Շնորհակալություն հետաքրքրվածության համար:");
+    } catch (error) {
+      console.error("Firebase error:", error);
+    }
+  };
 
   const tabs = [
     {
@@ -21,7 +41,6 @@ const OtherServicesTabs: React.FC = () => {
                <img src="https://www.evoca.am/images-cache/menu/1/16154664725996/780x585.jpg" className="w-full h-full object-cover" alt="Remote Banking" />
             </div>
           </div>
-          {/* Աղյուսակ կամ ցանկ */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
             {["EvocaTOUCH", "EvocaONLINE", "Phone Banking", "SMS Banking"].map((s, i) => (
               <div key={i} className="p-8 bg-[#f8f9fb] rounded-[30px] border border-gray-50 flex flex-col justify-between h-[180px]">
@@ -42,7 +61,6 @@ const OtherServicesTabs: React.FC = () => {
               <p className="text-[#4d4d4d] text-lg leading-relaxed mb-8">
                 Բանկն առաջարկում է անհատական պահատուփերի վարձակալություն Ձեր արժեքավոր իրերի, փաստաթղթերի և դրամական միջոցների անվտանգ պահպանման համար:
               </p>
-              {/* Սակագների աղյուսակ հիշեցնող բլոկ */}
               <div className="overflow-hidden rounded-[30px] border border-gray-100">
                 <table className="w-full text-left border-collapse">
                   <thead>
@@ -82,7 +100,7 @@ const OtherServicesTabs: React.FC = () => {
               </p>
             </div>
             <div className="w-full lg:w-[400px]">
-               <img src="https://www.evoca.am/images-cache/menu/1/17387447069114/780x585.png" className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-[40px]" />
+               <img src="https://www.evoca.am/images-cache/menu/1/17387447069114/780x585.png" className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-[40px]" alt="Other Services" />
             </div>
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
@@ -104,15 +122,12 @@ const OtherServicesTabs: React.FC = () => {
     <div className="w-full bg-white font-sans py-20 lg:py-32 overflow-hidden">
       <div className="max-w-[1450px] mx-auto px-6">
         
-        {/* Header Section */}
         <div className="mb-16">
           <motion.span className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.3em] block mb-4">Լրացուցիչ</motion.span>
-          
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
           
-          {/* LEFT Sidebar Tabs */}
           <div className="w-full lg:w-[400px] flex flex-col">
             {tabs.map((tab, index) => (
               <button
@@ -135,7 +150,6 @@ const OtherServicesTabs: React.FC = () => {
             ))}
           </div>
 
-          {/* RIGHT Content Panel */}
           <div className="flex-1">
             <AnimatePresence mode="wait">
               <motion.div
@@ -154,59 +168,45 @@ const OtherServicesTabs: React.FC = () => {
           </div>
         </div>
       </div>
-           <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
-                <motion.div 
-                    animate={{ 
-                        y: [0, -40, 0],
-                        rotate: [0, 10, 0],
-                        opacity: [0.1, 0.3, 0.1]
-                    }}
-                    transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
-                    className="absolute top-10 left-[10%] text-white"
-                >
-                </motion.div>
 
-                <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
-                    <div className="w-full md:w-1/2 relative h-[400px]">
-                        <motion.img 
-                            initial={{ x: -150, opacity: 0 }}
-                            whileInView={{ x: 0, opacity: 1 }}
-                            transition={{ duration: 1, type: "spring" }}
-                            src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg"
-                            className="absolute left-0 top-0 w-[80%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-xl"
-                        />
-                        <motion.img 
-                            initial={{ y: 150, opacity: 0, scale: 0.5 }}
-                            whileInView={{ y: 0, opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
-                            src="https://www.evoca.am/images-cache/banners/1/16153622710205/140x300.jpg"
-                            className="absolute right-10 bottom-0 w-[30%] drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-20 border-4 border-[#1a1a1a] rounded-[2rem]"
-                        />
-                    </div>
+      {/* Banner Section with Firebase Integration */}
+      <div className="w-full bg-[#6610f2] py-24 mt-20 relative overflow-hidden">
+        <div className="max-w-[1140px] mx-auto px-4 flex flex-col md:flex-row items-center relative z-10">
+          <div className="w-full md:w-1/2 relative h-[400px]">
+            <motion.img 
+              initial={{ x: -150, opacity: 0 }}
+              whileInView={{ x: 0, opacity: 1 }}
+              transition={{ duration: 1, type: "spring" }}
+              src="https://www.evoca.am/images-cache/banners/1/16170067683633/485x304.jpg"
+              className="absolute left-0 top-0 w-[80%] drop-shadow-[0_20px_50px_rgba(0,0,0,0.5)] rounded-xl"
+            />
+            <motion.img 
+              initial={{ y: 150, opacity: 0, scale: 0.5 }}
+              whileInView={{ y: 0, opacity: 1, scale: 1 }}
+              transition={{ delay: 0.5, duration: 0.8, type: "spring" }}
+              src="https://www.evoca.am/images-cache/banners/1/16153622710205/140x300.jpg"
+              className="absolute right-10 bottom-0 w-[30%] drop-shadow-[0_20px_40px_rgba(0,0,0,0.6)] z-20 border-4 border-[#1a1a1a] rounded-[2rem]"
+            />
+          </div>
 
-                    <motion.div 
-                        initial={{ opacity: 0, scale: 0.9 }}
-                        whileInView={{ opacity: 1, scale: 1 }}
-                        className="w-full md:w-1/2 text-white text-center md:text-left mt-10 md:mt-0"
-                    >
-                        <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6 leading-tight">Օնլայն բանկինգ</h2>
-                        <p className="text-white/80 mb-8 text-lg">Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:</p>
-                        <motion.button 
-                            whileHover={{ scale: 1.1, boxShadow: "0px 0px 20px rgba(255,255,255,0.5)" }}
-                            whileTap={{ scale: 0.9 }}
-                            className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest"
-                        >
-                            Դառնալ հաճախորդ
-                        </motion.button>
-                    </motion.div>
-                </div>
-            </div>
-      
-
-      <style>{`
-        @import url('hhttps://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,900;1,900&display=swap');
-        .font-sans { font-family: 'Montserrat', sans-serif; }
-      `}</style>
+          <motion.div 
+            initial={{ opacity: 0, scale: 0.9 }}
+            whileInView={{ opacity: 1, scale: 1 }}
+            className="w-full md:w-1/2 text-white text-center md:text-left mt-10 md:mt-0"
+          >
+            <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6 leading-tight">Օնլայն բանկինգ</h2>
+            <p className="text-white/80 mb-8 text-lg">Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:</p>
+            <motion.button 
+              onClick={() => handleRegisterInterest("Online Banking Banner")}
+              whileHover={{ scale: 1.05, boxShadow: "0px 0px 20px rgba(255,255,255,0.3)" }}
+              whileTap={{ scale: 0.95 }}
+              className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest transition-all"
+            >
+              Դառնալ հաճախորդ
+            </motion.button>
+          </motion.div>
+        </div>
+      </div>
     </div>
   );
 };

@@ -1,18 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
-const cardsData = [
-  { id: 1, name: "Visa Business", title: "Evoca Travel Card", thumb: "https://www.evoca.am/images-cache/cards/1/17479817930565/415x261.jpg", mainImg: "https://www.evoca.am/images-cache/cards/1/17479817930565/415x261.jpg" },
-  { id: 2, name: "Evoca Gift", title: "Evoca Gift Card", thumb: "https://www.evoca.am/images-cache/cards/1/17149865646885/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17149865646885/415x261.png" },
-  { id: 3, name: "Digital Gift", title: "Digital Gift Card 1", thumb: "https://www.evoca.am/images-cache/cards/1/17282986912132/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17282986912132/415x261.png" },
-  { id: 4, name: "Digital Gift 2", title: "Digital Gift Card 2", thumb: "https://www.evoca.am/images-cache/cards/1/1772717001933/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/1772717001933/415x261.png" },
-  { id: 5, name: "Digital Gift 3", title: "Digital Gift Card 3", thumb: "https://www.evoca.am/images-cache/cards/1/17527569508235/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17527569508235/415x261.png" },
-  { id: 6, name: "Digital Gift 4", title: "Digital Gift Card 4", thumb: "https://www.evoca.am/images-cache/cards/1/17655348192361/415x261.png", mainImg: "https://www.evoca.am/images-cache/cards/1/17655348192361/415x261.png" }
-];
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո ֆայլային կառուցվածքի
+import { ref, onValue } from 'firebase/database';
+// ------------------------
+
+interface CardType {
+  id: number;
+  name: string;
+  title: string;
+  thumb: string;
+  mainImg: string;
+}
 
 const CardSlider: React.FC = () => {
+  const [cardsData, setCardsData] = useState<CardType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
+  const [loading, setLoading] = useState(true);
   const visibleCount = 3; 
+
+  // Տվյալների ստացում Firebase-ից
+  useEffect(() => {
+    const cardsRef = ref(db, 'cardslide'); // Ենթադրվում է 'cards' node-ը Firebase-ում
+    const unsubscribe = onValue(cardsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Եթե տվյալները պահված են որպես List կամ Object
+        const formattedData = Array.isArray(data) ? data : Object.values(data);
+        setCardsData(formattedData as CardType[]);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   const nextSlide = () => {
     if (startIndex + visibleCount < cardsData.length) {
@@ -28,10 +50,20 @@ const CardSlider: React.FC = () => {
 
   const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
 
+  // Loading state
+  if (loading || cardsData.length === 0) {
+    return (
+      <div className="w-full py-20 bg-white flex justify-center items-center">
+        <div className="animate-pulse text-[#6610f2] font-black italic uppercase">Բեռնվում է...</div>
+      </div>
+    );
+  }
+
   return (
     <section className="w-full py-20 bg-white select-none">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-12 items-center gap-8">
         
+        {/* Left Thumbnails Slider */}
         <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
           
           <button 
@@ -69,6 +101,7 @@ const CardSlider: React.FC = () => {
           </button>
         </div>
 
+        {/* Center Main Card Image */}
         <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[400px]">
           <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
           <img 
@@ -79,8 +112,9 @@ const CardSlider: React.FC = () => {
           />
         </div>
 
+        {/* Right Info Section */}
         <div className="col-span-12 md:col-span-3 text-center md:text-left">
-          <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none">
+          <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none tracking-tighter">
             {cardsData[activeTab].title}
           </h2>
           <button className="bg-[#6610f2] text-white px-10 py-4 rounded-full font-black italic uppercase hover:bg-[#520dc2] transition-all shadow-xl active:scale-95 tracking-wide">

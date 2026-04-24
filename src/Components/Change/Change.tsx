@@ -1,7 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { ChevronRight, MapPin ,FileText, Download, Monitor, Smartphone, } from 'lucide-react';
+import { ChevronRight, MapPin, FileText, Download, Monitor, Smartphone } from 'lucide-react';
 
+// --- Swiper Imports ---
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
@@ -9,51 +10,76 @@ import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո folder structure-ի
+import { ref, onValue } from 'firebase/database';
+// ------------------------
+
+interface CurrencyType {
+  code: string;
+  name: string;
+  buy: number;
+  sell: number;
+  flag: string;
+  symbol: string;
+}
+
+interface GoldRateType {
+  purity: number;
+  price: string;
+}
+
+interface TestimonialType {
+  name: string;
+  role: string;
+  text: string;
+}
+
 const DynamicExchange: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('cashless');
+  const [activeTab, setActiveTab] = useState('change');
   const [amount, setAmount] = useState<string>('0');
+  
+  // Data States
+  const [currencies, setCurrencies] = useState<CurrencyType[]>([]);
+  const [goldRates, setGoldRates] = useState<GoldRateType[]>([]);
+  const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
+  const [loading, setLoading] = useState(true);
+
   const [selectedCurrency, setSelectedCurrency] = useState({
     code: 'USD',
     sell: 394.0,
     symbol: '$'
   });
-  const testimonials = [
-        {
-            name: 'Սուսաննա Վանյան',
-            role: 'Հաճախորդ',
-            text: 'Հայաստանի իրականության մեջ բացառիկ հրաշք բանկ։ Միայն այս հնարավորությունը ընձեռելով երիտասարդ ընտանիքներին ՝ նման ցածր տոկոսով բնակարան ձեռք բերել, արժանի է մեծ հարգանքի։ Շնորհակալ ենք, որ Դուք կաք:',
-        },
-        {
-            name: 'Նունե Գևորգյան',
-            role: 'Հաճախորդ',
-            text: 'Գերազանց սպասարկում, ընտիր ու հավես անձնակազմ Ազատության մասնաճյուղում: Վարկային բաժնից շատ շնորհակալ եմ, վարկս ձևակերպվեց առանց ավելորդ քաշքշուկների` հեշտ, արագ, որակով:',
-        },
-        {
-            name: 'Կամո Թովմասյան',
-            role: 'KAMOBLOG մեդիա-հարթակի հիմնադիր',
-            text: 'Բանկ, որ իր ռեբրենդինգի շքեղ միջոցառմամբ ու աշխատանքային ձևաչափով բանկային ոլորտում ամրապնդեց որակ և ճաշակ թելադրեց։',
+
+  useEffect(() => {
+    // Միանում ենք Firebase-ի համապատասխան node-ին (օրինակ՝ 'exchange_data')
+    const dataRef = ref(db, 'exchange_page');
+    
+    const unsubscribe = onValue(dataRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        if (data.currencies) {
+            setCurrencies(data.currencies);
+            // Սկզբնական ընտրված արժույթը թարմացված տվյալներից
+            const usd = data.currencies.find((c: CurrencyType) => c.code === 'USD');
+            if (usd) setSelectedCurrency({ code: usd.code, sell: usd.sell, symbol: usd.symbol });
         }
-    ];
+        if (data.goldRates) setGoldRates(data.goldRates);
+        if (data.testimonials) setTestimonials(data.testimonials);
+      }
+      setLoading(false);
+    });
 
-  const currencies = [
-    { code: 'USD', name: 'ԱՄՆ դոլար', buy: 388.0, sell: 394.0, flag: '🇺🇸', symbol: '$' },
-    { code: 'EUR', name: 'Եվրո', buy: 412.0, sell: 424.0, flag: '🇪🇺', symbol: '€' },
-    { code: 'RUB', name: 'Ռուսական ռուբլի', buy: 4.12, sell: 4.35, flag: '🇷🇺', symbol: '₽' },
-  ];
-
-  const goldRates = [
-    { purity: 375, price: '21,100' },
-    { purity: 500, price: '28,200' },
-    { purity: 583, price: '32,900' },
-    { purity: 750, price: '42,300' },
-    { purity: 999, price: '56,400' },
-  ];
+    return () => unsubscribe();
+  }, []);
 
   const calculateResult = () => {
     const numAmount = Number(amount.replace(/,/g, ''));
     if (isNaN(numAmount) || numAmount === 0) return "0";
     return (numAmount / selectedCurrency.sell).toFixed(2);
   };
+
+  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8]">ԲԵՌՆՎՈՒՄ Է...</div>;
 
   return (
     <section className="py-16 px-4 md:px-20 max-w-[1440px] mx-auto bg-white font-sans">
@@ -178,6 +204,7 @@ const DynamicExchange: React.FC = () => {
           </div>
         </div>
 
+        {/* Addresses Sidebar */}
         <div className="w-full lg:w-[350px]">
           <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">Մեր հասցեները</h3>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">Բանկի հասցեները, աշխատաժամերը և բանկոմատները:</p>
@@ -205,65 +232,68 @@ const DynamicExchange: React.FC = () => {
             ԴԻՏԵԼ ՔԱՐՏԵԶԸ <ChevronRight size={18} />
           </button>
         </div>
-
       </div>
 
-            <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
-                <div className="flex justify-center gap-2 mb-12">
-                    {[1, 2, 3, 4, 5].map(s => (
-                        <motion.span 
-                            key={s}
-                            initial={{ opacity: 0, rotate: -180 }}
-                            whileInView={{ opacity: 1, rotate: 0 }}
-                            transition={{ delay: s * 0.1 }}
-                            className="text-yellow-400 text-4xl"
-                        >
-                            ★
-                        </motion.span>
-                    ))}
-                </div>
+      {/* Testimonials Slider */}
+      <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc] mt-10 rounded-[40px]">
+          <div className="flex justify-center gap-2 mb-12">
+              {[1, 2, 3, 4, 5].map(s => (
+                  <motion.span 
+                      key={s}
+                      initial={{ opacity: 0, rotate: -180 }}
+                      whileInView={{ opacity: 1, rotate: 0 }}
+                      transition={{ delay: s * 0.1 }}
+                      className="text-yellow-400 text-4xl"
+                  >
+                      ★
+                  </motion.span>
+              ))}
+          </div>
 
-                <Swiper
-                    modules={[Pagination, Autoplay, EffectFade]}
-                    effect="fade"
-                    fadeEffect={{ crossFade: true }}
-                    speed={1000}
-                    autoplay={{ delay: 5000 }}
-                    pagination={{ clickable: true }}
-                    className="pb-20"
-                >
-                    {testimonials.map((t, idx) => (
-                        <SwiperSlide key={idx}>
-                            <motion.div 
-                                // Սա ստիպում է անիմացիային աշխատել ամեն սլայդը փոխելիս
-                                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{ duration: 0.8 }}
-                                className="text-center max-w-3xl mx-auto"
-                            >
-                                <div className="relative inline-block">
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
-                                    <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
-                                        {t.text}
-                                    </p>
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
-                                </div>
-                                <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 }}
-                                    className="mt-10"
-                                >
-                                    <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
-                                    <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
-                                </motion.div>
-                            </motion.div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
-            </div>
+          <Swiper
+              modules={[Pagination, Autoplay, EffectFade]}
+              effect="fade"
+              fadeEffect={{ crossFade: true }}
+              speed={1000}
+              autoplay={{ delay: 5000 }}
+              pagination={{ clickable: true }}
+              className="pb-20"
+          >
+              {testimonials.map((t, idx) => (
+                  <SwiperSlide key={idx}>
+                      <motion.div 
+                          initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                          whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                          transition={{ duration: 0.8 }}
+                          className="text-center max-w-3xl mx-auto"
+                      >
+                          <div className="relative inline-block">
+                              <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
+                              <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
+                                  {t.text}
+                              </p>
+                              <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
+                          </div>
+                          <motion.div 
+                              initial={{ opacity: 0 }}
+                              whileInView={{ opacity: 1 }}
+                              transition={{ delay: 0.5 }}
+                              className="mt-10"
+                          >
+                              <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
+                              <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                          </motion.div>
+                      </motion.div>
+                  </SwiperSlide>
+              ))}
+          </Swiper>
+      </div>
+      
+      <style>{`
+          .swiper-pagination-bullet { width: 40px; height: 4px; border-radius: 2px; transition: all 0.5s !important; }
+          .swiper-pagination-bullet-active { background: #7d2ae8 !important; width: 60px; }
+      `}</style>
     </section>
-    
   );
 };
 

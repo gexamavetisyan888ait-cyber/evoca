@@ -1,23 +1,40 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի կառուցվածքի
+import { ref, onValue } from 'firebase/database';
+
 import 'swiper/css';
 import 'swiper/css/navigation';
 
+interface Partner {
+  name: string;
+  logo: string;
+}
+
 const EvocaFullLanding: React.FC = () => {
-  
-  const partners = [
-    { name: 'Factory', logo: 'https://www.evoca.am/images-cache/partners/1/17689930369925/348x150_grayscale.png' },
-    { name: 'Indigo', logo: 'https://www.evoca.am/images-cache/partners/1/16104594273635/348x150_grayscale.png' },
-    { name: 'Futuris Home', logo: 'https://www.evoca.am/images-cache/partners/1/1610459808737/348x150_grayscale.png' },
-    { name: 'Adelie & the Stone', logo: 'https://www.evoca.am/images-cache/partners/1/16104599802947/348x150_grayscale.png' },
-    { name: 'EarlyOne', logo: 'https://www.evoca.am/images-cache/partners/1/16104603665095/348x150_grayscale.png' },
-    { name: 'EasyPay', logo: 'https://www.evoca.am/images-cache/partners/1/16104604109064/348x150_grayscale.png' },
-    { name: 'Telcell', logo: 'https://www.evoca.am/images-cache/partners/1/16104604382658/348x150_grayscale.png' },
-  ];
+  // --- Dynamic Partners State ---
+  const [partners, setPartners] = useState<Partner[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // --- Fetch Partners from Firebase ---
+  useEffect(() => {
+    const partnersRef = ref(db, 'gorcynkerner'); // Ենթադրվում է, որ JSON-ը տեղադրել ես partners node-ի տակ
+    const unsubscribe = onValue(partnersRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedData = Array.isArray(data) ? data : Object.values(data);
+        setPartners(formattedData);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="overflow-x-hidden bg-white">
@@ -108,27 +125,33 @@ const EvocaFullLanding: React.FC = () => {
                </div>
             </div>
 
-            <div className="bg-[#f9f9fb] rounded-[32px] md:rounded-[50px] p-6 md:p-12 lg:p-16 relative">
-              <Swiper
-                modules={[Autoplay, Navigation]}
-                spaceBetween={20}
-                slidesPerView={2}
-                breakpoints={{
-                  480: { slidesPerView: 2, spaceBetween: 20 },
-                  768: { slidesPerView: 3, spaceBetween: 30 },
-                  1024: { slidesPerView: 3, spaceBetween: 40 },
-                }}
-                autoplay={{ delay: 3000 }}
-                navigation={{ prevEl: '.nav-prev', nextEl: '.nav-next' }}
-              >
-                {partners.map((item, idx) => (
-                  <SwiperSlide key={idx}>
-                    <div className="h-24 md:h-32 flex items-center justify-center p-6 bg-white rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 grayscale hover:grayscale-0 transition-all duration-500">
-                      <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
-                    </div>
-                  </SwiperSlide>
-                ))}
-              </Swiper>
+            <div className="bg-[#f9f9fb] rounded-[32px] md:rounded-[50px] p-6 md:p-12 lg:p-16 relative min-h-[200px]">
+              {!loading ? (
+                <Swiper
+                  modules={[Autoplay, Navigation]}
+                  spaceBetween={20}
+                  slidesPerView={2}
+                  breakpoints={{
+                    480: { slidesPerView: 2, spaceBetween: 20 },
+                    768: { slidesPerView: 3, spaceBetween: 30 },
+                    1024: { slidesPerView: 3, spaceBetween: 40 },
+                  }}
+                  autoplay={{ delay: 3000 }}
+                  navigation={{ prevEl: '.nav-prev', nextEl: '.nav-next' }}
+                >
+                  {partners.map((item, idx) => (
+                    <SwiperSlide key={idx}>
+                      <div className="h-24 md:h-32 flex items-center justify-center p-6 bg-white rounded-2xl md:rounded-3xl shadow-sm border border-gray-100 grayscale hover:grayscale-0 transition-all duration-500">
+                        <img src={item.logo} alt={item.name} className="max-h-full max-w-full object-contain" />
+                      </div>
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              ) : (
+                <div className="flex justify-center items-center h-32 text-[#7d2ae8] font-bold">
+                  Բեռնվում է...
+                </div>
+              )}
 
               <div className="flex justify-center lg:justify-start gap-4 mt-8 lg:absolute lg:top-1/2 lg:-right-6 lg:flex-col lg:mt-0 lg:-translate-y-1/2">
                 <button className="nav-prev bg-white p-3 rounded-full shadow-md text-gray-400 hover:text-[#7d2ae8] transition-colors z-20">

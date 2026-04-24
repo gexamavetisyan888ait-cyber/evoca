@@ -1,31 +1,43 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո folder structure-ի
+import { ref, onValue } from 'firebase/database';
+// ------------------------
+
+interface CardType {
+  category: string;
+  title: string;
+  description: string;
+  image: string;
+}
+
 const HeroSection: React.FC = () => {
-  const cards = [
-    {
-      category: "Անհատական",
-      title: "Վարկեր",
-      description: "Օգտվեք մեր վարկատեսակներից առցանց՝ առանց բանկ այցելելու:",
-      image: "https://www.evoca.am/images-cache/menu/1/16194421146504/1200x630.png",
-    },
-    {
-      category: "Evoca",
-      title: "Vision",
-      description: "Մեր տեսլականը և արժեքները թվային աշխարհում:",
-      image: "https://braind.ca/images_list/626fb354143b3/626fb354143bcEvoca-1%20(1).jpg",
-    },
-    {
-      category: "Գործընկերների",
-      title: "Առաջարկներ",
-      description: "Բացահայտեք հատուկ զեղչեր և արտոնություններ մեր գործընկերներից:",
-      image: "https://www.evoca.am/images-cache/menu/1/1620994896414/1200x630.png",
-    }
-  ];
+  const [cards, setCards] = useState<CardType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Միանում ենք Firebase-ի 'hero_cards' կամ համապատասխան ճյուղին
+    const cardsRef = ref(db, 'biznesavand');
+    
+    const unsubscribe = onValue(cardsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Եթե տվյալները Firebase-ում պահված են որպես օբյեկտ
+        const cardsList = Object.keys(data).map(key => data[key]);
+        setCards(cardsList);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="relative w-full min-h-screen bg-white font-sans overflow-x-hidden">
       
+      {/* Hero Header */}
       <div className="relative w-full h-[650px] lg:h-[800px] bg-[#e9e9e9] overflow-hidden">
         <img 
           src="https://www.evoca.am/images-cache/news/1/17367544923272/780x585.png" 
@@ -53,13 +65,15 @@ const HeroSection: React.FC = () => {
         </div>
       </div>
 
+      {/* Cards Section */}
       <div className="relative -mt-24 lg:-mt-40 z-20 max-w-[1450px] mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {cards.map((card, index) => (
+          {!loading && cards.map((card, index) => (
             <motion.div
               key={index}
               initial={{ opacity: 0, y: 50 }}
-              animate={{ opacity: 1, y: 0 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
               transition={{ delay: index * 0.15, duration: 0.7 }}
               className="group relative bg-white rounded-[50px] p-10 h-[520px] flex flex-col shadow-[0_15px_50px_rgba(0,0,0,0.04)] hover:shadow-[0_30px_70px_rgba(102,16,242,0.1)] transition-all duration-500 cursor-pointer overflow-hidden border border-gray-50"
             >
@@ -100,15 +114,19 @@ const HeroSection: React.FC = () => {
             </motion.div>
           ))}
         </div>
+
+        {loading && (
+          <div className="flex justify-center py-20">
+            <div className="animate-pulse text-[#6610f2] font-black uppercase tracking-widest">Բեռնվում է...</div>
+          </div>
+        )}
       </div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,900;1,900&display=swap');
         
-        body {
+        .font-sans {
           font-family: 'Montserrat', sans-serif;
-          background-color: #ffffff;
-          -webkit-font-smoothing: antialiased;
         }
       `}</style>
     </div>

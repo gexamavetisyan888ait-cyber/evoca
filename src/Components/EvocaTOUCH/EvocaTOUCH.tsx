@@ -1,42 +1,49 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { motion, AnimatePresence } from 'framer-motion';
 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգեք հասցեն ըստ Ձեր նախագծի
+import { ref, onValue } from 'firebase/database';
+
 import 'swiper/css';
 import 'swiper/css/pagination';
 import 'swiper/css/effect-fade';
 
+// Տիպերի սահմանում կարծիքների համար
+interface Testimonial {
+    name: string;
+    role: string;
+    text: string;
+}
+
 const EvocaTOUCH: React.FC = () => {
+    const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
+    const [loading, setLoading] = useState(true);
+
     const documents = [
         { name: 'Համալիր բանկային ծառայությունների մատուցման պայմաններ 16.05.2025', lang: 'ARM' },
         { name: 'SWIFT Transfers', lang: 'ENG' },
         { name: 'SWIFT переводы в РФ', lang: 'RUS' },
     ];
 
-    const testimonials = [
-        {
-            name: 'Սուսաննա Վանյան',
-            role: 'Հաճախորդ',
-            text: 'Հայաստանի իրականության մեջ բացառիկ հրաշք բանկ։ Միայն այս հնարավորությունը ընձեռելով երիտասարդ ընտանիքներին ՝ նման ցածր տոկոսով բնակարան ձեռք բերել, արժանի է մեծ հարգանքի։ Շնորհակալ ենք, որ Դուք կաք:',
-        },
-        {
-            name: 'Նունե Գևորգյան',
-            role: 'Հաճախորդ',
-            text: 'Գերազանց սպասարկում, ընտիր ու հավես անձնակազմ Ազատության մասնաճյուղում: Վարկային բաժնից շատ շնորհակալ եմ, վարկս ձևակերպվեց առանց ավելորդ քաշքշուկների` հեշտ, արագ, որակով:',
-        },
-        {
-            name: 'Կամո Թովմասյան',
-            role: 'KAMOBLOG մեդիա-հարթակի հիմնադիր',
-            text: 'Բանկ, որ իր ռեբրենդինգի շքեղ միջոցառմամբ ու աշխատանքային ձևաչափով բանկային ոլորտում ամրապնդեց որակ և ճաշակ թելադրեց։',
-        }
-    ];
+    // Firebase-ից տվյալների ստացում
+    useEffect(() => {
+        const testimonialsRef = ref(db, 'evocatouch'); // Ենթադրվում է, որ JSON-ը տեղադրել եք testimonials node-ի տակ
+        const unsubscribe = onValue(testimonialsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                // Եթե տվյալները գալիս են որպես օբյեկտ, դարձնում ենք զանգված
+                const formattedData = Array.isArray(data) ? data : Object.values(data);
+                setTestimonials(formattedData);
+            }
+            setLoading(false);
+        });
 
-    const fadeInUp = {
-        hidden: { opacity: 0, y: 60 },
-        visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: "easeOut" } }
-    };
+        return () => unsubscribe();
+    }, []);
 
     const staggerContainer = {
         hidden: { opacity: 0 },
@@ -55,10 +62,10 @@ const EvocaTOUCH: React.FC = () => {
                 variants={staggerContainer}
                 className="max-w-[1140px] mx-auto px-4 pt-8"
             >
-                <motion.div  className="flex items-center gap-2 text-[11px] text-gray-400 uppercase tracking-widest mb-8">
+                <motion.div className="flex items-center gap-2 text-[11px] text-gray-400 uppercase tracking-widest mb-8">
                     <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-600">EvocaTOUCH</span>
                 </motion.div>
-                <motion.h1  className="text-[34px] md:text-[50px] font-[900] italic uppercase leading-none mb-10 tracking-tighter">
+                <motion.h1 className="text-[34px] md:text-[50px] font-[900] italic uppercase leading-none mb-10 tracking-tighter">
                     EvocaTOUCH
                 </motion.h1>
             </motion.div>
@@ -70,7 +77,7 @@ const EvocaTOUCH: React.FC = () => {
                 variants={staggerContainer}
                 className="max-w-[1140px] mx-auto px-4 space-y-6 text-[16px] text-gray-600 leading-relaxed"
             >
-                <motion.p >Շատերին թվում է՝ դժվար ու անիրական է ֆինանսական ոլորտում լինել կրեատիվ, սակայն Evocabank-ին հաջողվում է գտնել out of box լուծումներ:</motion.p>
+                <motion.p>Շատերին թվում է՝ դժվար ու անիրական է ֆինանսական ոլորտում լինել կրեատիվ, սակայն Evocabank-ին հաջողվում է գտնել out of box լուծումներ:</motion.p>
                 
                 <ul className="list-none space-y-4 py-4">
                     {[
@@ -181,44 +188,46 @@ const EvocaTOUCH: React.FC = () => {
                     ))}
                 </div>
 
-                <Swiper
-                    modules={[Pagination, Autoplay, EffectFade]}
-                    effect="fade"
-                    fadeEffect={{ crossFade: true }}
-                    speed={1000}
-                    autoplay={{ delay: 5000 }}
-                    pagination={{ clickable: true }}
-                    className="pb-20"
-                >
-                    {testimonials.map((t, idx) => (
-                        <SwiperSlide key={idx}>
-                            <motion.div 
-                                // Սա ստիպում է անիմացիային աշխատել ամեն սլայդը փոխելիս
-                                initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                                whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                                transition={{ duration: 0.8 }}
-                                className="text-center max-w-3xl mx-auto"
-                            >
-                                <div className="relative inline-block">
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
-                                    <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
-                                        {t.text}
-                                    </p>
-                                    <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
-                                </div>
+                {!loading && testimonials.length > 0 && (
+                    <Swiper
+                        modules={[Pagination, Autoplay, EffectFade]}
+                        effect="fade"
+                        fadeEffect={{ crossFade: true }}
+                        speed={1000}
+                        autoplay={{ delay: 5000 }}
+                        pagination={{ clickable: true }}
+                        className="pb-20"
+                    >
+                        {testimonials.map((t, idx) => (
+                            <SwiperSlide key={idx}>
                                 <motion.div 
-                                    initial={{ opacity: 0 }}
-                                    whileInView={{ opacity: 1 }}
-                                    transition={{ delay: 0.5 }}
-                                    className="mt-10"
+                                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                    transition={{ duration: 0.8 }}
+                                    className="text-center max-w-3xl mx-auto"
                                 >
-                                    <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
-                                    <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                                    <div className="relative inline-block">
+                                        <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
+                                        <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
+                                            {t.text}
+                                        </p>
+                                        <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
+                                    </div>
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        whileInView={{ opacity: 1 }}
+                                        transition={{ delay: 0.5 }}
+                                        className="mt-10"
+                                    >
+                                        <h4 className="text-[#6610f2] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
+                                        <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                                    </motion.div>
                                 </motion.div>
-                            </motion.div>
-                        </SwiperSlide>
-                    ))}
-                </Swiper>
+                            </SwiperSlide>
+                        ))}
+                    </Swiper>
+                )}
+                {loading && <div className="text-center py-10 font-bold text-[#6610f2]">ԲԵՌՆՎՈՒՄ Է...</div>}
             </div>
 
             <style>{`

@@ -1,10 +1,33 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-react';
+
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի
+import { ref, onValue } from 'firebase/database';
+
+// Տվյալների տիպերի սահմանում
+interface Accordion {
+    id: number;
+    title: string;
+    content: string;
+}
+
+interface Section {
+    title: string;
+    img: string;
+    desc: string;
+    list: string[];
+    accordions: Accordion[];
+}
 
 const Hashivner: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+    
+    // --- Dynamic Data State ---
+    const [sections, setSections] = useState<Section[]>([]);
+    const [loading, setLoading] = useState(true);
 
     const tabs = [
         "Հաշիվների բացում և սպասարկում",
@@ -12,38 +35,20 @@ const Hashivner: React.FC = () => {
         "Ոչ ռեզիդենտ հաճախորդների հեռավար սպասարկում"
     ];
 
-    const sections = [
-        {
-            title: "Հաշիվների բացում և սպասարկում",
-            img: "https://www.evoca.am/images-cache/menu/1/16111691720299/780x585.jpg",
-            desc: "Evocabank-ում հաշիվ բացելը պարզ է և արագ: Մենք առաջարկում ենք ֆիզիկական անձանց ընթացիկ և խնայողական հաշիվների բացման և սպասարկման լայն հնարավորություններ տարբեր արժույթներով:",
-            list: ["Հաշիվներ AMD, USD, EUR, RUR և այլ արժույթներով", "Անվճար մուտք EvocaTOUCH հավելվածին", "Արագ և ապահով գործարքների իրականացում"],
-            accordions: [
-                { id: 1, title: "ՀԱՇՎԻ ԲԱՑՄԱՆ ՀԱՄԱՐ ԱՆՀՐԱԺԵՇՏ ՓԱՍՏԱԹՂԹԵՐ", content: "Ֆիզիկական անձանց համար անհրաժեշտ է ներկայացնել անձը հաստատող փաստաթուղթ և ՀԾՀ:" },
-                { id: 2, title: "ՍԱԿԱԳՆԵՐ ԵՎ ԴՐՈՒՅՔՆԵՐ", content: "Մանրամասն սակագները ներկայացված են ստորև բերված ֆայլերում:" }
-            ]
-        },
-        {
-            title: "Առարկայազուրկ մետաղական հաշիվներ",
-            img: "https://www.evoca.am/images-cache/menu/1/17092121924185/780x585.png",
-            desc: "Առարկայազուրկ մետաղական հաշիվը հաշիվ է, որտեղ հաշվառվում է Ձեր ոսկին՝ առանց դրա ձուլակտորների առկայության:",
-            list: ["999.9 հարգի ոսկու հաշվառում", "Անկանխիկ ոսկու առք և վաճառք", "Անվճար սպասարկում և ապահովություն"],
-            accordions: [
-                { id: 3, title: "ԻՆՉ Է ՄԵՏԱՂԱԿԱՆ ՀԱՇԻՎԸ", content: "Սա Ձեր միջոցները ոսկու տեսքով պահելու միջոց է:" },
-                { id: 4, title: "ՍԱԿԱԳՆԵՐ", content: "Գործում են բանկի կողմից սահմանված հատուկ սակագներ:" }
-            ]
-        },
-        {
-            title: "Ոչ ռեզիդենտ հաճախորդների հեռավար սպասարկում",
-            img: "https://www.evoca.am/images-cache/menu/1/17510033256067/780x585.png",
-            desc: "Evocabank-ը առաջարկում է հեռահար հաշիվների բացման և սպասարկման լուծումներ ոչ ռեզիդենտ հաճախորդների համար:",
-            list: ["Հեռահար նույնականացում", "Առցանց հաշիվների բացում", "Անձնական մենեջերի աջակցություն"],
-            accordions: [
-                { id: 5, title: "ԴԻՄԵԼՈՒ ԿԱՐԳԸ", content: "Դիմումն ընդունվում է առցանց տարբերակով:" },
-                { id: 6, title: "ՊԱՀԱՆՋՎՈՂ ՓԱՍՏԱԹՂԹԵՐ", content: "Օտարերկրյա անձնագիր և հարակից փաստաթղթեր:" }
-            ]
-        }
-    ];
+    // Firebase-ից տվյալների ստացում
+    useEffect(() => {
+        const accountsRef = ref(db, 'hashivner'); // Ենթադրվում է, որ JSON-ը այս node-ի տակ է
+        const unsubscribe = onValue(accountsRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const formattedData = Array.isArray(data) ? data : Object.values(data);
+                setSections(formattedData as Section[]);
+            }
+            setLoading(false);
+        });
+
+        return () => unsubscribe();
+    }, []);
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
@@ -67,52 +72,74 @@ const Hashivner: React.FC = () => {
                 </div>
             </div>
 
-            <div className="max-w-[1140px] mx-auto px-4 pb-20">
-                <AnimatePresence mode="wait">
-                    <motion.div
-                        key={activeTab}
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        exit={{ opacity: 0, y: -20 }}
-                        className="grid grid-cols-1 lg:grid-cols-2 gap-16"
-                    >
-                        <div className="space-y-10">
-                            <div className="rounded-[45px] overflow-hidden shadow-2xl"><img src={sections[activeTab].img} className="w-full h-auto" alt="" /></div>
-                            <div className="space-y-6">
-                                <h2 className="text-[26px] font-black italic uppercase text-[#6610f2]">{sections[activeTab].title}</h2>
-                                <p className="text-gray-500 leading-relaxed text-[17px]">{sections[activeTab].desc}</p>
-                                <ul className="space-y-4">
-                                    {sections[activeTab].list.map((item, i) => (
-                                        <li key={i} className="flex items-center gap-4 font-bold text-[14px]">
-                                            <span className="w-2 h-2 rounded-full bg-[#6610f2]" /> {item}
-                                        </li>
-                                    ))}
-                                </ul>
-                                <button className="bg-[#6610f2] text-white px-12 py-5 rounded-full font-black uppercase text-[12px] tracking-widest">Դառնալ հաճախորդ</button>
-                            </div>
-                        </div>
-
-                        <div className="divide-y divide-gray-100">
-                            {sections[activeTab].accordions.map((item) => (
-                                <div key={item.id}>
-                                    <button onClick={() => setOpenAccordion(openAccordion === item.id ? null : item.id)} className="w-full py-7 flex items-center justify-between text-left group">
-                                        <span className={`text-[16px] font-black uppercase italic ${openAccordion === item.id ? "text-[#6610f2]" : "text-gray-800"}`}>{item.title}</span>
-                                        <motion.div animate={{ rotate: openAccordion === item.id ? 180 : 0 }} className={`p-1.5 rounded-full ${openAccordion === item.id ? "bg-[#6610f2] text-white" : "bg-gray-100 text-gray-400"}`}></motion.div>
-                                    </button>
-                                    <AnimatePresence>
-                                        {openAccordion === item.id && (
-                                            <motion.div initial={{ height: 0, opacity: 0 }} animate={{ height: "auto", opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="overflow-hidden pb-8 text-gray-500 text-[16px]">
-                                                {item.content}
-                                            </motion.div>
-                                        )}
-                                    </AnimatePresence>
+            <div className="max-w-[1140px] mx-auto px-4 pb-20 min-h-[600px]">
+                {loading ? (
+                    <div className="text-center py-20 text-[#6610f2] font-black italic uppercase">Բեռնվում է...</div>
+                ) : (
+                    <AnimatePresence mode="wait">
+                        {sections[activeTab] && (
+                            <motion.div
+                                key={activeTab}
+                                initial={{ opacity: 0, y: 20 }}
+                                animate={{ opacity: 1, y: 0 }}
+                                exit={{ opacity: 0, y: -20 }}
+                                className="grid grid-cols-1 lg:grid-cols-2 gap-16"
+                            >
+                                <div className="space-y-10">
+                                    <div className="rounded-[45px] overflow-hidden shadow-2xl bg-gray-100">
+                                        <img src={sections[activeTab].img} className="w-full h-auto" alt={sections[activeTab].title} />
+                                    </div>
+                                    <div className="space-y-6">
+                                        <h2 className="text-[26px] font-black italic uppercase text-[#6610f2]">{sections[activeTab].title}</h2>
+                                        <p className="text-gray-500 leading-relaxed text-[17px]">{sections[activeTab].desc}</p>
+                                        <ul className="space-y-4">
+                                            {sections[activeTab].list.map((item, i) => (
+                                                <li key={i} className="flex items-center gap-4 font-bold text-[14px]">
+                                                    <span className="w-2 h-2 rounded-full bg-[#6610f2]" /> {item}
+                                                </li>
+                                            ))}
+                                        </ul>
+                                        <button className="bg-[#6610f2] text-white px-12 py-5 rounded-full font-black uppercase text-[12px] tracking-widest hover:bg-[#520dc2] transition-colors">Դառնալ հաճախորդ</button>
+                                    </div>
                                 </div>
-                            ))}
-                        </div>
-                    </motion.div>
-                </AnimatePresence>
+
+                                <div className="divide-y divide-gray-100">
+                                    {sections[activeTab].accordions.map((item) => (
+                                        <div key={item.id}>
+                                            <button 
+                                                onClick={() => setOpenAccordion(openAccordion === item.id ? null : item.id)} 
+                                                className="w-full py-7 flex items-center justify-between text-left group"
+                                            >
+                                                <span className={`text-[16px] font-black uppercase italic transition-colors ${openAccordion === item.id ? "text-[#6610f2]" : "text-gray-800"}`}>{item.title}</span>
+                                                <motion.div 
+                                                    animate={{ rotate: openAccordion === item.id ? 180 : 0 }} 
+                                                    className={`p-1.5 rounded-full flex items-center justify-center transition-colors ${openAccordion === item.id ? "bg-[#6610f2] text-white" : "bg-gray-100 text-gray-400"}`}
+                                                >
+                                                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                                                </motion.div>
+                                            </button>
+                                            <AnimatePresence>
+                                                {openAccordion === item.id && (
+                                                    <motion.div 
+                                                        initial={{ height: 0, opacity: 0 }} 
+                                                        animate={{ height: "auto", opacity: 1 }} 
+                                                        exit={{ height: 0, opacity: 0 }} 
+                                                        className="overflow-hidden pb-8 text-gray-500 text-[16px] leading-relaxed"
+                                                    >
+                                                        {item.content}
+                                                    </motion.div>
+                                                )}
+                                            </AnimatePresence>
+                                        </div>
+                                    ))}
+                                </div>
+                            </motion.div>
+                        )}
+                    </AnimatePresence>
+                )}
             </div>
 
+            {/* Banner Section */}
             <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
                 <motion.div 
                     animate={{ 

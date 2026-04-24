@@ -1,49 +1,12 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի
+import { ref, onValue } from 'firebase/database';
 
 interface FAQItem {
   question: string;
   answer: React.ReactNode;
 }
-
-const faqData: FAQItem[] = [
-  {
-    question: "Ո՞վ կարող է միանալ Evoca աշխատավարձային նախագծին:",
-    answer: "Evoca աշխատավարձային նախագծին կարող է միանալ յուրաքանչյուր ֆիզիկական անձ, ով ցանկանում է իր աշխատավարձը ստանալ Evocabank-ի քարտով՝ անկախ գործատուի իրավաբանական տեսակից:",
-  },
-  {
-    question: "Կարո՞ղ եմ օգտվել միայն նոր գործատու ունենալու դեպքում:",
-    answer: "Ո՛չ: Բավական է Ձեր գործատուին ներկայացնել Evoca քարտի տվյալները, և աշխատավարձի փոխանցումը կարվի հենց Evoca-ում բացված հաշվին:",
-  },
-  {
-    question: "Կարո՞ղ եմ դիմել, եթե դեռ Evoca-ի հաճախորդ չեմ:",
-    answer: "Իհարկե՛: Եթե դեռ Evoca-ի հաճախորդ չեք, դուք նույնպես կարող եք միանալ Evoca աշխատավարձային նախագծին:",
-  },
-  {
-    question: "Ե՞րբ կսկսեմ օգտվել արտոնություններից:",
-    answer: (
-      <div className="space-y-4">
-        <p>Արտոնություններից կարող եք օգտվել այն պահից, երբ առաջին աշխատավարձը փոխանցվի Evocabank-ի քարտին:</p>
-        <p>Քարտերի արտոնություններից գործում են անմիջապես, իսկ վարկերի արտոնություններից կարող եք օգտվել աշխատավարձի քարտին մեկ ամսվա մուտքերից հետո:</p>
-      </div>
-    ),
-  },
-  {
-    question: "Կարո՞ղ եմ ունենալ մի քանի քարտ աշխատավարձային նախագծի շրջանակում:",
-    answer: "Այո՛, կարող եք ունենալ Բանկի կողմից թողարկվող մի քանի գործող քարտ, սակայն աշխատավարձային նախագծի շրջանակում կարող եք ընտրել նշված քարտերից մեկը, որի վրա էլ կստանաք աշխատավարձը, իսկ Evoca Travel Card-ը կարող եք ձեռք բերել 50% զեղչով:",
-  },
-  {
-    question: "Ինչպե՞ս կարող եմ դիմել աշխատավարձային նախագծին միանալու համար:",
-    answer: (
-      <div className="space-y-3">
-        <p>Միանալու համար կարող եք՝</p>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Զանգահարել <span className="font-bold text-[#6622CC]">+374(10)555555 | 8144</span> հեռախոսահամարով:</li>
-          <li>Այցելել Evocabank-ի ցանկացած մասնաճյուղ և ստանալ խորհրդատվություն:</li>
-        </ul>
-      </div>
-    ),
-  },
-];
 
 const AccordionItem = ({ item, isOpen, onClick }: { item: FAQItem; isOpen: boolean; onClick: () => void }) => (
   <div className="border-b border-gray-200">
@@ -61,6 +24,25 @@ const AccordionItem = ({ item, isOpen, onClick }: { item: FAQItem; isOpen: boole
 
 const EvocaSALARY: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  // --- Dynamic Data State ---
+  const [faqData, setFaqData] = useState<FAQItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // --- Fetch Data from Firebase ---
+  useEffect(() => {
+    const salaryFaqRef = ref(db, 'evocasalary'); // Ենթադրվում է, որ տվյալները այս node-ի տակ են
+    const unsubscribe = onValue(salaryFaqRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Ձևափոխում ենք տվյալները, եթե դրանք գալիս են որպես Object
+        const formattedFaqs = Object.values(data) as FAQItem[];
+        setFaqData(formattedFaqs);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
     <div className="w-full bg-white font-sans overflow-x-hidden">
@@ -98,7 +80,7 @@ const EvocaSALARY: React.FC = () => {
                 Բեր աշխատավարձդ Evoca, Տար անվճար Mastercard Gold
             </h3>
             <ul className="space-y-3 mt-4">
-                {["Պրեմիում դասի քարտ", "Հասանելի ամբողջ աշխարհում", "Գումարի անվտանգության բարձր մակարդակ", "Դրական մնացորդի նկատմամբ 2% տարեկան տոկոսադրույք"].map((txt, i) => (
+                {["Պրեմիում դասի քարտ", "Հասանելի ամբողջ աշխարհում", "Գումարի անվտանգության բարձր մակարդակ", "Դրական մնացորդի նկատմամպ 2% տարեկան տոկոսադրույք"].map((txt, i) => (
                     <li key={i} className="flex items-center gap-3 text-gray-700">
                         <div className="w-1.5 h-1.5 bg-[#6622CC] rounded-full" /> {txt}
                     </li>
@@ -142,16 +124,22 @@ const EvocaSALARY: React.FC = () => {
 
       <section className="max-w-[1000px] mx-auto px-4 py-16 border-t border-gray-100">
         <h2 className="text-[30px] font-bold text-[#1A1A1A] mb-8">Հաճախ տրվող հարցեր</h2>
-        <div className="space-y-2">
-          {faqData.map((faq, index) => (
-            <AccordionItem
-              key={index}
-              item={faq}
-              isOpen={openIndex === index}
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            />
-          ))}
-        </div>
+        
+        {loading ? (
+            <div className="text-[#6622CC] font-bold italic">Բեռնվում է...</div>
+        ) : (
+            <div className="space-y-2">
+            {faqData.map((faq, index) => (
+                <AccordionItem
+                key={index}
+                item={faq}
+                isOpen={openIndex === index}
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+                />
+            ))}
+            </div>
+        )}
+        
         <div className="mt-8 text-right text-gray-400 text-[11px] italic">
             Թարմացվել է 20/04/2026 13:05
         </div>
