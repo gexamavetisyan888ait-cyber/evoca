@@ -1,161 +1,196 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
 
+// Firebase ներմուծումներ (համոզվիր, որ lib/firebase.ts-ում արդեն ունես db-ի արտահանումը)
+import { ref, onValue } from "firebase/database";
+import { db } from "../../lib/firebase"; 
+
+// Տիպերի սահմանում
 interface FAQItem {
+  id?: string;
   question: string;
   answer: React.ReactNode;
 }
 
-const faqData: FAQItem[] = [
-  {
-    question: "Ո՞վ կարող է միանալ Evoca աշխատավարձային նախագծին:",
-    answer: "Evoca աշխատավարձային նախագծին կարող է միանալ յուրաքանչյուր ֆիզիկական անձ, ով ցանկանում է իր աշխատավարձը ստանալ Evocabank-ի քարտով՝ անկախ գործատուի իրավաբանական տեսակից:",
-  },
-  {
-    question: "Կարո՞ղ եմ օգտվել միայն նոր գործատու ունենալու դեպքում:",
-    answer: "Ո՛չ: Բավական է Ձեր գործատուին ներկայացնել Evoca քարտի տվյալները, և աշխատավարձի փոխանցումը կարվի հենց Evoca-ում բացված հաշվին:",
-  },
-  {
-    question: "Կարո՞ղ եմ դիմել, եթե դեռ Evoca-ի հաճախորդ չեմ:",
-    answer: "Իհարկե՛: Եթե դեռ Evoca-ի հաճախորդ չեք, դուք նույնպես կարող եք միանալ Evoca աշխատավարձային նախագծին:",
-  },
-  {
-    question: "Ե՞րբ կսկսեմ օգտվել արտոնություններից:",
-    answer: (
-      <div className="space-y-4">
-        <p>Արտոնություններից կարող եք օգտվել այն պահից, երբ առաջին աշխատավարձը փոխանցվի Evocabank-ի քարտին:</p>
-        <p>Քարտերի արտոնություններից գործում են անմիջապես, իսկ վարկերի արտոնություններից կարող եք օգտվել աշխատավարձի քարտին մեկ ամսվա մուտքերից հետո:</p>
-      </div>
-    ),
-  },
-  {
-    question: "Կարո՞ղ եմ ունենալ մի քանի քարտ աշխատավարձային նախագծի շրջանակում:",
-    answer: "Այո՛, կարող եք ունենալ Բանկի կողմից թողարկվող մի քանի գործող քարտ, սակայն աշխատավարձային նախագծի շրջանակում կարող եք ընտրել նշված քարտերից մեկը, որի վրա էլ կստանաք աշխատավարձը, իսկ Evoca Travel Card-ը կարող եք ձեռք բերել 50% զեղչով:",
-  },
-  {
-    question: "Ինչպե՞ս կարող եմ դիմել աշխատավարձային նախագծին միանալու համար:",
-    answer: (
-      <div className="space-y-3">
-        <p>Միանալու համար կարող եք՝</p>
-        <ul className="list-disc pl-5 space-y-2">
-          <li>Զանգահարել <span className="font-bold text-[#6622CC]">+374(10)555555 | 8144</span> հեռախոսահամարով:</li>
-          <li>Այցելել Evocabank-ի ցանկացած մասնաճյուղ և ստանալ խորհրդատվություն:</li>
-        </ul>
-      </div>
-    ),
-  },
-];
-
 const AccordionItem = ({ item, isOpen, onClick }: { item: FAQItem; isOpen: boolean; onClick: () => void }) => (
-  <div className="border-b border-gray-200">
-    <button onClick={onClick} className="w-full py-5 flex justify-between items-center text-left">
-      <span className={`text-[16px] font-semibold ${isOpen ? 'text-[#6622CC]' : 'text-[#333]'}`}>{item.question}</span>
-      <span className={`transform transition-transform ${isOpen ? 'rotate-180' : ''}`}>
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#6622CC" strokeWidth="2.5"><polyline points="6 9 12 15 18 9"></polyline></svg>
+  <div className="border-b border-gray-100 last:border-0">
+    <button 
+      onClick={onClick} 
+      className="w-full py-6 flex justify-between items-center text-left group transition-all"
+    >
+      <span className={`text-[16px] md:text-[18px] font-bold uppercase italic tracking-tight transition-colors duration-300 ${isOpen ? 'text-[#6622CC]' : 'text-[#333]'}`}>
+        {item.question}
       </span>
+      <motion.div 
+        animate={{ rotate: isOpen ? 180 : 0 }}
+        className={`p-2 rounded-full ${isOpen ? 'bg-[#6622CC] text-white' : 'bg-gray-50 text-gray-400'}`}
+      >
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+          <polyline points="6 9 12 15 18 9"></polyline>
+        </svg>
+      </motion.div>
     </button>
-    <div className={`overflow-hidden transition-all duration-300 ${isOpen ? 'max-h-[500px] pb-5' : 'max-h-0'}`}>
-      <div className="text-[15px] text-gray-600 leading-relaxed bg-gray-50 p-4 rounded-lg">{item.answer}</div>
-    </div>
+    <AnimatePresence>
+      {isOpen && (
+        <motion.div 
+          initial={{ height: 0, opacity: 0 }}
+          animate={{ height: "auto", opacity: 1 }}
+          exit={{ height: 0, opacity: 0 }}
+          className="overflow-hidden"
+        >
+          <div className="pb-6 text-[15px] md:text-[16px] text-gray-500 font-medium italic leading-relaxed">
+            {typeof item.answer === 'string' ? (
+              <p dangerouslySetInnerHTML={{ __html: item.answer }} />
+            ) : (
+              item.answer
+            )}
+          </div>
+        </motion.div>
+      )}
+    </AnimatePresence>
   </div>
 );
 
 const EvocaSALARY: React.FC = () => {
   const [openIndex, setOpenIndex] = useState<number | null>(0);
+  const [faqData, setFaqData] = useState<FAQItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Բեռնում ենք աշխատավարձային նախագծի FAQ-ն Firebase-ից
+    const payrollFaqsRef = ref(db, 'payroll_faqs');
+    const unsubscribe = onValue(payrollFaqsRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        setFaqData(Object.values(data));
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
 
   return (
-    <div className="w-full bg-white font-sans overflow-x-hidden">
-      <section className="max-w-[1200px] mx-auto px-4 py-12 flex flex-col md:flex-row items-center gap-12">
+    <div className="w-full bg-white font-sans overflow-x-hidden pb-20">
+      {/* Hero Section */}
+      <section className="max-w-[1450px] mx-auto px-6 py-12 flex flex-col md:flex-row items-center gap-12 mt-10">
         <div className="flex-1 space-y-6">
-          <div className="flex items-center text-sm text-gray-400 gap-2">
-            <span>Անհատ</span> <span className="text-[10px]">▶</span> <span>EvocaSALARY</span>
-          </div>
-          <h1 className="text-[40px] font-black text-[#333] leading-tight uppercase italic">
+          <motion.div 
+            initial={{ opacity: 0, x: -20 }} 
+            animate={{ opacity: 1, x: 0 }}
+            className="flex items-center text-xs font-black uppercase tracking-widest text-gray-300 gap-2"
+          >
+            <span>Անհատ</span> <span className="text-[8px]">▶</span> <span className="text-[#6622CC]">EvocaSALARY</span>
+          </motion.div>
+          <motion.h1 
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[45px] md:text-[75px] font-[1000] text-[#1a1a1a] leading-[0.85] uppercase italic tracking-tighter"
+          >
             EVOCA<br />ԱՇԽԱՏԱՎԱՐՁԱՅԻՆ<br />ՆԱԽԱԳԻԾ
-          </h1>
-          <p className="text-[18px] text-gray-600">
+          </motion.h1>
+          <p className="text-[18px] md:text-[20px] text-gray-500 font-medium italic leading-tight">
             Քո աշխատավարձը կարող է քեզ տալ շատ ավելին:<br />
             Պարզապես պետք է ընտրել Evocabank-ը:
           </p>
         </div>
         <div className="flex-1 relative">
-            <div className="bg-[#6622CC] rounded-3xl p-8 flex justify-center items-center overflow-hidden">
+            <motion.div 
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              className="bg-[#6622CC] rounded-[60px] p-10 flex justify-center items-center overflow-hidden shadow-2xl"
+            >
                 <img 
                     src="https://www.evoca.am/images-cache/menu/1/17738355890361/780x585.png" 
                     alt="Evoca Wallet" 
                     className="w-full h-auto object-contain scale-110"
                 />
-            </div>
+            </motion.div>
         </div>
       </section>
 
-      <section className="max-w-[1000px] mx-auto px-4 py-12">
-        <p className="text-[16px] text-gray-700 mb-10 text-center leading-relaxed">
-            Evoca աշխատավարձային նախագիծը մեկնարկել է նրանց համար, ովքեր, իրենց աշխատավարձը քարտին ստանալուց բացի, ցանկանում են նաև ստանալ <span className="text-[#6622CC] font-bold">նոր հնարավորություններ ու առավելություններ</span>:
+      {/* Main Content */}
+      <section className="max-w-[1100px] mx-auto px-6 py-12">
+        <p className="text-[18px] md:text-[22px] text-gray-800 mb-16 text-center font-bold italic leading-snug uppercase">
+            Evoca աշխատավարձային նախագիծը մեկնարկել է նրանց համար, ովքեր ցանկանում են ստանալ <span className="text-[#6622CC]">նոր հնարավորություններ ու առավելություններ</span>:
         </p>
 
-        <div className="mb-12">
-            <h3 className="text-[#6622CC] font-bold text-[18px] mb-4 border-b-2 border-[#6622CC] inline-block pb-1">
-                Բեր աշխատավարձդ Evoca, Տար անվճար Mastercard Gold
-            </h3>
-            <ul className="space-y-3 mt-4">
-                {["Պրեմիում դասի քարտ", "Հասանելի ամբողջ աշխարհում", "Գումարի անվտանգության բարձր մակարդակ", "Դրական մնացորդի նկատմամբ 2% տարեկան տոկոսադրույք"].map((txt, i) => (
-                    <li key={i} className="flex items-center gap-3 text-gray-700">
-                        <div className="w-1.5 h-1.5 bg-[#6622CC] rounded-full" /> {txt}
-                    </li>
-                ))}
-            </ul>
+        <div className="grid md:grid-cols-2 gap-10">
+          <div className="bg-[#f8f9fb] p-10 rounded-[45px] border border-gray-100 hover:shadow-xl transition-all">
+              <h3 className="text-[#1a1a1a] font-black text-[20px] mb-6 uppercase italic leading-tight">
+                  Բեր աշխատավարձդ Evoca, Տար անվճար <span className="text-[#6622CC]">Mastercard Gold</span>
+              </h3>
+              <ul className="space-y-4">
+                  {["Պրեմիում դասի քարտ", "Հասանելի ամբողջ աշխարհում", "Գումարի անվտանգության բարձր մակարդակ", "Դրական մնացորդի նկատմամբ 2% տարեկան տոկոսադրույք"].map((txt, i) => (
+                      <li key={i} className="flex items-center gap-3 text-gray-600 font-semibold italic text-sm">
+                          <div className="w-2 h-2 bg-[#6622CC] rounded-full" /> {txt}
+                      </li>
+                  ))}
+              </ul>
+          </div>
+
+          <div className="bg-[#f8f9fb] p-10 rounded-[45px] border border-gray-100 hover:shadow-xl transition-all">
+              <h3 className="text-[#1a1a1a] font-black text-[20px] mb-6 uppercase italic leading-tight">
+                  Բեր աշխատավարձդ Evoca, Տար 50% զեղչով <span className="text-[#6622CC]">Evoca Travel Card</span>
+              </h3>
+              <ul className="space-y-4">
+                  <li className="flex items-center gap-3 text-gray-600 font-semibold italic text-sm">
+                      <div className="w-2 h-2 bg-[#6622CC] rounded-full" /> Մինչև <span className="text-[#6622CC]">1.5% cashback</span> արտասահմանում
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-600 font-semibold italic text-sm">
+                      <div className="w-2 h-2 bg-[#6622CC] rounded-full" /> Անվճար <span className="text-[#6622CC]">6 մուտք</span> Lounge Key
+                  </li>
+                  <li className="flex items-center gap-3 text-gray-600 font-semibold italic text-sm">
+                      <div className="w-2 h-2 bg-[#6622CC] rounded-full" /> Անվճար <span className="text-[#6622CC]">6 անգամ</span> Fast track
+                  </li>
+              </ul>
+          </div>
         </div>
 
-        <div className="mb-12">
-            <h3 className="text-[#6622CC] font-bold text-[18px] mb-4 border-b-2 border-[#6622CC] inline-block pb-1">
-                Բեր աշխատավարձդ Evoca, Տար 50% զեղչով Evoca Travel Card
-            </h3>
-            <ul className="space-y-3 mt-4">
-                <li className="flex items-center gap-3 text-gray-700 font-medium">
-                    <div className="w-1.5 h-1.5 bg-[#6622CC] rounded-full" /> Մինչև <span className="text-[#6622CC]">1.5% cashback</span> արտասահմանում իրականացված վճարումների համար
-                </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                    <div className="w-1.5 h-1.5 bg-[#6622CC] rounded-full" /> Անվճար <span className="text-[#6622CC] font-bold">6 մուտք</span> Lounge Key սրահներ քեզ և հյուրերիդ համար
-                </li>
-                <li className="flex items-center gap-3 text-gray-700">
-                    <div className="w-1.5 h-1.5 bg-[#6622CC] rounded-full" /> Անվճար <span className="text-[#6622CC] font-bold">6 անգամ</span> Fast track-ից օգտվելու հնարավորություն
-                </li>
-            </ul>
-        </div>
-
-        <div className="mb-12 bg-gray-50 p-8 rounded-2xl border-l-4 border-[#6622CC]">
-            <h3 className="text-[#6622CC] font-bold text-[18px] mb-6 uppercase">Վարկեր ավելի ցածր տոկոսադրույքով</h3>
-            <div className="grid md:grid-cols-2 gap-8">
-                <div>
-                    <h4 className="font-bold text-gray-800 underline mb-3 italic">Օվերդրաֆտ</h4>
-                    <p className="text-sm text-gray-600">Մինչև աշխատավարձի <span className="text-[#6622CC] font-bold">15-ապատիկի</span> չափով</p>
-                    <p className="text-sm text-gray-600">Մինչև <span className="text-[#6622CC] font-bold">10 մլն դրամ</span> գումար</p>
+        <div className="mt-10 bg-[#1a1a1a] p-12 rounded-[50px] shadow-2xl relative overflow-hidden">
+            <div className="absolute top-0 right-0 w-64 h-64 bg-[#6622CC] opacity-20 blur-[100px]" />
+            <h3 className="text-white font-black text-[24px] mb-10 uppercase italic tracking-tighter">Վարկեր ավելի ցածր տոկոսադրույքով</h3>
+            <div className="grid md:grid-cols-2 gap-12">
+                <div className="border-l-2 border-[#6622CC] pl-6">
+                    <h4 className="font-black text-[#6622CC] uppercase mb-2 italic">Օվերդրաֆտ</h4>
+                    <p className="text-gray-400 font-bold italic text-sm uppercase">Մինչև աշխատավարձի 15-ապատիկը</p>
+                    <p className="text-gray-400 font-bold italic text-sm uppercase">Մինչև 10 մլն դրամ</p>
                 </div>
-                <div>
-                    <h4 className="font-bold text-gray-800 underline mb-3 italic">Ավտովարկ</h4>
-                    <p className="text-sm text-gray-600"><span className="text-[#6622CC] font-bold">0.5%-ով</span> ցածր տոկոսադրույք</p>
-                    <p className="text-sm text-gray-600">Մինչև <span className="text-[#6622CC] font-bold">50 մլն դրամ</span></p>
+                <div className="border-l-2 border-[#6622CC] pl-6">
+                    <h4 className="font-black text-[#6622CC] uppercase mb-2 italic">Ավտովարկ</h4>
+                    <p className="text-gray-400 font-bold italic text-sm uppercase">0.5%-ով ցածր տոկոսադրույք</p>
+                    <p className="text-gray-400 font-bold italic text-sm uppercase">Մինչև 50 մլն դրամ</p>
                 </div>
             </div>
         </div>
       </section>
 
-      <section className="max-w-[1000px] mx-auto px-4 py-16 border-t border-gray-100">
-        <h2 className="text-[30px] font-bold text-[#1A1A1A] mb-8">Հաճախ տրվող հարցեր</h2>
+      {/* FAQ Section */}
+      <section className="max-w-[1100px] mx-auto px-6 py-20 mt-10">
+        <h2 className="text-[35px] md:text-[50px] font-[1000] text-[#1a1a1a] mb-12 uppercase italic tracking-tighter">Հաճախ տրվող հարցեր</h2>
         <div className="space-y-2">
-          {faqData.map((faq, index) => (
-            <AccordionItem
-              key={index}
-              item={faq}
-              isOpen={openIndex === index}
-              onClick={() => setOpenIndex(openIndex === index ? null : index)}
-            />
-          ))}
+          {loading ? (
+            <div className="py-10 text-center font-black text-[#6622CC] italic uppercase">Բեռնվում է...</div>
+          ) : (
+            faqData.map((faq, index) => (
+              <AccordionItem
+                key={index}
+                item={faq}
+                isOpen={openIndex === index}
+                onClick={() => setOpenIndex(openIndex === index ? null : index)}
+              />
+            ))
+          )}
         </div>
-        <div className="mt-8 text-right text-gray-400 text-[11px] italic">
-            Թարմացվել է 20/04/2026 13:05
+        <div className="mt-12 text-right text-gray-300 text-[10px] font-black uppercase italic tracking-widest">
+            Վերջին թարմացում՝ 2026 / 04 / 24
         </div>
       </section>
+
+      <style>{`
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
+        .font-sans { font-family: 'Montserrat', sans-serif; }
+      `}</style>
     </div>
   );
 };
