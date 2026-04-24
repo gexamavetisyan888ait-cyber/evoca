@@ -18,7 +18,7 @@ const HeroSection: React.FC = () => {
 
   useEffect(() => {
     // Միանում ենք Firebase-ի 'hero_cards' ճյուղին
-    const cardsRef = ref(db, 'hero_cards');
+    const cardsRef = ref(db, 'biznesAvand');
     
     const unsubscribe = onValue(cardsRef, (snapshot) => {
       const data = snapshot.val();

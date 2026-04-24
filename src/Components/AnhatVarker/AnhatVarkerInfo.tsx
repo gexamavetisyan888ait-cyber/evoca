@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { ref, child, get } from "firebase/database";
-// Ներմուծում ենք արդեն իսկ initialize եղած db-ն քո ֆայլից
-import { db } from "../../lib/firebase"; 
+import { initializeApp } from "firebase/app";
+import { ref, get , child} from "firebase/database";
+import { db } from "../../lib/firebase";
+
+
 
 // Մոդելը
 interface LoanType {
@@ -32,23 +34,18 @@ const AnhatVarkerInfo: React.FC = () => {
       setLoading(true);
       try {
         const dbRef = ref(db);
-        // Ստանում ենք բոլոր վարկերը 'loans' ճյուղից
+        // Ստանում ենք բոլոր վարկերը և գտնում համապատասխանը ըստ ID-ի
         const snapshot = await get(child(dbRef, 'loans'));
         
         if (snapshot.exists()) {
           const data = snapshot.val();
-          
-          // Եթե տվյալները բազայում պահված են որպես օբյեկտ, վերածում ենք զանգվածի
           const items: LoanType[] = Object.keys(data).map(key => ({
             ...data[key],
             id: data[key].id || key
           }));
           
-          // Գտնում ենք համապատասխան ID-ով վարկը
           const foundLoan = items.find(item => String(item.id) === String(id));
           setLoan(foundLoan || null);
-        } else {
-          console.log("No data available in 'loans' path");
         }
       } catch (error) {
         console.error("Error fetching loan detail:", error);
@@ -62,7 +59,7 @@ const AnhatVarkerInfo: React.FC = () => {
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-white">
+      <div className="min-h-screen flex items-center justify-center">
         <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6610f2]"></div>
       </div>
     );
@@ -70,14 +67,9 @@ const AnhatVarkerInfo: React.FC = () => {
 
   if (!loan) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center font-sans bg-white">
+      <div className="min-h-screen flex flex-col items-center justify-center font-sans">
         <h2 className="text-2xl font-black text-gray-300 uppercase italic mb-6">Վարկը չի գտնվել</h2>
-        <button 
-          onClick={() => navigate(-1)} 
-          className="px-8 py-3 bg-[#6610f2] text-white font-bold uppercase tracking-widest rounded-full hover:shadow-lg transition-all"
-        >
-          Հետ վերադառնալ
-        </button>
+        <button onClick={() => navigate(-1)} className="text-[#6610f2] font-bold uppercase tracking-widest border-b-2 border-[#6610f2]">Հետ վերադառնալ</button>
       </div>
     );
   }
@@ -85,7 +77,7 @@ const AnhatVarkerInfo: React.FC = () => {
   return (
     <div className="bg-white min-h-screen font-sans">
       {/* Top Header Section */}
-      <div className="bg-[#6610f2] h-[60px] flex items-center shadow-md">
+      <div className="bg-[#6610f2] h-[60px] flex items-center">
         <div className="max-w-[1200px] mx-auto w-full px-4">
           <span className="text-white font-bold text-sm uppercase tracking-widest italic">Evocabank / Loans</span>
         </div>
@@ -107,13 +99,13 @@ const AnhatVarkerInfo: React.FC = () => {
               </p>
             </div>
             <div className="lg:w-2/5 flex justify-center">
-              <div className="relative group">
-                <div className="absolute inset-0 bg-[#6610f2]/5 rounded-full blur-3xl group-hover:bg-[#6610f2]/10 transition-all duration-500"></div>
+              <div className="relative">
+                <div className="absolute inset-0 bg-[#6610f2]/5 rounded-full blur-3xl"></div>
                 <img 
                   src={loan.image} 
                   alt={loan.title} 
-                  className="w-[300px] lg:w-[450px] h-auto object-contain relative z-10 transition-transform duration-700 group-hover:scale-105"
-                  onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/500x500/f2f4f7/6600cc?text=Evoca+Loan'; }}
+                  className="w-[300px] lg:w-[450px] h-auto object-contain relative z-10"
+                  onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/500x500/f2f4f7/6600cc?text=Loan+Image'; }}
                 />
               </div>
             </div>
@@ -122,13 +114,13 @@ const AnhatVarkerInfo: React.FC = () => {
 
         {/* Breadcrumbs */}
         <div className="max-w-[1200px] mx-auto px-4 py-6 border-t border-gray-200/50 flex items-center gap-6 text-[10px] text-gray-400 font-black uppercase tracking-[0.15em]">
-           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#6610f2] transition-all hover:translate-x-[-5px] font-bold">
+           <button onClick={() => navigate(-1)} className="flex items-center gap-2 text-[#6610f2] transition-all hover:translate-x-[-5px]">
              ← Վերադառնալ
            </button>
            <div className="flex items-center gap-2">
              <Link to="/" className="hover:text-black">Գլխավոր</Link> <span>/</span>
              <Link to="/varker" className="hover:text-black">Վարկեր</Link> <span>/</span>
-             <span className="text-gray-300 truncate max-w-[150px]">{loan.title}</span>
+             <span className="text-gray-300">{loan.title}</span>
            </div>
         </div>
       </div>
@@ -138,7 +130,7 @@ const AnhatVarkerInfo: React.FC = () => {
           
           {/* Tabs Content */}
           <div className="lg:w-2/3">
-            <div className="flex gap-10 border-b-2 border-gray-50 mb-12 overflow-x-auto whitespace-nowrap">
+            <div className="flex gap-10 border-b-2 border-gray-50 mb-12">
               <button 
                 onClick={() => setActiveTab('about')}
                 className={`pb-5 font-black text-[12px] uppercase tracking-[0.2em] transition-all relative ${activeTab === 'about' ? 'text-[#6610f2] after:absolute after:bottom-[-2px] after:left-0 after:w-full after:h-[3px] after:bg-[#6610f2]' : 'text-gray-300 hover:text-gray-500'}`}
@@ -167,8 +159,8 @@ const AnhatVarkerInfo: React.FC = () => {
                       { t: 'Անհատական մոտեցում', d: 'Մենք հարմարվում ենք Ձեր բիզնեսի շրջանառությանը:' },
                       { t: 'Թափանցիկ պայմաններ', d: 'Ոչ մի թաքնված վճար կամ հավելյալ տոկոս:' }
                     ].map((item, i) => (
-                      <div key={i} className="p-6 bg-gray-50 rounded-3xl border border-transparent hover:border-[#6610f2]/20 transition-all hover:bg-white hover:shadow-xl group">
-                        <div className="w-8 h-8 bg-[#6610f2] rounded-full flex items-center justify-center text-white font-bold mb-4 group-hover:scale-110 transition-transform">✓</div>
+                      <div key={i} className="p-6 bg-gray-50 rounded-3xl border border-transparent hover:border-[#6610f2]/20 transition-all">
+                        <div className="w-8 h-8 bg-[#6610f2] rounded-full flex items-center justify-center text-white font-bold mb-4">✓</div>
                         <h4 className="font-black text-sm uppercase mb-2">{item.t}</h4>
                         <p className="text-gray-400 text-sm">{item.d}</p>
                       </div>
@@ -190,10 +182,6 @@ const AnhatVarkerInfo: React.FC = () => {
                     <div className="flex justify-between items-center py-4 border-b border-[#6610f2]/10">
                       <span className="text-gray-500 font-bold uppercase text-[11px] tracking-widest">Վարկի գումար</span>
                       <span className="text-[#1a1a1a] font-black italic">{loan.amount}</span>
-                    </div>
-                    <div className="flex justify-between items-center py-4">
-                      <span className="text-gray-500 font-bold uppercase text-[11px] tracking-widest">Արժույթ</span>
-                      <span className="text-[#1a1a1a] font-black italic">{currency}</span>
                     </div>
                   </div>
                 </div>
