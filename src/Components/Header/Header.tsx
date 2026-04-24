@@ -116,7 +116,7 @@ const Header: React.FC = () => {
       <div className="w-full h-16 lg:h-20 bg-white relative z-[110] flex justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center space-x-10">
-            <Link to="/" className="text-[28px] lg:text-[34px] font-[900] tracking-tighter text-[#4d4d4d]">evoca</Link>
+            <Link to="/" className="text-[28px] lg:text-[34px] font-[900] tracking-tighter text-[#4d4d4d]"><img className="w-[180px]" src="https://www.meridianexpo.am/wp-content/uploads/2019/03/logo_gray.png" alt="" /></Link>
             
             <nav className="hidden lg:flex items-center space-x-8">
               {currentSecondaryMenu.map((item) => (
