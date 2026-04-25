@@ -93,7 +93,7 @@ const Securities: React.FC = () => {
                             className="space-y-12"
                         >
                             <div className="relative w-full h-[300px] md:h-[400px] rounded-[50px] overflow-hidden flex items-center px-12 bg-[#f8f9fb]">
-                                <img src="https://www.evoca.am/images-cache/banners/1/16153628463765/570x370.jpg" className="absolute right-0 top-0 h-full w-1/2 object-cover" alt="Bonds" />
+                                <img src="https://www.evoca.am/images-cache/about_pages/1/16201288751575/780x570.png" className="absolute right-0 top-0 h-full w-1/2 object-cover" alt="Bonds" />
                                 <h2 className="relative z-10 text-[#6610f2] text-[45px] font-[900] italic uppercase">Պարտատոմսեր</h2>
                             </div>
                             <div className="overflow-x-auto rounded-[30px] border border-gray-100">
@@ -126,7 +126,7 @@ const Securities: React.FC = () => {
                         >
                             <div className="relative w-full h-[300px] md:h-[450px] rounded-[50px] overflow-hidden flex items-center px-8 md:px-16">
                                 <div className="absolute inset-0 z-0">
-                                    <img src="https://www.evoca.am/images-cache/menu/1/16115828186177/780x585.jpg" className="w-full h-full object-cover" alt="Depository" />
+                                    <img src="https://www.evoca.am/file_manager/structure/Organizational%20Structure-arm.png" className="w-full h-full object-cover" alt="Depository" />
                                     <div className="absolute inset-0 bg-black/30" />
                                 </div>
                                 <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">ՀԿԾ <br/> ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ</h2>
@@ -157,7 +157,7 @@ const Securities: React.FC = () => {
                                 <div className="w-full lg:w-1/2 z-10">
                                     <h2 className="text-[#6610f2] text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">ՌԵՊՈ ԵՎ ՀԱԿԱԴԱՐՁ <br/> ՌԵՊՈ ԳՈՐԾԱՐՔՆԵՐ</h2>
                                 </div>
-                                <img src="https://www.evoca.am/images-cache/menu/1/16115827343472/780x585.jpg" className="absolute right-0 h-full w-1/2 object-cover hidden lg:block" alt="Repo" />
+                                <img src="https://futurisarchitects.am/uploads/posts/2025-03/1741941946_untitled-1.jpg" className="absolute right-0 h-full w-1/2 object-cover hidden lg:block" alt="Repo" />
                             </div>
                             <div className="max-w-4xl">
                                 <p className="text-gray-500 mb-8">Ռեպո գործարքները թույլ են տալիս ստանալ կարճաժամկետ իրացվելիություն՝ որպես գրավ օգտագործելով Ձեր արժեթղթերը:</p>
@@ -182,14 +182,14 @@ const Securities: React.FC = () => {
                             <div className="flex flex-col lg:flex-row gap-12 items-center">
                                 <div className="w-full lg:w-1/2 space-y-8">
                                     <div className="inline-block px-4 py-2 bg-[#6610f2]/5 rounded-xl">
-                                        <img src="https://www.evoca.am/images/evoca_invest_logo.svg" className="h-8" alt="EvocaINVEST" />
+                                        <img src="https://www.evoca.am/images-cache/menu/1/16783549134256/780x585.jpg" className="h-8" alt="EvocaINVEST" />
                                     </div>
                                     <h2 className="text-[32px] md:text-[45px] font-[900] italic uppercase text-[#6610f2] leading-none">ՆԵՐԴՐՈՒՄՆԵՐԻ <br/> ԱՊԱԳԱՆ ԱՅՍՏԵՂ Է</h2>
                                     <p className="text-gray-500 text-lg">EvocaINVEST հարթակի միջոցով Դուք ստանում եք հասանելիություն աշխարհի խոշորագույն ֆոնդային բորսաներին՝ NYSE, NASDAQ, LSE և այլն:</p>
                                     <button className="bg-[#6610f2] text-white px-12 py-5 rounded-full font-black uppercase text-[12px] tracking-widest hover:shadow-2xl transition-all active:scale-95">ԲԱՑԵԼ ՀԱՇԻՎ</button>
                                 </div>
                                 <div className="w-full lg:w-1/2 relative">
-                                    <img src="https://www.evoca.am/images-cache/menu/1/1611294541215/1920x530.jpg" className="rounded-[40px] shadow-2xl relative z-10" alt="Invest App" />
+                                    <img src="https://b24.am/pub/uploads/2024/08/award-1200x630-1.png" className="rounded-[40px] shadow-2xl relative z-10" alt="Invest App" />
                                 </div>
                             </div>
                             

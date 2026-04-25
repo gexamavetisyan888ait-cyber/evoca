@@ -53,7 +53,7 @@ const DynamicExchange: React.FC = () => {
 
   useEffect(() => {
     // Միանում ենք Firebase-ի համապատասխան node-ին (օրինակ՝ 'exchange_data')
-    const dataRef = ref(db, 'exchange_page');
+    const dataRef = ref(db, 'chanfe');
     
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();

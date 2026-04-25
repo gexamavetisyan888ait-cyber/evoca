@@ -33,7 +33,7 @@ const AnhatVarkerInfo: React.FC = () => {
       try {
         const dbRef = ref(db);
         // Ստանում ենք բոլոր վարկերը 'loans' ճյուղից
-        const snapshot = await get(child(dbRef, 'loans'));
+        const snapshot = await get(child(dbRef, 'varker'));
         
         if (snapshot.exists()) {
           const data = snapshot.val();

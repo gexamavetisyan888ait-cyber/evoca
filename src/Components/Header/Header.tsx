@@ -56,7 +56,7 @@ const Header: React.FC = () => {
 
   const getCurrentTopPath = () => {
     const path = location.pathname;
-    
+
     // Ստուգում ենք՝ արդյոք հասցեն սկսվում է հիմնական բաժինների անուններով
     if (path.startsWith("/business")) return "/business";
     if (path.startsWith("/career")) return "/career"; // Եթե սկսվում է /career-ով, ակտիվ պահիր Կարիերա թեբը
@@ -77,7 +77,7 @@ const Header: React.FC = () => {
 
   return (
     <header className="w-full flex flex-col bg-white sticky top-0 z-[100] shadow-sm font-sans">
-      
+
       {/* Top Nav (Grey Bar) */}
       <div className="hidden xl:flex w-full h-10 border-b border-gray-100 bg-[#f8f9fb] justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
@@ -86,11 +86,10 @@ const Header: React.FC = () => {
               <Link
                 key={link.name}
                 to={link.path === "/career" ? "/career/EvocaLife" : link.path} // Եթե սեղմում է Կարիերա, տանել միանգամից առաջին ենթաէջը
-                className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${
-                  currentTopPath === link.path 
-                    ? "text-[#6610f2]" 
+                className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${currentTopPath === link.path
+                    ? "text-[#6610f2]"
                     : "text-gray-400 hover:text-[#6610f2]"
-                }`}
+                  }`}
               >
                 {link.name}
                 {currentTopPath === link.path && (
@@ -101,8 +100,8 @@ const Header: React.FC = () => {
           </div>
           <div className="flex items-center space-x-6 text-gray-400">
             <div className="flex items-center space-x-4 border-r pr-4 border-gray-200">
-              <MapPin size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" /> 
-              <Globe size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" /> 
+              <MapPin size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
+              <Globe size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
               <Search size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
             </div>
             <span className="text-gray-400 hover:text-[#6610f2] text-[11px] font-black uppercase tracking-widest cursor-pointer transition-colors">
@@ -117,17 +116,16 @@ const Header: React.FC = () => {
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center space-x-10">
             <Link to="/" className="text-[28px] lg:text-[34px] font-[900] tracking-tighter text-[#4d4d4d]"><img className="w-[90px]" src="https://www.meridianexpo.am/wp-content/uploads/2019/03/logo_gray-1024x576.png" alt="" /></Link>
-            
+
             <nav className="hidden lg:flex items-center space-x-8">
               {currentSecondaryMenu.map((item) => (
-                <Link 
-                  key={item.name} 
-                  to={item.path} 
-                  className={`text-[13px] uppercase transition-all tracking-tight font-semibold ${
-                    location.pathname === item.path 
-                      ? 'text-[#6610f2] font-black' 
-                      : 'text-gray-400 hover:text-[#6610f2]' 
-                  }`}
+                <Link
+                  key={item.name}
+                  to={item.path}
+                  className={`text-[13px] uppercase transition-all tracking-tight font-semibold ${location.pathname === item.path
+                      ? 'text-[#6610f2] font-black'
+                      : 'text-gray-400 hover:text-[#6610f2]'
+                    }`}
                 >
                   {item.name}
                 </Link>
@@ -161,9 +159,8 @@ const Header: React.FC = () => {
                 <Link
                   key={link.name}
                   to={link.path === "/career" ? "/career/EvocaLife" : link.path}
-                  className={`px-6 py-2 rounded-full text-[12px] font-black uppercase border transition-all shrink-0 ${
-                    currentTopPath === link.path ? "bg-[#6610f2] text-white border-[#6610f2]" : "text-gray-400 border-gray-200"
-                  }`}
+                  className={`px-6 py-2 rounded-full text-[12px] font-black uppercase border transition-all shrink-0 ${currentTopPath === link.path ? "bg-[#6610f2] text-white border-[#6610f2]" : "text-gray-400 border-gray-200"
+                    }`}
                 >
                   {link.name}
                 </Link>
@@ -180,9 +177,8 @@ const Header: React.FC = () => {
                     key={item.name}
                   >
                     <Link to={item.path} className="flex justify-between items-center group">
-                      <span className={`text-2xl font-[700] italic uppercase tracking-tighter transition-colors ${
-                        location.pathname === item.path ? 'text-[#6610f2]' : 'text-gray-400 group-hover:text-[#6610f2]'
-                      }`}>
+                      <span className={`text-2xl font-[700] italic uppercase tracking-tighter transition-colors ${location.pathname === item.path ? 'text-[#6610f2]' : 'text-gray-400 group-hover:text-[#6610f2]'
+                        }`}>
                         {item.name}
                       </span>
                       <ChevronRight size={24} className={location.pathname === item.path ? 'text-[#6610f2]' : 'text-gray-300'} />

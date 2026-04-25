@@ -27,7 +27,7 @@ const filters = [
 const AnhatVarker: React.FC = () => {
   const navigate = useNavigate();
   const [loans, setLoans] = useState<LoanType[]>([]);
-  const [activeFilter, setActiveFilter] = useState('all');
+  const [activeFilter, setActiveFilter] = useState('varker');
   const [loading, setLoading] = useState(true);
 
   // Տվյալների ստացում Firebase Realtime Database-ից
