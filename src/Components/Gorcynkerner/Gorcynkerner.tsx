@@ -9,6 +9,7 @@ import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
 
 
+
 interface Partner {
     id?: string;
     name: string;
@@ -21,7 +22,7 @@ const EvocaPartners: React.FC = () => {
 
     useEffect(() => {
         // Բեռնում ենք գործընկերների տվյալները Firebase-ից (օգտագործում ենք 'partners' node-ը)
-        const partnersRef = ref(db, 'partners');
+        const partnersRef = ref(db, 'gorcynkerner');
         const unsubscribe = onValue(partnersRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {

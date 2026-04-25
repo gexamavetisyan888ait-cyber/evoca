@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
+import { ChevronLeft, Loader2, Info } from 'lucide-react';
 // Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
 
-export interface DepositType {
+interface DepositType {
   id: number | string;
   title: string;
   description: string;
@@ -15,104 +16,146 @@ export interface DepositType {
   image: string;
 }
 
-const Avandner: React.FC = () => {
+const AvandnerInfo: React.FC = () => {
+  const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-  const [deposits, setDeposits] = useState<DepositType[]>([]);
+  const [deposit, setDeposit] = useState<DepositType | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'avand' ճյուղին
-    const depositsRef = ref(db, 'avand');
+    if (!id) return;
+
+    // Միանում ենք Firebase-ի կոնկրետ ավանդի ճյուղին
+    const depositRef = ref(db, `avand/${id}`);
     
-    const unsubscribe = onValue(depositsRef, (snapshot) => {
+    const unsubscribe = onValue(depositRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե տվյալները օբյեկտ են, դարձնում ենք զանգված
-        const depositsList = Object.keys(data).map(key => ({
-          ...data[key],
-          id: data[key].id || key
-        }));
-        setDeposits(depositsList);
-      } else {
-        setDeposits([]);
+        setDeposit({
+          ...data,
+          id: id
+        });
       }
       setLoading(false);
     });
 
-    return () => unsubscribe(); // Փակում ենք կապը կոմպոնենտը ջնջվելիս
-  }, []);
+    return () => unsubscribe();
+  }, [id]);
 
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6600cc]"></div>
+      <div className="min-h-screen flex items-center justify-center bg-[#f8f9fb]">
+        <Loader2 className="animate-spin text-[#6610f2]" size={48} />
+      </div>
+    );
+  }
+
+  if (!deposit) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#f8f9fb]">
+        <h2 className="text-xl font-bold mb-4">Ավանդը չի գտնվել</h2>
+        <button onClick={() => navigate(-1)} className="text-[#6610f2] font-bold uppercase underline">Վերադառնալ</button>
       </div>
     );
   }
 
   return (
-    <div className="bg-white min-h-screen font-sans pb-20">
-      <div className="max-w-[1200px] mx-auto px-4 pt-16">
-        <div className="flex border-b-[3px] border-[#6600cc]">
-          <div className="bg-[#6600cc] text-white px-8 py-3.5 font-black text-[13px] uppercase tracking-widest rounded-t-xl">
-            Ավանդներ
+    <div className="bg-white min-h-screen font-sans">
+      {/* Վերևի հետադարձ կոճակը և վերնագիրը */}
+      <div className="max-w-[1200px] mx-auto px-4 pt-10">
+        <button 
+          onClick={() => navigate(-1)} 
+          className="flex items-center gap-2 text-gray-400 hover:text-[#6610f2] transition-colors mb-8 group"
+        >
+          <ChevronLeft size={20} className="group-hover:-translate-x-1 transition-transform" />
+          <span className="text-[12px] font-black uppercase tracking-widest">Վերադառնալ</span>
+        </button>
+
+        <div className="flex border-b-[3px] border-[#6610f2] mb-12">
+          <div className="bg-[#6610f2] text-white px-8 py-3.5 font-black text-[13px] uppercase tracking-widest rounded-t-xl">
+            Ավանդի Մանրամասներ
           </div>
         </div>
       </div>
 
-      <main className="max-w-[1200px] mx-auto px-4 mt-12 space-y-16">
-        {deposits.length > 0 ? (
-          deposits.map((item) => (
-            <section key={item.id} className="flex flex-col md:flex-row items-center gap-8 lg:gap-20 border-b border-gray-100 pb-16 last:border-0">
-              <div className="w-full md:w-[320px] lg:w-[415px] flex-shrink-0">
-                <div className="bg-[#f8f9fb] rounded-[40px] p-8 aspect-[415/261] flex justify-center items-center overflow-hidden group cursor-pointer shadow-sm">
-                  <img
-                    src={item.image}
-                    alt={item.title}
-                    className="w-full h-auto object-contain transition-transform duration-700 group-hover:scale-105"
-                  />
-                </div>
-              </div>
-
-              <div className="flex-1">
-                <h2 className="text-[26px] lg:text-[32px] font-[900] text-[#1a1a1a] mb-5 leading-tight tracking-tight">
-                  {item.title}
-                </h2>
-                <p className="text-[#6c757d] text-[16px] mb-10 leading-relaxed max-w-2xl font-medium">
-                  {item.description}
-                </p>
-
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
-                  <div className="flex flex-col">
-                    <span className="text-[#adb5bd] text-[10px] uppercase font-black tracking-widest mb-2">Սկսած</span>
-                    <div className="text-[#6610f2] text-[34px] font-[900] leading-none mb-1">{item.minAmount}</div>
-                    <span className="text-[#495057] text-[12px] font-bold uppercase">{item.amountLabel}</span>
-                  </div>
-                  <div className="flex flex-col">
-                    <span className="text-transparent text-[10px] mb-2">.</span>
-                    <div className="text-[#6610f2] text-[34px] font-[900] leading-none mb-1 tracking-tighter">{item.rate}</div>
-                    <span className="text-[#495057] text-[12px] font-bold uppercase leading-tight">{item.rateLabel}</span>
-                  </div>
-                </div>
-
-                <button 
-                  onClick={() => navigate(`/deposit/${item.id}`)}
-                  className="group flex items-center gap-4 px-10 py-4 bg-[#f4f0ff] text-[#6610f2] rounded-full font-black text-[13px] transition-all hover:bg-[#6610f2] hover:text-white uppercase tracking-widest"
-                >
-                  Մանրամասն
-                  <span className="text-xl leading-none transition-transform group-hover:translate-x-1.5">›</span>
-                </button>
-              </div>
-            </section>
-          ))
-        ) : (
-          <div className="text-center py-20 text-gray-400 font-bold uppercase italic tracking-widest">
-            Ավանդներ չեն գտնվել
+      <main className="max-w-[1200px] mx-auto px-4">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-20 items-start">
+          
+          {/* Ձախ մաս - Նկարը */}
+          <div className="w-full lg:w-1/2">
+            <div className="bg-[#f8f9fb] rounded-[50px] p-12 aspect-square flex justify-center items-center shadow-sm">
+              <img
+                src={deposit.image}
+                alt={deposit.title}
+                className="w-full h-auto object-contain transform hover:scale-105 transition-transform duration-700"
+              />
+            </div>
           </div>
-        )}
+
+          {/* Աջ մաս - Ինֆորմացիա */}
+          <div className="w-full lg:w-1/2 flex flex-col">
+            <h1 className="text-[32px] lg:text-[45px] font-[900] text-[#1a1a1a] mb-6 leading-tight tracking-tighter italic">
+              {deposit.title}
+            </h1>
+            
+            <p className="text-[#6c757d] text-lg mb-10 leading-relaxed font-medium">
+              {deposit.description}
+            </p>
+
+            {/* Գլխավոր ցուցանիշները */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-8 p-8 bg-[#f8f9fb] rounded-[30px] mb-10">
+              <div className="flex flex-col">
+                <span className="text-[#adb5bd] text-[11px] uppercase font-black tracking-widest mb-2">Նվազագույն գումար</span>
+                <div className="text-[#6610f2] text-[38px] font-[900] leading-none mb-1 tracking-tighter">
+                  {deposit.minAmount}
+                </div>
+                <span className="text-[#495057] text-[13px] font-bold uppercase">{deposit.amountLabel}</span>
+              </div>
+              <div className="flex flex-col">
+                <span className="text-[#adb5bd] text-[11px] uppercase font-black tracking-widest mb-2">Տարեկան տոկոսադրույք</span>
+                <div className="text-[#6610f2] text-[38px] font-[900] leading-none mb-1 tracking-tighter">
+                  {deposit.rate}
+                </div>
+                <span className="text-[#495057] text-[13px] font-bold uppercase leading-tight">{deposit.rateLabel}</span>
+              </div>
+            </div>
+
+            {/* Լրացուցիչ պայմաններ (static բաժին Evoca ոճով) */}
+            <div className="space-y-4">
+              <div className="flex items-center gap-4 p-5 border border-gray-100 rounded-2xl hover:border-purple-200 transition-colors">
+                <div className="bg-purple-100 p-2 rounded-full text-[#6610f2]">
+                  <Info size={20} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase text-gray-400">Ժամկետ</p>
+                  <p className="text-[14px] font-bold text-gray-800">30-ից 1095 օր</p>
+                </div>
+              </div>
+              
+              <div className="flex items-center gap-4 p-5 border border-gray-100 rounded-2xl hover:border-purple-200 transition-colors">
+                <div className="bg-purple-100 p-2 rounded-full text-[#6610f2]">
+                  <Info size={20} />
+                </div>
+                <div>
+                  <p className="text-[11px] font-black uppercase text-gray-400">Տոկոսների վճարում</p>
+                  <p className="text-[14px] font-bold text-gray-800">Ամսական կամ ժամկետի վերջում</p>
+                </div>
+              </div>
+            </div>
+
+            <button className="mt-12 w-full lg:w-max px-12 py-5 bg-[#6610f2] text-white rounded-full font-black text-[14px] uppercase tracking-[0.2em] shadow-xl shadow-purple-200 hover:scale-105 active:scale-95 transition-all">
+              Ներդնել Ավանդ
+            </button>
+          </div>
+        </div>
       </main>
+
+      {/* Դեկորատիվ ֆոնային տեքստ */}
+      <div className="fixed bottom-10 right-10 opacity-[0.03] pointer-events-none select-none">
+        <h2 className="text-[150px] font-black italic leading-none">EVOCA</h2>
+      </div>
     </div>
   );
 };
 
-export default Avandner;
+export default AvandnerInfo;
