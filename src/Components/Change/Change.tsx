@@ -6,9 +6,6 @@ import { ChevronRight, MapPin, FileText, Download, Monitor, Smartphone } from 'l
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
 
 // --- Firebase Imports ---
 import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո folder structure-ի
