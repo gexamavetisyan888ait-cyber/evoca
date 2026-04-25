@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, RefreshCw, Phone, CheckCircle2 } from 'lucide-react';
 
 // Firebase Imports
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
+
 export interface LoanType {
   id: number;
   title: string;
@@ -26,7 +27,8 @@ const LoanAbout: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const loansRef = ref(db, 'loans');
+    // Միանում ենք բազայի 'varker' հանգույցին
+    const loansRef = ref(db, 'varker');
     const unsubscribe = onValue(loansRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -39,7 +41,7 @@ const LoanAbout: React.FC = () => {
   }, []);
 
   const loan = useMemo(() => {
-    return allLoans.find((item) => item.id === Number(id));
+    return allLoans.find((item) => String(item.id) === String(id));
   }, [id, allLoans]);
 
   useEffect(() => {

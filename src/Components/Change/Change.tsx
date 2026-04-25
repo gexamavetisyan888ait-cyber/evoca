@@ -6,11 +6,9 @@ import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
 // Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Ստուգիր քո ֆայլի ճիշտ հասցեն
+import { db } from "../../lib/firebase"; 
 
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+
 
 // Տիպերի սահմանում
 interface Currency {
@@ -28,17 +26,16 @@ interface GoldRate {
 }
 
 interface Testimonial {
-  id?: string;
   name: string;
   role: string;
   text: string;
 }
 
 const DynamicExchange: React.FC = () => {
-  const [activeTab, setActiveTab] = useState('cashless');
+  const [activeTab, setActiveTab] = useState('cash');
   const [amount, setAmount] = useState<string>('0');
   
-  // Տվյալների state-եր
+  // Տվյալների States
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [goldRates, setGoldRates] = useState<GoldRate[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -51,40 +48,31 @@ const DynamicExchange: React.FC = () => {
   });
 
   useEffect(() => {
-    // 1. Բեռնում ենք Փոխարժեքները
-    const currenciesRef = ref(db, 'exchange_rates');
-    const unsubCurrencies = onValue(currenciesRef, (snapshot) => {
+    // Միանում ենք Firebase-ի 'change' node-ին
+    const dataRef = ref(db, 'change');
+    
+    const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        setCurrencies(Object.values(data));
-        // Սահմանում ենք default ընտրված արժույթը առաջինը եկածից
-        const first = Object.values(data)[0] as Currency;
-        if (first) {
-          setSelectedCurrency({ code: first.code, sell: first.sell, symbol: first.symbol });
+        if (data.currencies) {
+            const currencyList = Array.isArray(data.currencies) ? data.currencies : Object.values(data.currencies);
+            setCurrencies(currencyList as Currency[]);
+            
+            // Սկզբնական ընտրված արժույթը թարմացված տվյալներից
+            const usd = (currencyList as Currency[]).find(c => c.code === 'USD');
+            if (usd) setSelectedCurrency({ code: usd.code, sell: usd.sell, symbol: usd.symbol });
+        }
+        if (data.goldRates) {
+            setGoldRates(Array.isArray(data.goldRates) ? data.goldRates : Object.values(data.goldRates));
+        }
+        if (data.testimonials) {
+            setTestimonials(Array.isArray(data.testimonials) ? data.testimonials : Object.values(data.testimonials));
         }
       }
-    });
-
-    // 2. Բեռնում ենք Ոսկու գները
-    const goldRef = ref(db, 'gold_rates');
-    const unsubGold = onValue(goldRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) setGoldRates(Object.values(data));
-    });
-
-    // 3. Բեռնում ենք Կարծիքները
-    const testimonialsRef = ref(db, 'testimonials');
-    const unsubTestimonials = onValue(testimonialsRef, (snapshot) => {
-      const data = snapshot.val();
-      if (data) setTestimonials(Object.values(data));
       setLoading(false);
     });
 
-    return () => {
-      unsubCurrencies();
-      unsubGold();
-      unsubTestimonials();
-    };
+    return () => unsubscribe();
   }, []);
 
   const calculateResult = () => {
@@ -93,7 +81,7 @@ const DynamicExchange: React.FC = () => {
     return (numAmount / selectedCurrency.sell).toFixed(2);
   };
 
-  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8]">Բեռնվում է...</div>;
+  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8] uppercase tracking-widest italic animate-pulse">Բեռնվում է...</div>;
 
   return (
     <section className="py-16 px-4 md:px-20 max-w-[1440px] mx-auto bg-white font-sans">
@@ -215,7 +203,7 @@ const DynamicExchange: React.FC = () => {
           </div>
         </div>
 
-        {/* Address Sidebar */}
+        {/* Addresses Sidebar */}
         <div className="w-full lg:w-[350px]">
           <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">Մեր հասցեները</h3>
           <p className="text-gray-400 text-sm mb-8 leading-relaxed">Բանկի հասցեները, աշխատաժամերը և բանկոմատները:</p>
@@ -228,7 +216,7 @@ const DynamicExchange: React.FC = () => {
           >
             <div className="absolute inset-0 bg-[#7d2ae8]/5 group-hover:bg-transparent transition-colors z-10"></div>
             <img 
-              src="https://www.evoca.am/static/media/map-sample.png" 
+              src="https://scontent.fevn2-1.fna.fbcdn.net/v/t39.30808-6/486292077_1087632580068124_5141256942071665595_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_ohc=oOv1ZfWOa_QQ7kNvwG4ZDa3&_nc_oc=AdpO7qOX150Ykdk3QhPRNWK5fo4HfiTEBbMquch00TzVIZ5tECFH7plbJM46175PB4zkztdkNNMi_UDcPEEh952q&_nc_zt=23&_nc_ht=scontent.fevn2-1.fna&_nc_gid=f0bhC4q6d5ks-YKgt4JT2Q&_nc_ss=7b289&oh=00_Af0kKdc7SEb4Dj0mK9cpwlAQqt0Uu8mE158NJ_ID5bYv8Q&oe=69F2DBCC" 
               alt="Evoca Map" 
               className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-1000"
             />

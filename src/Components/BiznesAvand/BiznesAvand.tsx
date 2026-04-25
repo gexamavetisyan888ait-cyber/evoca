@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
-// Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Համոզվիր, որ սա քո firebase config-ի ճիշտ հասցեն է
+import { db } from "../../lib/firebase";
 
 interface HeroCard {
   id: string;
@@ -17,8 +16,8 @@ const HeroSection: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'hero_cards' ճյուղին
-    const cardsRef = ref(db, 'biznesAvand');
+    // Միանում ենք Firebase-ի 'biznesavand' ճյուղին
+    const cardsRef = ref(db, 'biznesavand');
     
     const unsubscribe = onValue(cardsRef, (snapshot) => {
       const data = snapshot.val();
@@ -29,11 +28,12 @@ const HeroSection: React.FC = () => {
           id: key
         }));
         setCards(formattedData);
+      } else {
+        setCards([]);
       }
       setLoading(false);
     });
 
-    // Clean-up function
     return () => unsubscribe();
   }, []);
 
@@ -72,9 +72,9 @@ const HeroSection: React.FC = () => {
       <div className="relative -mt-24 lg:-mt-40 z-20 max-w-[1450px] mx-auto px-6 pb-24">
         <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {loading ? (
-            // Բեռնման էֆեկտ (Skeleton լուծում)
+            // Skeleton Loading
             [1, 2, 3].map((n) => (
-              <div key={n} className="bg-white rounded-[50px] p-10 h-[520px] animate-pulse border border-gray-100" />
+              <div key={n} className="bg-white rounded-[50px] p-10 h-[520px] animate-pulse border border-gray-100 shadow-sm" />
             ))
           ) : (
             cards.map((card, index) => (

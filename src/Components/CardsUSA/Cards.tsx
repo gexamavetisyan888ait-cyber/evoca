@@ -1,36 +1,29 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 // Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Ստուգիր քո firebase config-ի հասցեն
+import { db } from "../../lib/firebase"; 
 
-interface OfferItem {
-  id: string | number;
+interface OfferType {
   category: string;
   title: string;
-  description: string; // Եթե JSON-ում դաշտը 'description' է
-  desc?: string;        // Ապահովության համար, եթե կոդում օգտագործում ես 'desc'
+  desc: string;
 }
 
 const BestOffers: React.FC = () => {
-  const [offers, setOffers] = useState<OfferItem[]>([]);
+  const [offers, setOffers] = useState<OfferType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Միանում ենք Firebase-ի համապատասխան ճյուղին (օրինակ՝ 'best_offers')
-    const offersRef = ref(db, 'best_offers');
+    // Միանում ենք Firebase-ի 'cardUSA' ճյուղին
+    const offersRef = ref(db, 'cardUSA');
     
     const unsubscribe = onValue(offersRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Տվյալների վերափոխում զանգվածի
-        const formattedData: OfferItem[] = Object.keys(data).map(key => ({
-          ...data[key],
-          id: key,
-          // Եթե բազայում 'description' է, բայց կոդում 'desc', հավասարեցնում ենք
-          desc: data[key].description || data[key].desc 
-        }));
-        setOffers(formattedData);
+        // Եթե տվյալները Firebase-ում պահված են որպես օբյեկտ, դարձնում ենք զանգված
+        const offersList = Array.isArray(data) ? data : Object.values(data);
+        setOffers(offersList as OfferType[]);
       }
       setLoading(false);
     });
@@ -42,6 +35,8 @@ const BestOffers: React.FC = () => {
     <section className="w-full min-h-screen py-20 bg-[#6610f2] relative overflow-hidden flex items-center font-sans">
       
       {/* --- Background Geometric Decorations --- */}
+      
+      {/* Dot Pattern */}
       <div className="absolute top-[20%] left-[-5%] w-[400px] h-[400px] opacity-20 z-0">
         <svg width="100%" height="100%" viewBox="0 0 100 100">
           <defs>
@@ -53,6 +48,7 @@ const BestOffers: React.FC = () => {
         </svg>
       </div>
 
+      {/* Blue Triangle */}
       <motion.div 
         animate={{ rotate: [0, 10, 0], y: [0, 15, 0] }}
         transition={{ duration: 5, repeat: Infinity }}
@@ -61,6 +57,7 @@ const BestOffers: React.FC = () => {
         ▲
       </motion.div>
       
+      {/* Yellow Triangle */}
       <motion.div 
         animate={{ rotate: [0, -15, 0], x: [0, 10, 0] }}
         transition={{ duration: 7, repeat: Infinity, delay: 1 }}
@@ -81,7 +78,8 @@ const BestOffers: React.FC = () => {
               transition={{ duration: 1 }}
               className="relative w-full max-w-[380px] flex items-center justify-center" 
             >
-              {/* Golden Rings */}
+              
+              {/* --- Golden Rings (VOSKEGUYN CEPER) --- */}
               <div className="absolute inset-0 flex items-center justify-center pointer-events-none z-10">
                 <div className="relative w-[280px] h-[280px] md:w-[380px] md:h-[380px]">
                   <motion.div 
@@ -93,6 +91,14 @@ const BestOffers: React.FC = () => {
                     animate={{ rotate: -360 }}
                     transition={{ duration: 15, repeat: Infinity, ease: "linear" }}
                     className="absolute inset-8 md:inset-16 border-[1.5px] border-[#ffcc00]/40 rounded-full"
+                  />
+                  <motion.div 
+                    animate={{ rotate: 360, scale: [1, 1.2, 1] }}
+                    transition={{ 
+                      rotate: { duration: 22, repeat: Infinity, ease: "linear" },
+                      scale: { duration: 2, repeat: Infinity }
+                    }}
+                    className="absolute top-[-5px] left-1/2 -translate-x-1/2 w-4 h-4 bg-[#ffcc00] rounded-full shadow-[0_0_15px_#ffcc00] z-20"
                   />
                 </div>
               </div>
@@ -109,39 +115,37 @@ const BestOffers: React.FC = () => {
             </motion.div>
           </div>
 
-          {/* Right Side: Cards */}
+          {/* Right Side: Cards from Firebase */}
           <div className="w-full lg:w-1/2 grid grid-cols-1 md:grid-cols-2 gap-6 relative z-30">
-            {loading ? (
+            {!loading ? offers.map((item, idx) => (
+              <motion.div 
+                key={idx}
+                initial={{ opacity: 0, y: 30 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: idx * 0.1, duration: 0.5 }}
+                whileHover={{ 
+                  scale: 1.03,
+                  y: -5,
+                  boxShadow: "0px 30px 60px rgba(0,0,0,0.25)"
+                }}
+                className="bg-white rounded-[2.8rem] p-10 flex flex-col justify-center transition-all cursor-pointer group border border-white/5 shadow-xl min-h-[220px]"
+              >
+                <div className="mb-4">
+                  <span className="text-[#6610f2] text-[10px] font-black uppercase tracking-[0.2em] bg-[#f1edff] px-4 py-1.5 rounded-full">
+                    {item.category}
+                  </span>
+                </div>
+                <h3 className="text-[23px] font-[1000] text-[#1a1a1a] mb-4 group-hover:text-[#6610f2] transition-colors leading-tight italic uppercase tracking-tight">
+                  {item.title}
+                </h3>
+                <p className="text-gray-500 text-[15px] leading-relaxed font-medium">
+                  {item.desc}
+                </p>
+              </motion.div>
+            )) : (
               // Loading Skeleton
               [1, 2, 3, 4].map(n => (
-                <div key={n} className="bg-white/10 rounded-[2.8rem] h-[220px] animate-pulse" />
-              ))
-            ) : (
-              offers.map((item, idx) => (
-                <motion.div 
-                  key={item.id}
-                  initial={{ opacity: 0, y: 30 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  transition={{ delay: idx * 0.1, duration: 0.5 }}
-                  whileHover={{ 
-                    scale: 1.03,
-                    y: -5,
-                    boxShadow: "0px 30px 60px rgba(0,0,0,0.25)"
-                  }}
-                  className="bg-white rounded-[2.8rem] p-10 flex flex-col justify-center transition-all cursor-pointer group border border-white/5 shadow-xl min-h-[220px]"
-                >
-                  <div className="mb-4">
-                    <span className="text-[#6610f2] text-[10px] font-black uppercase tracking-[0.2em] bg-[#f1edff] px-4 py-1.5 rounded-full">
-                      {item.category}
-                    </span>
-                  </div>
-                  <h3 className="text-[23px] font-[1000] text-[#1a1a1a] mb-4 group-hover:text-[#6610f2] transition-colors leading-tight italic uppercase tracking-tight">
-                    {item.title}
-                  </h3>
-                  <p className="text-gray-500 text-[15px] leading-relaxed font-medium">
-                    {item.desc}
-                  </p>
-                </motion.div>
+                <div key={n} className="bg-white/10 rounded-[2.8rem] h-[220px] animate-pulse border border-white/10" />
               ))
             )}
           </div>

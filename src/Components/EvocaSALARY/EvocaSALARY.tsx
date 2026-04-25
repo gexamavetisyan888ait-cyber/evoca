@@ -1,15 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-
-// Firebase ներմուծումներ (համոզվիր, որ lib/firebase.ts-ում արդեն ունես db-ի արտահանումը)
-import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; 
+import { db } from '../../lib/firebase';
+import { ref, onValue } from 'firebase/database';
 
 // Տիպերի սահմանում
 interface FAQItem {
   id?: string;
   question: string;
-  answer: React.ReactNode;
+  answer: string | React.ReactNode;
 }
 
 const AccordionItem = ({ item, isOpen, onClick }: { item: FAQItem; isOpen: boolean; onClick: () => void }) => (
@@ -170,7 +168,7 @@ const EvocaSALARY: React.FC = () => {
         <h2 className="text-[35px] md:text-[50px] font-[1000] text-[#1a1a1a] mb-12 uppercase italic tracking-tighter">Հաճախ տրվող հարցեր</h2>
         <div className="space-y-2">
           {loading ? (
-            <div className="py-10 text-center font-black text-[#6622CC] italic uppercase">Բեռնվում է...</div>
+            <div className="py-10 text-center font-black text-[#6622CC] italic uppercase animate-pulse">Բեռնվում է...</div>
           ) : (
             faqData.map((faq, index) => (
               <AccordionItem
@@ -188,7 +186,7 @@ const EvocaSALARY: React.FC = () => {
       </section>
 
       <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,800;0,900;1,900&display=swap');
         .font-sans { font-family: 'Montserrat', sans-serif; }
       `}</style>
     </div>

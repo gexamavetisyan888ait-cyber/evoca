@@ -21,21 +21,34 @@ const Avandner: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const depositsRef = ref(db, 'deposits');
+    // Միանում ենք Firebase-ի 'avand' ճյուղին
+    const depositsRef = ref(db, 'avand');
+    
     const unsubscribe = onValue(depositsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        const list: DepositType[] = Object.keys(data).map(key => ({
+        // Եթե տվյալները օբյեկտ են, դարձնում ենք զանգված
+        const depositsList = Object.keys(data).map(key => ({
           ...data[key],
           id: data[key].id || key
         }));
-        setDeposits(list);
+        setDeposits(depositsList);
+      } else {
+        setDeposits([]);
       }
       setLoading(false);
     });
 
-    return () => unsubscribe();
+    return () => unsubscribe(); // Փակում ենք կապը կոմպոնենտը ջնջվելիս
   }, []);
+
+  if (loading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center">
+        <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6600cc]"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="bg-white min-h-screen font-sans pb-20">
@@ -48,9 +61,7 @@ const Avandner: React.FC = () => {
       </div>
 
       <main className="max-w-[1200px] mx-auto px-4 mt-12 space-y-16">
-        {loading ? (
-          <div className="text-center py-20">Բեռնվում է...</div>
-        ) : (
+        {deposits.length > 0 ? (
           deposits.map((item) => (
             <section key={item.id} className="flex flex-col md:flex-row items-center gap-8 lg:gap-20 border-b border-gray-100 pb-16 last:border-0">
               <div className="w-full md:w-[320px] lg:w-[415px] flex-shrink-0">
@@ -94,6 +105,10 @@ const Avandner: React.FC = () => {
               </div>
             </section>
           ))
+        ) : (
+          <div className="text-center py-20 text-gray-400 font-bold uppercase italic tracking-widest">
+            Ավանդներ չեն գտնվել
+          </div>
         )}
       </main>
     </div>

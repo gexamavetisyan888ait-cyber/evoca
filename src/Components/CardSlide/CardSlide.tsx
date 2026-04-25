@@ -1,9 +1,8 @@
 import React, { useState, useEffect } from 'react';
-// Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Համոզվիր, որ սա քո firebase config-ի ճիշտ հասցեն է
+import { db } from "../../lib/firebase"; 
 
-interface CardItem {
+interface CardType {
   id: number | string;
   name: string;
   title: string;
@@ -12,25 +11,26 @@ interface CardItem {
 }
 
 const CardSlider: React.FC = () => {
-  const [cardsData, setCardsData] = useState<CardItem[]>([]);
+  const [cardsData, setCardsData] = useState<CardType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
   const [startIndex, setStartIndex] = useState(0);
   const [loading, setLoading] = useState(true);
   const visibleCount = 3;
 
+  // Տվյալների ստացում Firebase-ից
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'cards' ճյուղին
-    const cardsRef = ref(db, 'cards');
+    // Միանում ենք Firebase-ի 'cardslide' ճյուղին
+    const cardsRef = ref(db, 'cardslide'); 
     
     const unsubscribe = onValue(cardsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե Firebase-ում տվյալները օբյեկտ են, դարձնում ենք զանգված
-        const formattedData: CardItem[] = Array.isArray(data) 
+        // Եթե տվյալները պահված են որպես օբյեկտ (Map), դարձնում ենք զանգված
+        const formattedData = Array.isArray(data) 
           ? data 
           : Object.keys(data).map(key => ({ ...data[key], firebaseId: key }));
         
-        setCardsData(formattedData);
+        setCardsData(formattedData as CardType[]);
       }
       setLoading(false);
     });
@@ -52,10 +52,13 @@ const CardSlider: React.FC = () => {
 
   const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
 
+  // Loading վիճակ
   if (loading || cardsData.length === 0) {
     return (
-      <div className="w-full py-20 text-center font-black text-[#6610f2] animate-pulse">
-        Բեռնվում է...
+      <div className="w-full py-20 bg-white flex justify-center items-center">
+        <div className="animate-pulse text-[#6610f2] font-black italic uppercase tracking-widest">
+          Բեռնվում է...
+        </div>
       </div>
     );
   }
@@ -64,7 +67,7 @@ const CardSlider: React.FC = () => {
     <section className="w-full py-20 bg-white select-none overflow-hidden">
       <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-12 items-center gap-8">
         
-        {/* SIDEBAR NAVIGATION */}
+        {/* Thumbnails Sidebar (Ձախ կողմի փոքր նկարները) */}
         <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
           
           <button 
@@ -104,7 +107,7 @@ const CardSlider: React.FC = () => {
           </button>
         </div>
 
-        {/* MAIN IMAGE DISPLAY */}
+        {/* Main Display (Կենտրոնական մեծ նկարը) */}
         <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[400px]">
           <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
           <img 
@@ -115,7 +118,7 @@ const CardSlider: React.FC = () => {
           />
         </div>
 
-        {/* INFO SECTION */}
+        {/* Info Section (Աջ կողմի տեքստային մասը) */}
         <div className="col-span-12 md:col-span-3 text-center md:text-left">
           <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none tracking-tighter">
             {cardsData[activeTab].title}

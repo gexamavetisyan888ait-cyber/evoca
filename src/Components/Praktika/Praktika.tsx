@@ -6,9 +6,9 @@ import {
     UploadCloud, RefreshCw
 } from 'lucide-react';
 
-// Firebase-ի կապը (Համոզվիր, որ քո նախագծում firebase.ts-ը ճիշտ է կոնֆիգուրացված)
-import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; 
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; 
+import { ref, onValue } from 'firebase/database';
 
 // --- Types ---
 interface Job {
@@ -24,25 +24,26 @@ interface Job {
 }
 
 const WorkAtEvoca: React.FC = () => {
-    const [activeTab, setActiveTab] = useState('work');
+    const [activeTab, setActiveTab] = useState('work'); 
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const [openStep, setOpenStep] = useState<number | null>(1);
+    
+    // --- Firebase Data States ---
     const [jobs, setJobs] = useState<Job[]>([]);
     const [loading, setLoading] = useState(true);
 
-    // Տվյալների ստացում Firebase-ից
+    // --- Fetch Data from Firebase ---
     useEffect(() => {
+        // Օգտագործում ենք 'praktika' հանգույցը, ինչպես նշված էր քո կոդում
         const jobsRef = ref(db, 'praktika');
         const unsubscribe = onValue(jobsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Եթե տվյալները Object են, վերածում ենք Array-ի
                 const jobsList = Array.isArray(data) ? data : Object.values(data);
                 setJobs(jobsList as Job[]);
             }
             setLoading(false);
         });
-
         return () => unsubscribe();
     }, []);
 
@@ -62,7 +63,10 @@ const WorkAtEvoca: React.FC = () => {
                 ].map((tab) => (
                     <button
                         key={tab.id}
-                        onClick={() => { setActiveTab(tab.id); setSelectedJob(null); }}
+                        onClick={() => { 
+                            setActiveTab(tab.id); 
+                            setSelectedJob(null); 
+                        }}
                         className={`pb-6 text-[14px] font-[1000] uppercase italic tracking-wider transition-all relative whitespace-nowrap
                         ${activeTab === tab.id ? "text-black" : "text-gray-300 hover:text-gray-400"}`}
                     >
@@ -222,9 +226,9 @@ const WorkAtEvoca: React.FC = () => {
         const steps = [
             { id: 1, title: "Առաջին փուլ` Համագործակցություն", content: "Բարձրագույն ուսումնական հաստատության և Evocabank-ի միջև կնքվում է ուսումնական պրակտիկայի վերաբերյալ պայմանագիր` համաձայն ուսումնական պլանի:" },
             { id: 2, title: "Երկրորդ փուլ` Դիմում-Հայտ", content: "Ուսանողը, ով ցանկանում է անցնել պրակտիկա, պետք է լրացնի դիմում-հայտ՝ կցելով ինքնակենսագրականը:" },
-            { id: 3, title: "Երրորդ փուլ` Թեստավորում", content: "Դիմորդներն անցնում են թեստավորում՝ hard և soft skills ստուգելու համար:" },
-            { id: 4, title: "Չորրորդ փուլ` Ուսումնական պրակտիկա", content: "Լավագույն դիմորդներն անմիջապես ներգրավվում են ամենօրյա աշխատանքներում:" },
-            { id: 5, title: "Հինգերորդ փուլ` Աշխատանքի առաջարկ", content: "Դրական արդյունքների դեպքում մենք ներկայացնում ենք աշխատանքի առաջարկ:" }
+            { id: 3, title: "Երրորդ փուլ` Թեստավորում", content: "Դիմորդներն անցնում են թեստավորում՝ hard և soft skills ստուգելու համար։ Թեստավորումն իրականացվում է երկու փուլով..." },
+            { id: 4, title: "Չորրորդ փուլ` Ուսումնական պրակտիկա", content: "Լավագույն արդյունք ցուցաբերած դիմորդներն անմիջապես ներգրավվում են ամենօրյա աշխատանքներում և սկսում պրակտիկան:" },
+            { id: 5, title: "Հինգերորդ փուլ` Աշխատանքի առաջարկ", content: "Պրակտիկայի ընթացքում դրական արդյունքների և ստուգումների դեպքում մենք ներկայացնում ենք աշխատանքի առաջարկ:" }
         ];
 
         return (
@@ -277,22 +281,55 @@ const WorkAtEvoca: React.FC = () => {
                         ))}
                     </div>
                 </section>
+                
+                <section className="max-w-[1450px] mx-auto px-6 mt-24">
+                    <div className="max-w-4xl mx-auto bg-[#f8f9fb] rounded-[60px] p-12 md:p-16 border border-gray-100 shadow-inner">
+                        <h3 className="text-4xl md:text-5xl font-[1000] italic uppercase text-center text-[#6610f2] mb-12">Դիմում-հայտ</h3>
+                        <form className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6">
+                            <input type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl outline-none focus:border-[#6610f2]" placeholder="Անուն *" />
+                            <input type="text" className="w-full bg-white border border-gray-100 p-4 rounded-xl outline-none focus:border-[#6610f2]" placeholder="Ազգանուն *" />
+                            <div className="md:col-span-2 flex bg-white border border-gray-100 rounded-xl overflow-hidden">
+                                <div className="px-4 py-4 border-r text-gray-500 text-sm flex items-center">+374</div>
+                                <input type="tel" className="flex-1 p-4 outline-none" placeholder="Հեռախոս *" />
+                            </div>
+                            <input type="email" className="md:col-span-2 w-full bg-white border border-gray-100 p-4 rounded-xl outline-none focus:border-[#6610f2]" placeholder="Էլ. Հասցե *" />
+                            <div className="md:col-span-2 space-y-2">
+                                <label className="text-xs font-black uppercase text-gray-400">Կցել CV *</label>
+                                <div className="border-2 border-dashed border-gray-200 rounded-xl p-10 text-center bg-white hover:border-[#6610f2] cursor-pointer group transition-colors">
+                                    <UploadCloud size={32} className="mx-auto text-gray-300 group-hover:text-[#6610f2] mb-2" />
+                                    <p className="text-sm text-gray-400 group-hover:text-[#6610f2]">Սեղմեք ֆայլը վերբեռնելու համար</p>
+                                </div>
+                            </div>
+                            <div className="md:col-span-2 flex items-center gap-4 bg-white p-4 rounded-xl border border-gray-100">
+                                <input type="text" className="w-24 border border-gray-100 p-3 rounded-lg text-sm outline-none" placeholder="Կոդը" />
+                                <div className="bg-gray-100 px-5 py-3 rounded-lg font-bold italic text-lg select-none">NfE8e</div>
+                                <button type="button" className="text-gray-300 hover:text-black"><RefreshCw size={20} /></button>
+                            </div>
+                            <div className="md:col-span-2 text-center mt-6">
+                                <button type="submit" className="bg-[#6610f2] text-white px-16 py-4 rounded-full font-[1000] uppercase italic tracking-wider shadow-lg hover:bg-[#520dc2] transition-all">Ուղարկել</button>
+                            </div>
+                        </form>
+                    </div>
+                </section>
             </motion.div>
         );
     };
 
     const EvocaBridgeSection = () => (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="w-full pb-20">
+        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="w-full pb-20">
             <section className="w-full px-6 mt-10">
                 <div className="w-full h-[400px] md:h-[600px] rounded-[60px] overflow-hidden relative">
                     <img src="https://www.evoca.am/images-cache/menu/1/16207300767001/1200x630.png" className="w-full h-full object-cover" alt="Evoca Bridge" />
                 </div>
             </section>
-            <section className="max-w-[1450px] mx-auto px-6 mt-16 max-w-4xl">
-                <h2 className="text-[35px] md:text-[45px] font-[1000] italic uppercase text-[#1a1a1a] mb-8">Evoca Bridge</h2>
-                <p className="text-gray-500 text-lg font-medium italic leading-relaxed">
-                    Evoca Bridge կրթական ծրագիրը կամրջում է կրթությունն ու աշխատաշուկան՝ տալով գործնական հմտություններ բանկային ոլորտում։
-                </p>
+            <section className="max-w-[1450px] mx-auto px-6 mt-16 space-y-12">
+                <div className="max-w-4xl">
+                    <h2 className="text-[35px] md:text-[45px] font-[1000] italic uppercase text-[#1a1a1a] leading-tight mb-8">Evoca Bridge</h2>
+                    <div className="space-y-8 text-gray-500 text-lg font-medium italic leading-relaxed">
+                        <p>Evocabank-ն իրականացնում է հատուկ կրթական ծրագիր՝ Evoca Bridge, որի նպատակն է կամրջել կրթությունն ու աշխատաշուկան:</p>
+                        <p>Մենք հավատում ենք, որ կրթությունը հաջողության հիմքն է, և Evoca Bridge-ը հենց այն հարթակն է, որտեղ սկսվում է Ձեր մասնագիտական վերելքը:</p>
+                    </div>
+                </div>
             </section>
         </motion.div>
     );
@@ -300,19 +337,17 @@ const WorkAtEvoca: React.FC = () => {
     return (
         <div className="bg-white min-h-screen font-sans">
             <ApplicationHeader />
-
             <AnimatePresence mode="wait">
                 {selectedJob ? (
                     <JobDetail job={selectedJob} key="detail" />
-                ) : activeTab === 'work' ? (
-                    <JobList key="work-list" />
-                ) : activeTab === 'internship' ? (
-                    <InternshipSection key="internship-section" />
                 ) : (
-                    <EvocaBridgeSection key="bridge-section" />
+                    <>
+                        {activeTab === 'work' && <JobList key="work-list" />}
+                        {activeTab === 'internship' && <InternshipSection key="internship-section" />}
+                        {activeTab === 'bridge' && <EvocaBridgeSection key="bridge-section" />}
+                    </>
                 )}
             </AnimatePresence>
-
             <style>{`
                 .no-scrollbar::-webkit-scrollbar { display: none; }
                 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,500;0,700;0,900;1,900&display=swap');

@@ -1,64 +1,46 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի կառուցվածքի
+import { ref, onValue } from 'firebase/database';
 
-const slides = [
-  {
-    title: "Evoca Travel Card",
-    description: "Այս քարտն իր բազմաթիվ առավելություններով կդառնա քո ճամփորդության անբաժան մասնիկը",
-    buttonText: "Իմանալ ավելին",
-    bg: "bg-[#f2f4f7]", 
-    textColor: "text-[#1a1a1a]",
-    img: "https://www.evoca.am/images-cache/sliders/1/17612202124044/b74e87ec0e83aa10cb128d41f0ada026-577x486.png"
-  },
-  {
-    title: "Առցանց ապառիկ 0%",
-    description: "Գնիր հիմա, վճարիր հետո: Ձևակերպիր առցանց ապառիկ վայրկյանների ընթացքում 0% կանխավճարով:",
-    buttonText: "Իմանալ ավելին",
-    bg: "bg-[#1a1a1a]",
-    textColor: "text-white",
-    img: "https://www.evoca.am/images-cache/sliders/1/17740137222872/7152cafab4609e8483a365f79ecf04cb-577x486.png"
-  },
-  {
-    title: "Անհատական պահատուփեր",
-    description: "Քո արժեքավոր իրերի պահպանման ամենաապահով տարբերակը Evocabank-ում:",
-    buttonText: "Իմանալ ավելին",
-    bg: "bg-[#f8f9fb]", 
-    textColor: "text-[#1a1a1a]",
-    img: "https://www.evoca.am/images-cache/sliders/1/16856146843579/345dd727d7ee28e2cd6ec180e5d65740-577x486.jpg"
-  },
-  {
-    title: "Visa Infinite",
-    description: "Բացառիկ արտոնություններ և անհատական սպասարկում ամբողջ աշխարհում:",
-    buttonText: "Պատվիրել քարտ",
-    bg: "bg-[#0f0f0f]", 
-    textColor: "text-white",
-    img: "https://www.evoca.am/images-cache/sliders/1/17480089224912/4012c7541d8db15b5666bb0e4f4bdf7a-576x486.png"
-  },
-  {
-    title: "Evoca Gift Card",
-    description: "Լավագույն նվերը նրանց համար, ում սիրում եք: Նվիրիր ընտրության հնարավորություն:",
-    buttonText: "Իմանալ ավելին",
-    bg: "bg-[#e8ebf0]", 
-    textColor: "text-[#1a1a1a]",
-    img: "https://www.evoca.am/images-cache/sliders/1/16178037539626/79381d3e68fdf7ec25c5837a19ce5821-577x486.jpg"
-  },
-  {
-    title: "Auto Loan",
-    description: "Ձեռք բեր քո երազանքի մեքենան շահավետ պայմաններով և արագ ձևակերպմամբ:",
-    buttonText: "Դիմել հիմա",
-    bg: "bg-[#1d1d1b]", 
-    textColor: "text-white",
-    img: "https://www.evoca.am/images-cache/sliders/1/17262130779724/2fee1054871280f57daf5204f901c563-577x486.png"
-  }
-];
+
+
+interface SlideItem {
+  title: string;
+  description: string;
+  buttonText: string;
+  bg: string;
+  textColor: string;
+  img: string;
+}
 
 const HeroSlider: React.FC = () => {
+  // --- Dynamic Slides State ---
+  const [slides, setSlides] = useState<SlideItem[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  // --- Fetch Slides from Firebase ---
+  useEffect(() => {
+    const slidesRef = ref(db, 'heroslider'); // Ենթադրվում է, որ JSON-ը տեղադրել ես hero_slides node-ի տակ
+    const unsubscribe = onValue(slidesRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        const formattedData = Array.isArray(data) ? data : Object.values(data);
+        setSlides(formattedData as SlideItem[]);
+      }
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return <div className="w-full h-[550px] md:h-[650px] bg-gray-50 flex items-center justify-center font-bold text-[#6610f2]">ԲԵՌՆՎՈՒՄ Է...</div>;
+  }
+
   return (
     <div className="relative w-full h-[550px] md:h-[650px] overflow-hidden">
       <Swiper

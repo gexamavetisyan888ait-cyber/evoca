@@ -1,62 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
 
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+// --- Firebase Imports ---
+import { db } from '../../lib/firebase';
+import { ref, onValue } from 'firebase/database';
+// ------------------------
+
+
+interface AccordionItem {
+    id: number;
+    title: string;
+    content: string;
+}
+
+interface SectionType {
+    title: string;
+    img: string;
+    desc: string;
+    list: string[];
+    accordions: AccordionItem[];
+}
+
+interface TestimonialType {
+    name: string;
+    role: string;
+    text: string;
+}
 
 const Hashivner: React.FC = () => {
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
+    
+    // State-եր տվյալների համար
+    const [sections, setSections] = useState<SectionType[]>([]);
+    const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
+    const [loading, setLoading] = useState(true);
 
-    const tabs = [
-        "Հաշիվների բացում և սպասարկում",
-        "Առարկայազուրկ մետաղական հաշիվներ"
-    ];
+    useEffect(() => {
+        const hashivnerRef = ref(db, 'bizneshashivner'); // Ենթադրվում է, որ տվյալները այս node-ի տակ են
 
-    const sections = [
-        {
-            title: "Հաշիվների բացում և սպասարկում",
-            img: "https://www.evoca.am/images-cache/menu/1/16116367969264/780x585.jpg",
-            desc: "Evocabank-ում հաշիվ բացելը պարզ է և արագ: Մենք առաջարկում ենք ֆիզիկական անձանց ընթացիկ և խնայողական հաշիվների բացման և սպասարկման լայն հնարավորություններ տարբեր արժույթներով:",
-            list: ["Հաշիվներ AMD, USD, EUR, RUR և այլ արժույթներով", "Անվճար մուտք EvocaTOUCH հավելվածին", "Արագ և ապահով գործարքների իրականացում"],
-            accordions: [
-                { id: 1, title: "ՀԱՇՎԻ ԲԱՑՄԱՆ ՀԱՄԱՐ ԱՆՀՐԱԺԵՇՏ ՓԱՍՏԱԹՂԹԵՐ", content: "Ֆիզիկական անձանց համար անհրաժեշտ է ներկայացնել անձը հաստատող փաստաթուղթ և ՀԾՀ:" },
-                { id: 2, title: "ՍԱԿԱԳՆԵՐ ԵՎ ԴՐՈՒՅՔՆԵՐ", content: "Մանրամասն սակագները ներկայացված են ստորև բերված ֆայլերում:" }
-            ]
-        },
-        {
-            title: "Առարկայազուրկ մետաղական հաշիվներ",
-            img: "https://www.evoca.am/images-cache/menu/1/16154599304948/780x585.jpg",
-            desc: "Առարկայազուրկ մետաղական հաշիվը հաշիվ է, որտեղ հաշվառվում է Ձեր ոսկին՝ առանց դրա ձուլակտորների առկայության:",
-            list: ["999.9 հարգի ոսկու հաշվառում", "Անկանխիկ ոսկու առք և վաճառք", "Անվճար սպասարկում և ապահովություն"],
-            accordions: [
-                { id: 3, title: "ԻՆՉ Է ՄԵՏԱՂԱԿԱՆ ՀԱՇԻՎԸ", content: "Սա Ձեր միջոցները ոսկու տեսքով պահելու միջոց է:" },
-                { id: 4, title: "ՍԱԿԱԳՆԵՐ", content: "Գործում են բանկի կողմից սահմանված հատուկ սակագներ:" }
-            ]
-        }
-    ];
+        const unsubscribe = onValue(hashivnerRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                if (data.sections) setSections(data.sections);
+                if (data.testimonials) setTestimonials(data.testimonials);
+            }
+            setLoading(false);
+        });
 
-    const testimonials = [
-        {
-            name: 'Սուսաննա Վանյան',
-            role: 'Հաճախորդ',
-            text: 'Հայաստանի իրականության մեջ բացառիկ հրաշք բանկ։ Միայն այս հնարավորությունը ընձեռելով երիտասարդ ընտանիքներին ՝ նման ցածր տոկոսով բնակարան ձեռք բերել, արժանի է մեծ հարգանքի։ Շնորհակալ ենք, որ Դուք կաք:',
-        },
-        {
-            name: 'Նունե Գևորգյան',
-            role: 'Հաճախորդ',
-            text: 'Գերազանց սպասարկում, ընտիր ու հավես անձնակազմ Ազատության մասնաճյուղում: Վարկային բաժնից շատ շնորհակալ եմ, վարկս ձևակերպվեց առանց ավելորդ քաշքշուկների` հեշտ, արագ, որակով:',
-        },
-        {
-            name: 'Կամո Թովմասյան',
-            role: 'KAMOBLOG մեդիա-հարթակի հիմնադիր',
-            text: 'Բանկ, որ իր ռեբրենդինգի շքեղ միջոցառմամբ ու աշխատանքային ձևաչափով բանկային ոլորտում ամրապնդեց որակ և ճաշակ թելադրեց։',
-        }
-    ];
+        return () => unsubscribe();
+    }, []);
+
+    const tabs = sections.map(s => s.title);
+
+    if (loading || sections.length === 0) {
+        return (
+            <div className="min-h-screen flex items-center justify-center bg-white">
+                <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-[#6610f2]"></div>
+            </div>
+        );
+    }
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
@@ -192,6 +198,7 @@ const Hashivner: React.FC = () => {
             </div>
 
             {/* Expressive Swiper Section */}
+            {/* Testimonials Swiper */}
             <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc]">
                 <div className="flex justify-center gap-2 mb-12">
                     {[1, 2, 3, 4, 5].map(s => (

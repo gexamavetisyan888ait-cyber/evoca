@@ -1,10 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
-import { initializeApp } from "firebase/app";
-import { ref, get , child} from "firebase/database";
+import { ref, get, child } from "firebase/database";
 import { db } from "../../lib/firebase";
-
-
 
 // Մոդելը
 interface LoanType {
@@ -34,8 +31,8 @@ const AnhatVarkerInfo: React.FC = () => {
       setLoading(true);
       try {
         const dbRef = ref(db);
-        // Ստանում ենք բոլոր վարկերը և գտնում համապատասխանը ըստ ID-ի
-        const snapshot = await get(child(dbRef, 'loans'));
+        // Ստանում ենք բոլոր վարկերը 'varker' ճյուղից
+        const snapshot = await get(child(dbRef, 'varker'));
         
         if (snapshot.exists()) {
           const data = snapshot.val();

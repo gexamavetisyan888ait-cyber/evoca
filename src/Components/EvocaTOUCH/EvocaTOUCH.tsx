@@ -1,18 +1,15 @@
 import React, { useState, useEffect } from 'react';
-import { FileText, Download, Monitor, ChevronRight } from 'lucide-react';
+import { FileText, Download, Monitor, Smartphone, ChevronRight } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
 
 // Firebase imports
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
 
-// Swiper styles
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
 
+// Տիպերի սահմանում
 interface Testimonial {
     id?: string;
     name: string;
@@ -30,13 +27,14 @@ const EvocaTOUCH: React.FC = () => {
         { name: 'SWIFT переводы в РФ', lang: 'RUS' },
     ];
 
+    // Firebase-ից տվյալների ստացում
     useEffect(() => {
-        // Բեռնում ենք կարծիքները Firebase-ից
-        const testimonialsRef = ref(db, 'testimonials');
+        const testimonialsRef = ref(db, 'evocatouch'); 
         const unsubscribe = onValue(testimonialsRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                setTestimonials(Object.values(data));
+                const formattedData = Array.isArray(data) ? data : Object.values(data);
+                setTestimonials(formattedData);
             }
             setLoading(false);
         });
@@ -144,11 +142,12 @@ const EvocaTOUCH: React.FC = () => {
                 </div>
 
                 {loading ? (
-                    <div className="text-center font-black text-[#6610f2] italic uppercase">Բեռնվում է...</div>
-                ) : (
+                    <div className="text-center py-10 font-[1000] italic text-[#6610f2] uppercase animate-pulse">ԲԵՌՆՎՈՒՄ Է...</div>
+                ) : testimonials.length > 0 && (
                     <Swiper
                         modules={[Pagination, Autoplay, EffectFade]}
                         effect="fade"
+                        fadeEffect={{ crossFade: true }}
                         speed={1000}
                         autoplay={{ delay: 5000 }}
                         pagination={{ clickable: true }}
@@ -156,15 +155,29 @@ const EvocaTOUCH: React.FC = () => {
                     >
                         {testimonials.map((t, idx) => (
                             <SwiperSlide key={idx}>
-                                <div className="text-center max-w-3xl mx-auto px-6">
-                                    <p className="text-[20px] md:text-[24px] font-bold italic leading-relaxed text-gray-700">
-                                        "{t.text}"
-                                    </p>
-                                    <div className="mt-10">
-                                        <h4 className="text-[#6610f2] font-[1000] text-xl uppercase italic tracking-tighter">{t.name}</h4>
-                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-widest mt-2">{t.role}</p>
+                                <motion.div 
+                                    initial={{ opacity: 0, y: 30, scale: 0.95 }}
+                                    whileInView={{ opacity: 1, y: 0, scale: 1 }}
+                                    transition={{ duration: 0.8 }}
+                                    className="text-center max-w-3xl mx-auto px-6"
+                                >
+                                    <div className="relative inline-block">
+                                        <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
+                                        <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10">
+                                            {t.text}
+                                        </p>
+                                        <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
                                     </div>
-                                </div>
+                                    <motion.div 
+                                        initial={{ opacity: 0 }}
+                                        whileInView={{ opacity: 1 }}
+                                        transition={{ delay: 0.5 }}
+                                        className="mt-10"
+                                    >
+                                        <h4 className="text-[#6610f2] font-[1000] text-xl uppercase italic tracking-tighter">{t.name}</h4>
+                                        <p className="text-gray-400 text-[10px] font-black uppercase tracking-[0.3em] mt-2">{t.role}</p>
+                                    </motion.div>
+                                </motion.div>
                             </SwiperSlide>
                         ))}
                     </Swiper>

@@ -1,12 +1,11 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-
-// 1. Ավելացնում ենք Firebase-ի անհրաժեշտ գործիքները
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Ստուգիր, որ path-ը ճիշտ է
+// Ներմուծում ենք արդեն իսկ initialize եղած db-ն քո firebase.ts ֆայլից
+import { db } from "../../lib/firebase"; 
 
 export interface LoanType {
-  id: number;
+  id: number | string;
   title: string;
   description: string;
   duration: string;
@@ -27,52 +26,54 @@ const filters = [
 
 const AnhatVarker: React.FC = () => {
   const navigate = useNavigate();
-  const [activeFilter, setActiveFilter] = useState('all');
-  
-  // 2. Ստեղծում ենք state տվյալների և loading-ի համար
   const [loans, setLoans] = useState<LoanType[]>([]);
+  const [activeFilter, setActiveFilter] = useState('varker');
   const [loading, setLoading] = useState(true);
 
-  // 3. Կարդում ենք տվյալները Firebase-ից
+  // Տվյալների ստացում Firebase Realtime Database-ից
   useEffect(() => {
-    const loansRef = ref(db, 'loans'); // 'loans' բանալին Firebase-ում
+    const loansRef = ref(db, 'varker');
     
+    // onValue-ն իրական ժամանակում թարմացնում է տվյալները
     const unsubscribe = onValue(loansRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե Firebase-ը տալիս է օբյեկտ, սարքում ենք զանգված (array)
-        const loansList = Array.isArray(data) ? data : Object.values(data);
-        setLoans(loansList as LoanType[]);
+        // Փոխակերպում ենք Firebase-ի օբյեկտը զանգվածի (Array)
+        const loansList: LoanType[] = Object.keys(data).map((key) => ({
+          ...data[key],
+          id: data[key].id || key, 
+        }));
+        setLoans(loansList);
+      } else {
+        setLoans([]);
       }
+      setLoading(false);
+    }, (error) => {
+      console.error("Firebase error:", error);
       setLoading(false);
     });
 
+    // Մաքրում ենք listener-ը, երբ կոմպոնենտը դադարում է գոյություն ունենալ
     return () => unsubscribe();
   }, []);
 
+  // Ֆիլտրացիայի տրամաբանություն
   const filteredLoans = useMemo(() => {
     if (activeFilter === 'all') return loans;
     return loans.filter(loan => loan.category === activeFilter);
   }, [activeFilter, loans]);
 
-  // Եթե տվյալները դեռ բեռնվում են
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <div className="text-[#6610f2] font-black italic animate-pulse">ԲԵՌՆՎՈՒՄ Է...</div>
-      </div>
-    );
-  }
-
   return (
     <div className="bg-white min-h-screen font-sans pb-20">
       <div className="max-w-[1200px] mx-auto px-4 pt-16">
+        {/* Վերնագիր */}
         <div className="flex border-b-[3px] border-[#6610f2] mb-10">
           <div className="bg-[#6610f2] text-white px-8 py-3 font-black text-sm uppercase tracking-widest italic rounded-t-lg cursor-default">
             Անհատ վարկեր
           </div>
         </div>
 
+        {/* Ֆիլտրեր */}
         <div className="flex flex-wrap gap-3 mb-16">
           {filters.map((f) => (
             <button
@@ -90,10 +91,18 @@ const AnhatVarker: React.FC = () => {
       </div>
 
       <main className="max-w-[1200px] mx-auto px-4 space-y-24">
-        {filteredLoans.length > 0 ? (
+        {loading ? (
+          /* Loading սփիններ */
+          <div className="text-center py-32">
+             <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6610f2] mx-auto mb-4"></div>
+             <p className="text-gray-400 font-bold italic uppercase tracking-widest">Բեռնվում է...</p>
+          </div>
+        ) : filteredLoans.length > 0 ? (
+          /* Վարկերի ցուցակ */
           filteredLoans.map((loan) => (
             <section key={loan.id} className="flex flex-col md:flex-row items-center gap-10 lg:gap-20 border-b border-gray-50 pb-20 last:border-0 group">
               
+              {/* Նկարի բաժին */}
               <div className="w-full md:w-[350px] lg:w-[420px] flex-shrink-0">
                 <div className="bg-[#f8f9fb] rounded-[50px] p-10 aspect-square flex justify-center items-center overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500">
                   <img
@@ -105,6 +114,7 @@ const AnhatVarker: React.FC = () => {
                 </div>
               </div>
 
+              {/* Ինֆորմացիայի բաժին */}
               <div className="flex-1">
                 <h2 className="text-[28px] lg:text-[38px] font-[900] italic uppercase text-[#1a1a1a] mb-6 leading-[1.1] tracking-tighter group-hover:text-[#6610f2] transition-colors">
                   {loan.title}
@@ -123,7 +133,7 @@ const AnhatVarker: React.FC = () => {
                     <span className="text-gray-400 text-[10px] uppercase font-black block mb-2 tracking-widest">Մինչև</span>
                     <div className="text-[#6610f2] text-3xl font-[900] italic tracking-tight">{loan.amount}</div>
                     <span className="text-gray-400 text-[11px] font-bold block mt-1 leading-tight">
-                      Սահմանաչափ կամ <br /> համժեք արտարժույթ
+                      Սահմանաչափ
                     </span>
                   </div>
                   <div className="col-span-2 lg:col-span-1 border-l-2 border-gray-100 pl-4">

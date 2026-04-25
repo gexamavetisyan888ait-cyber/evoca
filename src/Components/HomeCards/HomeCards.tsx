@@ -20,14 +20,13 @@ const LatestNews: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Բեռնում ենք նորությունները Firebase-ից
-    const newsRef = ref(db, 'latest_news');
+    // Բեռնում ենք նորությունները Firebase-ից (օգտագործում ենք 'homecards' կամ 'latest_news' ըստ քո բազայի)
+    const newsRef = ref(db, 'homecards'); 
     const unsubscribe = onValue(newsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե տվյալները Firebase-ում օբյեկտ են, վերածում ենք զանգվածի
-        const newsArray = Object.values(data) as NewsItem[];
-        setNews(newsArray);
+        const formattedData = Array.isArray(data) ? data : Object.values(data);
+        setNews(formattedData as NewsItem[]);
       }
       setLoading(false);
     });
@@ -61,7 +60,7 @@ const LatestNews: React.FC = () => {
       </div>
 
       {loading ? (
-        <div className="py-20 text-center font-black text-[#7d2ae8] uppercase italic tracking-widest">
+        <div className="py-20 text-center font-black text-[#7d2ae8] uppercase italic tracking-widest animate-pulse">
           Բեռնվում է...
         </div>
       ) : (
@@ -84,7 +83,7 @@ const LatestNews: React.FC = () => {
                 <div className="absolute top-6 left-6">
                   <span 
                     className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg"
-                    style={{ backgroundColor: item.color }}
+                    style={{ backgroundColor: item.color || '#7d2ae8' }}
                   >
                     {item.category}
                   </span>
