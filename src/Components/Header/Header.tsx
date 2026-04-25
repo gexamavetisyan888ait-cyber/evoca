@@ -51,6 +51,11 @@ const Header: React.FC = () => {
     "/career": [ // Բանալին դարձրինք /career
       { name: "Evoca լայֆ", path: "/career/EvocaLife" },
       { name: "Աշխատանք և պրակտիկա", path: "/career/work" },
+    ],"/about":[
+      { name: "Evoca-ի մասին", path: "/about/about" },
+      { name: "Սակագներ", path: "/about/sakagin" },
+      { name: "հաշվետվություն", path: "/about/hashiv" },
+      { name: "Հայտարարություններ", path: "/about/hayter" },
     ]
   };
 
