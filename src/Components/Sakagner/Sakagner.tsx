@@ -2,10 +2,24 @@ import React, { useState } from 'react';
 import { ChevronDown, FileText, Download } from 'lucide-react';
 import { motion } from 'framer-motion';
 
-const TariffsComponent = () => {
-    const [subTab, setSubTab] = useState("personal_loans");
+// --- INTERFACES (Տիպավորում) ---
 
-    const subMenuItems = [
+interface TableData {
+    id: number;
+    feature: string;
+    value: string;
+}
+
+interface SubMenuItem {
+    id: "personal_loans" | "business_loans" | "cards" | "deposits" | "archive";
+    label: string;
+}
+
+const TariffsComponent: React.FC = () => {
+    // State-ի տիպավորումը ըստ SubMenuItem-ի id-ների
+    const [subTab, setSubTab] = useState<SubMenuItem["id"]>("personal_loans");
+
+    const subMenuItems: SubMenuItem[] = [
         { id: "personal_loans", label: "Վարկեր ֆիզիկական անձանց" },
         { id: "business_loans", label: "Վարկեր իրավաբանական անձանց" },
         { id: "cards", label: "Միջնորդավճարների սակագներ" },
@@ -15,7 +29,7 @@ const TariffsComponent = () => {
 
     // --- ՏՎՅԱԼՆԵՐԻ ԲԱԺԻՆՆԵՐ ---
 
-    const dataIndividual = [
+    const dataIndividual: TableData[] = [
         { id: 1, feature: "Վարկի տեսակ", value: "Անհատական վարկեր / EvocaHOME" },
         { id: 2, feature: "Տրամադրման նպատակ", value: "Բնակարանի վերանորոգման, կահավորման, կենցաղային տեխնիկայի և այլ անձնական կարիքների համար" },
         { id: 3, feature: "Վարկառուի տարիք", value: "21-65 տարեկան ՀՀ ռեզիդենտ ֆիզիկական անձինք" },
@@ -28,7 +42,7 @@ const TariffsComponent = () => {
         { id: 10, feature: "Վարկի սպասարկման վճար", value: "0.1% - 0.3% ամսական" }
     ];
 
-    const dataBusiness = [
+    const dataBusiness: TableData[] = [
         { id: 1, feature: "Բիզնես վարկի տեսակ", value: "Փոքր և միջին բիզնեսի վարկավորում" },
         { id: 2, feature: "Նպատակ", value: "Շրջանառու միջոցների համալրում, հիմնական միջոցների ձեռքբերում" },
         { id: 3, feature: "Գումարի չափ", value: "Սկսած 5,000,000 ՀՀ դրամից" },
@@ -39,7 +53,7 @@ const TariffsComponent = () => {
         { id: 8, feature: "Վարկունակություն", value: "Ֆինանսական վերլուծության հիման վրա" }
     ];
 
-    const dataCards = [
+    const dataCards: TableData[] = [
         { id: 1, feature: "Քարտի տեսակ", value: "Visa Classic / MasterCard Standard" },
         { id: 2, feature: "Քարտի սպասարկման վճար", value: "0 - 5,000 ՀՀ դրամ տարեկան" },
         { id: 3, feature: "Կանխիկացման միջնորդավճար", value: "Բանկի բանկոմատներում՝ 0.2%, այլ բանկերում՝ 1%" },
@@ -48,7 +62,7 @@ const TariffsComponent = () => {
         { id: 6, feature: "SMS տեղեկացում", value: "Անվճար կամ 200 դրամ (ըստ փաթեթի)" }
     ];
 
-    const dataDeposits = [
+    const dataDeposits: TableData[] = [
         { id: 1, feature: "Ավանդի տեսակ", value: "Դասական ավանդ" },
         { id: 2, feature: "Արժույթ", value: "ՀՀ դրամ" },
         { id: 3, feature: "Նվազագույն գումար", value: "100,000 ՀՀ դրամ" },
@@ -58,7 +72,8 @@ const TariffsComponent = () => {
         { id: 7, feature: "Վաղաժամկետ դադարեցում", value: "Տոկոսների վերահաշվարկ 0.1%-ով" }
     ];
 
-    const renderTable = (title, data) => (
+    // Ֆունկցիայի պարամետրերի տիպավորում
+    const renderTable = (title: string, data: TableData[]) => (
         <motion.div 
             initial={{ opacity: 0, y: 10 }} 
             animate={{ opacity: 1, y: 0 }}

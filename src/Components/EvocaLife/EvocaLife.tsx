@@ -8,9 +8,7 @@ import { UploadCloud, RefreshCw, ChevronDown } from 'lucide-react';
 import { db } from '../../lib/firebase'; 
 import { ref, onValue } from 'firebase/database';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
+
 
 // Տիպերի սահմանում
 interface BenefitType {

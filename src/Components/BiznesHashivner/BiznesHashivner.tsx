@@ -9,9 +9,6 @@ import { db } from '../../lib/firebase';
 import { ref, onValue } from 'firebase/database';
 // ------------------------
 
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
 
 interface AccordionItem {
     id: number;

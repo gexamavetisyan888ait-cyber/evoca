@@ -6,10 +6,7 @@ import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
 import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի կառուցվածքի
 import { ref, onValue } from 'firebase/database';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+
 
 interface SlideItem {
   title: string;

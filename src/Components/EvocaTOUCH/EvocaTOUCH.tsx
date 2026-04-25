@@ -8,9 +8,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { db } from '../../lib/firebase'; // Ստուգեք հասցեն ըստ Ձեր նախագծի
 import { ref, onValue } from 'firebase/database';
 
-import 'swiper/css';
-import 'swiper/css/pagination';
-import 'swiper/css/effect-fade';
+
 
 // Տիպերի սահմանում կարծիքների համար
 interface Testimonial {

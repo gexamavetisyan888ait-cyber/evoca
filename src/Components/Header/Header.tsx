@@ -54,7 +54,6 @@ const Header: React.FC = () => {
     ],"/about":[
       { name: "Evoca-ի մասին", path: "/about/about" },
       { name: "Սակագներ", path: "/about/sakagin" },
-      { name: "հաշվետվություն", path: "/about/hashiv" },
       { name: "Հայտարարություններ", path: "/about/hayter" },
     ]
   };

@@ -2,13 +2,9 @@ import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination,Navigation } from 'swiper/modules';
-import 'swiper/css';
-import 'swiper/css/pagination';
 import { ChevronLeft, ChevronRight, CheckCircle2, Users, Building2, Globe, Award, Quote } from 'lucide-react';
 
-// Swiper styles
-import 'swiper/css';
-import 'swiper/css/navigation';
+
 
 // --- DATA ---
 const historyData = [

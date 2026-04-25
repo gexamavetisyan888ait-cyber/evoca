@@ -8,8 +8,6 @@ import { ChevronLeft, ChevronRight } from 'lucide-react';
 import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի կառուցվածքի
 import { ref, onValue } from 'firebase/database';
 
-import 'swiper/css';
-import 'swiper/css/navigation';
 
 interface Partner {
   name: string;

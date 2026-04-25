@@ -53,7 +53,7 @@ const DynamicExchange: React.FC = () => {
 
   useEffect(() => {
     // Միանում ենք Firebase-ի համապատասխան node-ին (օրինակ՝ 'exchange_data')
-    const dataRef = ref(db, 'chanfe');
+    const dataRef = ref(db, 'change');
     
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
@@ -217,7 +217,7 @@ const DynamicExchange: React.FC = () => {
           >
             <div className="absolute inset-0 bg-[#7d2ae8]/5 group-hover:bg-transparent transition-colors z-10"></div>
             <img 
-              src="https://www.evoca.am/static/media/map-sample.png" 
+              src="https://scontent.fevn2-1.fna.fbcdn.net/v/t39.30808-6/486292077_1087632580068124_5141256942071665595_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_ohc=oOv1ZfWOa_QQ7kNvwG4ZDa3&_nc_oc=AdpO7qOX150Ykdk3QhPRNWK5fo4HfiTEBbMquch00TzVIZ5tECFH7plbJM46175PB4zkztdkNNMi_UDcPEEh952q&_nc_zt=23&_nc_ht=scontent.fevn2-1.fna&_nc_gid=f0bhC4q6d5ks-YKgt4JT2Q&_nc_ss=7b289&oh=00_Af0kKdc7SEb4Dj0mK9cpwlAQqt0Uu8mE158NJ_ID5bYv8Q&oe=69F2DBCC" 
               alt="Evoca Map" 
               className="w-full h-64 object-cover group-hover:scale-105 transition-transform duration-1000"
             />
