@@ -1,7 +1,6 @@
 import React, { useState, useMemo, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { ref, onValue } from "firebase/database";
-// Ներմուծում ենք արդեն իսկ initialize եղած db-ն քո firebase.ts ֆայլից
 import { db } from "../../lib/firebase"; 
 
 export interface LoanType {
@@ -27,22 +26,26 @@ const filters = [
 const AnhatVarker: React.FC = () => {
   const navigate = useNavigate();
   const [loans, setLoans] = useState<LoanType[]>([]);
-  const [activeFilter, setActiveFilter] = useState('varker');
+  // ՈՒՂՂՈՒՄ: Սկզբնական արժեքը դնում ենք 'all', որպեսզի բեռնվելուն պես բոլորը երևան
+  const [activeFilter, setActiveFilter] = useState('all'); 
   const [loading, setLoading] = useState(true);
 
-  // Տվյալների ստացում Firebase Realtime Database-ից
   useEffect(() => {
     const loansRef = ref(db, 'varker');
     
-    // onValue-ն իրական ժամանակում թարմացնում է տվյալները
     const unsubscribe = onValue(loansRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Փոխակերպում ենք Firebase-ի օբյեկտը զանգվածի (Array)
-        const loansList: LoanType[] = Object.keys(data).map((key) => ({
-          ...data[key],
-          id: data[key].id || key, 
-        }));
+        // ՈՒՂՂՈՒՄ: Ավելի ապահով դարձնենք տվյալների կոնվերտացիան
+        const loansList: LoanType[] = Array.isArray(data)
+          ? data.filter(i => i !== null).map((item, index) => ({
+              ...item,
+              id: item.id || index,
+            }))
+          : Object.keys(data).map((key) => ({
+              ...data[key],
+              id: data[key].id || key, 
+            }));
         setLoans(loansList);
       } else {
         setLoans([]);
@@ -53,27 +56,26 @@ const AnhatVarker: React.FC = () => {
       setLoading(false);
     });
 
-    // Մաքրում ենք listener-ը, երբ կոմպոնենտը դադարում է գոյություն ունենալ
     return () => unsubscribe();
   }, []);
 
   // Ֆիլտրացիայի տրամաբանություն
   const filteredLoans = useMemo(() => {
+    // Եթե 'all' է, ցույց ենք տալիս ամբողջը
     if (activeFilter === 'all') return loans;
+    // Զտում ենք ըստ կատեգորիայի
     return loans.filter(loan => loan.category === activeFilter);
   }, [activeFilter, loans]);
 
   return (
     <div className="bg-white min-h-screen font-sans pb-20">
       <div className="max-w-[1200px] mx-auto px-4 pt-16">
-        {/* Վերնագիր */}
         <div className="flex border-b-[3px] border-[#6610f2] mb-10">
           <div className="bg-[#6610f2] text-white px-8 py-3 font-black text-sm uppercase tracking-widest italic rounded-t-lg cursor-default">
             Անհատ վարկեր
           </div>
         </div>
 
-        {/* Ֆիլտրեր */}
         <div className="flex flex-wrap gap-3 mb-16">
           {filters.map((f) => (
             <button
@@ -92,17 +94,14 @@ const AnhatVarker: React.FC = () => {
 
       <main className="max-w-[1200px] mx-auto px-4 space-y-24">
         {loading ? (
-          /* Loading սփիններ */
           <div className="text-center py-32">
              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#6610f2] mx-auto mb-4"></div>
              <p className="text-gray-400 font-bold italic uppercase tracking-widest">Բեռնվում է...</p>
           </div>
         ) : filteredLoans.length > 0 ? (
-          /* Վարկերի ցուցակ */
           filteredLoans.map((loan) => (
             <section key={loan.id} className="flex flex-col md:flex-row items-center gap-10 lg:gap-20 border-b border-gray-50 pb-20 last:border-0 group">
               
-              {/* Նկարի բաժին */}
               <div className="w-full md:w-[350px] lg:w-[420px] flex-shrink-0">
                 <div className="bg-[#f8f9fb] rounded-[50px] p-10 aspect-square flex justify-center items-center overflow-hidden shadow-sm group-hover:shadow-xl transition-all duration-500">
                   <img
@@ -114,7 +113,6 @@ const AnhatVarker: React.FC = () => {
                 </div>
               </div>
 
-              {/* Ինֆորմացիայի բաժին */}
               <div className="flex-1">
                 <h2 className="text-[28px] lg:text-[38px] font-[900] italic uppercase text-[#1a1a1a] mb-6 leading-[1.1] tracking-tighter group-hover:text-[#6610f2] transition-colors">
                   {loan.title}
@@ -156,6 +154,12 @@ const AnhatVarker: React.FC = () => {
         ) : (
           <div className="text-center py-32">
             <h3 className="text-2xl text-gray-300 font-black italic uppercase tracking-widest">Այս կատեգորիայում վարկեր չկան</h3>
+            <button 
+              onClick={() => setActiveFilter('all')} 
+              className="mt-4 text-[#6610f2] font-bold underline"
+            >
+              Տեսնել բոլորը
+            </button>
           </div>
         )}
       </main>

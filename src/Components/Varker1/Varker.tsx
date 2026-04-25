@@ -1,138 +1,140 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
-import { 
-  Mail, Phone, MapPin, ChevronRight 
-} from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
+import { RefreshCw } from 'lucide-react';
 
-const Footer: React.FC = () => {
-  const currentYear = new Date().getFullYear();
+// Firebase Imports
+import { db } from "../../lib/firebase";
+import { ref, onValue } from "firebase/database";
 
-  const footerSections = [
-    {
-      title: "Բանկի մասին",
-      links: [
-        { name: "Մեր մասին", path: "/about" },
-        { name: "Կարիերա", path: "/career" },
-        { name: "Նորություններ", path: "/news" },
-        { name: "Հետադարձ կապ", path: "/contact" }
-      ]
-    },
-    {
-      title: "Ծառայություններ",
-      links: [
-        { name: "Վարկեր", path: "/personal-loans" },
-        { name: "Քարտեր", path: "/cards" },
-        { name: "Ավանդներ", path: "/deposits" },
-        { name: "Փոխանցումներ", path: "/transfers" }
-      ]
-    },
-    {
-      title: "Իրավական",
-      links: [
-        { name: "Սակագներ", path: "/tariffs" },
-        { name: "Պայմաններ", path: "/terms" },
-        { name: "Գաղտնիություն", path: "/privacy" },
-        { name: "Անվտանգություն", path: "/security" }
-      ]
-    }
-  ];
+export interface LoanType {
+  id: number | string;
+  title: string;
+  description: string;
+  duration: string;
+  amount: string;
+  rate: string;
+  rateLabel: string;
+  image: string;
+}
 
+const Varker: React.FC = () => {
+  const navigate = useNavigate();
+  const [loans, setLoans] = useState<LoanType[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const loansRef = ref(db, 'varker');
+    
+    const unsubscribe = onValue(loansRef, (snapshot) => {
+      const data = snapshot.val();
+      if (data) {
+        // Ձևավորում ենք տվյալները՝ զտելով հնարավոր դատարկ (null) արժեքները
+        const loansList: LoanType[] = Array.isArray(data)
+          ? data.filter(item => item !== null)
+          : Object.keys(data).map(key => ({
+              ...data[key],
+              id: data[key].id || key
+            }));
+        setLoans(loansList);
+      } else {
+        setLoans([]);
+      }
+      setLoading(false);
+    }, (error) => {
+      console.error("Firebase Error:", error);
+      setLoading(false);
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center min-h-screen bg-white">
+        <RefreshCw className="animate-spin text-[#6600cc] mb-4" size={40} />
+        <p className="font-bold uppercase text-gray-300 italic tracking-widest">Բեռնվում է...</p>
+      </div>
+    );
+  }
 
   return (
-    <footer className="w-full bg-[#f8f9fb] pt-20 pb-10 font-sans text-[#1a1a1a]">
-      <div className="max-w-[1450px] mx-auto px-6">
-        
-        {/* Main Footer Content */}
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12 mb-20">
-          
-          {/* Brand Column */}
-          <div className="lg:col-span-2 space-y-8">
-            <Link to="/">
-              <img 
-                src="https://www.meridianexpo.am/wp-content/uploads/2019/03/logo_gray.png" 
-                alt="Logo" 
-                className="w-[180px] opacity-80"
-              />
-            </Link>
-            <p className="text-gray-400 text-sm leading-relaxed max-w-sm italic font-medium">
-              Evocabank-ը մատուցում է արագ, պարզ և նորարարական ծառայություններ և աշխատում է mobile-first ձևաչափով:
-            </p>
-            <div className="flex gap-4">
-         
-            </div>
-          </div>
-
-          {/* Links Columns */}
-          {footerSections.map((section) => (
-            <div key={section.title} className="space-y-6">
-              <h4 className="text-[12px] font-black uppercase tracking-[0.2em] text-[#1a1a1a]">
-                {section.title}
-              </h4>
-              <ul className="space-y-4">
-                {section.links.map((link) => (
-                  <li key={link.name}>
-                    <Link 
-                      to={link.path} 
-                      className="text-gray-400 hover:text-[#6610f2] text-[13px] font-bold transition-colors flex items-center group uppercase tracking-tighter italic"
-                    >
-                      <ChevronRight size={12} className="opacity-0 group-hover:opacity-100 -ml-4 group-hover:ml-0 transition-all mr-2" />
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-          ))}
-        </div>
-
-        {/* Contact Bar */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 py-10 border-t border-b border-gray-200/60 mb-10">
-          <div className="flex items-center gap-4 text-gray-400 group cursor-pointer">
-            <div className="p-3 rounded-2xl bg-white border border-gray-100 group-hover:text-[#6610f2] transition-colors">
-              <Phone size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest">Զանգահարեք մեզ</p>
-              <p className="text-sm font-black text-[#1a1a1a] tracking-tight">+374 10 271111</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-gray-400 group cursor-pointer">
-            <div className="p-3 rounded-2xl bg-white border border-gray-100 group-hover:text-[#6610f2] transition-colors">
-              <Mail size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest">Էլ. հասցե</p>
-              <p className="text-sm font-black text-[#1a1a1a] tracking-tight">info@evocabank.am</p>
-            </div>
-          </div>
-          <div className="flex items-center gap-4 text-gray-400 group cursor-pointer">
-            <div className="p-3 rounded-2xl bg-white border border-gray-100 group-hover:text-[#6610f2] transition-colors">
-              <MapPin size={20} />
-            </div>
-            <div>
-              <p className="text-[10px] font-black uppercase tracking-widest">Գլխամասային գրասենյակ</p>
-              <p className="text-sm font-black text-[#1a1a1a] tracking-tight">Հանրապետության 44/2, Երևան</p>
-            </div>
-          </div>
-        </div>
-
-        {/* Bottom Bar */}
-        <div className="flex flex-col md:row justify-between items-center gap-6 text-gray-400 text-[11px] font-bold uppercase tracking-widest">
-          <p>© {currentYear} «ԷՎՈԿԱԲԱՆԿ» ՓԲԸ: Բոլոր իրավունքները պաշտպանված են:</p>
-          <div className="flex gap-8">
-            <span className="hover:text-[#6610f2] cursor-pointer transition-colors">Կայքի քարտեզ</span>
-            <span className="hover:text-[#6610f2] cursor-pointer transition-colors">Անվտանգություն</span>
+    <div className="bg-white min-h-screen font-sans pb-20">
+      <div className="max-w-[1200px] mx-auto px-4 pt-16">
+        <div className="flex border-b-[3px] border-[#6600cc]">
+          <div className="bg-[#6600cc] text-white px-6 py-3 font-bold text-sm uppercase tracking-wide rounded-t-sm">
+            Բիզնես վարկեր
           </div>
         </div>
       </div>
 
-      <style>{`
-        @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,700;0,900;1,700;1,900&display=swap');
-        footer { font-family: 'Montserrat', sans-serif; }
-      `}</style>
-    </footer>
+      <main className="max-w-[1200px] mx-auto px-4 mt-12 space-y-16">
+        {loans.length > 0 ? (
+          loans.map((loan) => (
+            <motion.section 
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              key={loan.id} 
+              className="flex flex-col md:flex-row items-center gap-8 lg:gap-16 border-b border-gray-100 pb-16 last:border-0"
+            >
+              <div className="w-full md:w-[320px] lg:w-[400px] flex-shrink-0">
+                <div className="bg-[#f2f4f7] rounded-[32px] p-8 aspect-square flex justify-center items-center">
+                  <img
+                    src={loan.image}
+                    alt={loan.title}
+                    className="w-full h-auto object-contain transition-transform duration-500 hover:scale-105"
+                    onError={(e) => { e.currentTarget.src = 'https://via.placeholder.com/400x400/f2f4f7/6600cc?text=Evoca+Loan'; }}
+                  />
+                </div>
+              </div>
+
+              <div className="flex-1">
+                <h2 className="text-2xl lg:text-3xl font-extrabold text-[#1a1a1a] mb-5 leading-tight">
+                  {loan.title}
+                </h2>
+                <p className="text-gray-500 text-base mb-8 leading-relaxed max-w-2xl">
+                  {loan.description}
+                </p>
+
+                <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
+                  <div>
+                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">Մինչև</span>
+                    <div className="text-[#6600cc] text-3xl font-black">{loan.duration}</div>
+                    <span className="text-gray-400 text-[11px] font-medium block mt-1">ժամկետ</span>
+                  </div>
+                  <div>
+                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">Մինչև</span>
+                    <div className="text-[#6600cc] text-3xl font-black tracking-tight">{loan.amount}</div>
+                    <span className="text-gray-400 text-[11px] font-medium block mt-1 leading-tight">
+                      Սահմանաչափ
+                    </span>
+                  </div>
+                  <div className="col-span-2 lg:col-span-1">
+                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">&nbsp;</span>
+                    <div className="text-[#6600cc] text-3xl font-black">{loan.rate}</div>
+                    <span className="text-gray-400 text-[11px] font-medium block mt-1">{loan.rateLabel}</span>
+                  </div>
+                </div>
+
+                <button 
+                  onClick={() => navigate(`/loan/${loan.id}`)}
+                  className="group flex items-center gap-3 px-8 py-3 bg-[#f3ebff] text-[#6600cc] rounded-full font-bold text-sm transition-all hover:bg-[#6600cc] hover:text-white"
+                >
+                  Մանրամասն
+                  <span className="text-xl transition-transform group-hover:translate-x-1">›</span>
+                </button>
+              </div>
+            </motion.section>
+          ))
+        ) : (
+          <div className="text-center py-20 text-gray-400 font-bold uppercase italic">
+            Վարկեր չեն գտնվել
+          </div>
+        )}
+      </main>
+    </div>
   );
 };
 
-export default Footer;
+export default Varker;
