@@ -19,12 +19,12 @@ const Header: React.FC = () => {
 
   const topNavLinks = [
     { name: "Անհատ", path: "/" },
-    { name: "Բիզնես", path: "/business" },
+    { name: "Բիզնես", path: "/business/loans" },
     { name: "Ակնթարդային վճարումներ", path: "/instant-payments" },
-    { name: "Մեր մասին", path: "/about" },
+    { name: "Մեր մասին", path: "/about/about" },
     { name: "Նորություններ", path: "/news" },
     { name: "Բլոգ", path: "/blog" },
-    { name: "Կարիերա", path: "/career" },
+    { name: "Կարիերա", path: "/career/EvocaLife" },
   ];
 
   const secondaryMenus: Record<string, { name: string, path: string }[]> = {
@@ -59,7 +59,6 @@ const Header: React.FC = () => {
     ],
   };
 
-  // Burger-ի աջ հատվածի բոլոր հավաքված բաժինները
   const burgerSections = [
     {
       title: "Վարկեր",
@@ -92,7 +91,7 @@ const Header: React.FC = () => {
       ]
     },
     {
-      title: "Նորություններ", // <--- Ավելացված բաժին
+      title: "Նորություններ",
       items: [
         { name: "Բոլոր նորությունները", path: "/news" },
         { name: "Բանկային", path: "/news?category=բանկային" },
@@ -109,39 +108,63 @@ const Header: React.FC = () => {
     }
   ];
 
-  const getCurrentTopPath = () => {
+  // Ստուգում ենք ընթացիկ ակտիվ բաժինը վերին մենյուի գծի համար
+  const getActiveTopPath = () => {
+    const path = location.pathname;
+    if (path.startsWith("/business")) return "/business/loans";
+    if (path.startsWith("/career")) return "/career/EvocaLife";
+    if (path.startsWith("/about")) return "/about/about";
+    if (path.startsWith("/news")) return "/news";
+    if (path.startsWith("/blog")) return "/blog";
+    if (path.startsWith("/instant-payments")) return "/instant-payments";
+    return "/";
+  };
+
+  const activeTopPath = getActiveTopPath();
+
+  // Որոշում ենք՝ արդյոք պետք է ցուցադրել երկրորդական մենյուն
+  const shouldShowSecondaryMenu = () => {
+    const path = location.pathname;
+    // Եթե էջը նորություններ է, բլոգ է կամ ակնթարդային վճարումներ, ապա ենթամենյու պետք չէ
+    if (path.startsWith("/news") || path.startsWith("/blog") || path.startsWith("/instant-payments")) {
+      return false;
+    }
+    return true;
+  };
+
+  const getBaseFolder = () => {
     const path = location.pathname;
     if (path.startsWith("/business")) return "/business";
     if (path.startsWith("/career")) return "/career";
     if (path.startsWith("/about")) return "/about";
-    const personalPaths = ["/personal-loans", "/deposits", "/cards", "/accounts", "/transfers", "/securities", "/evoca-salary", "/touch"];
-    if (path === "/" || personalPaths.some(p => path.startsWith(p))) return "/";
     return "/";
   };
 
-  const currentTopPath = getCurrentTopPath();
-  const currentSecondaryMenu = secondaryMenus[currentTopPath] || [];
+  const currentSecondaryMenu = shouldShowSecondaryMenu() ? (secondaryMenus[getBaseFolder()] || []) : [];
 
   return (
     <header className="w-full flex flex-col bg-white sticky top-0 z-[100] shadow-sm font-sans">
-      {/* --- ՀԻՆ TOP NAV (Չփոփոխված) --- */}
+      {/* --- TOP NAV --- */}
       <div className="hidden xl:flex w-full h-10 border-b border-gray-100 bg-[#f8f9fb] justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center h-full space-x-6">
-            {topNavLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path === "/career" ? "/career/EvocaLife" : link.path}
-                className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${
-                  currentTopPath === link.path ? "text-[#6610f2]" : "text-gray-400 hover:text-[#6610f2]"
-                }`}
-              >
-                {link.name}
-                {currentTopPath === link.path && (
-                  <motion.div layoutId="navLine" className="absolute top-0 left-0 w-full h-[3px] bg-[#6610f2]" />
-                )}
-              </Link>
-            ))}
+            {topNavLinks.map((link) => {
+              const isActive = activeTopPath === link.path;
+              return (
+                <Link
+                  key={link.name}
+                  to={link.path}
+                  className={`text-[11px] font-[700] transition-all h-full flex items-center relative uppercase tracking-tighter ${
+                    isActive ? "text-[#6610f2]" : "text-gray-400 hover:text-[#6610f2]"
+                  }`}
+                >
+                  {link.name}
+                  {isActive && (
+                    <motion.div layoutId="navLine" className="absolute top-0 left-0 w-full h-[3px] bg-[#6610f2]" />
+                  )}
+                </Link>
+              );
+            })}
           </div>
           <div className="flex items-center space-x-6 text-gray-400">
             <div className="flex items-center space-x-4 border-r pr-4 border-gray-200">
@@ -156,7 +179,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* --- ՀԻՆ MAIN NAV (Չփոփոխված) --- */}
+      {/* --- MAIN NAV --- */}
       <div className="w-full h-16 lg:h-20 bg-white relative z-[120] flex justify-center">
         <div className="w-full max-w-[1450px] px-6 flex items-center justify-between">
           <div className="flex items-center space-x-10">
@@ -167,6 +190,7 @@ const Header: React.FC = () => {
                 alt="Logo" 
               />
             </Link>
+            {/* Ենթամենյուն ցուցադրվում է միայն եթե currentSecondaryMenu-ն դատարկ չէ */}
             <nav className="hidden lg:flex items-center space-x-8">
               {currentSecondaryMenu.map((item) => (
                 <Link
@@ -195,7 +219,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* --- BURGER MENU --- */}
+      {/* --- BURGER MENU (Չփոփոխված) --- */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -204,9 +228,8 @@ const Header: React.FC = () => {
             exit={{ opacity: 0 }}
             className="fixed inset-0 w-full h-screen bg-[#6610f2] z-[110] flex"
           >
-            {/* Ձախ սյունակ */}
             <div className="hidden lg:flex w-[350px] h-full bg-[#1a1a1a] flex-col justify-center px-12 space-y-8">
-               {topNavLinks.slice(0, 7).map((link, i) => (
+               {topNavLinks.map((link, i) => (
                  <motion.div
                    initial={{ x: -20, opacity: 0 }}
                    animate={{ x: 0, opacity: 1 }}
@@ -214,7 +237,7 @@ const Header: React.FC = () => {
                    key={link.name}
                  >
                    <Link 
-                     to={link.path === "/career" ? "/career/EvocaLife" : link.path} 
+                     to={link.path} 
                      className="text-white text-2xl font-black italic hover:text-[#6610f2] transition-colors uppercase tracking-tighter"
                    >
                      {link.name}
@@ -223,7 +246,6 @@ const Header: React.FC = () => {
                ))}
             </div>
 
-            {/* Աջ սյունակ */}
             <div className="flex-1 h-full overflow-y-auto pt-32 pb-12 px-8 lg:px-20 custom-scrollbar">
               <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-12">
                 {burgerSections.map((section, idx) => (
