@@ -12,7 +12,9 @@ import {
 } from "lucide-react";
 
 const iceConfig = {
-  iceServers: [{ urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }]
+  iceServers: [
+    { urls: ["stun:stun.l.google.com:19302", "stun:stun1.l.google.com:19302"] }
+  ]
 };
 
 export default function EvocaPerfectChat() {
@@ -57,7 +59,7 @@ export default function EvocaPerfectChat() {
     try { await signInWithPopup(auth, provider); } catch (e) { console.error(e); }
   };
 
-  // --- USERS & CALLS ---
+  // --- USERS & CALLS LISTENER ---
   useEffect(() => {
     if (!user) return;
     const usersRef = databaseRef(db, "db/status");
@@ -70,16 +72,20 @@ export default function EvocaPerfectChat() {
     });
 
     const callsRef = databaseRef(db, 'calls');
-    onValue(callsRef, (snap) => {
+    return onValue(callsRef, (snap) => {
       const data = snap.val();
       if (!data) return;
       Object.keys(data).forEach(id => {
         const call = data[id];
+        // Incoming call logic
         if (call.targetId === user.uid && call.status === 'offer' && callStatus === 'idle') {
           setActiveCall({ ...call, id });
           setCallStatus('incoming');
         }
-        if (call.status === 'ended' && (activeCall?.id === id || activeCall?.callId === id)) terminateCallLocally();
+        // Call ended logic
+        if (call.status === 'ended' && (activeCall?.id === id || activeCall?.callId === id)) {
+          terminateCallLocally();
+        }
       });
     });
   }, [user, callStatus, activeCall]);
@@ -112,19 +118,9 @@ export default function EvocaPerfectChat() {
     if (selectedUser?.uid === uid || selectedUser?.id === uid) setSelectedUser(null);
   };
 
-  // --- WebRTC FIXED ---
-  const setupPeer = async (cId: string, isCaller: boolean) => {
-    if (pc.current) {
-        pc.current.close();
-        pc.current = null;
-    }
+  // --- WebRTC REFACTORED ---
+  const setupPeer = (cId: string, isCaller: boolean) => {
     pc.current = new RTCPeerConnection(iceConfig);
-    
-    pc.current.ontrack = (e) => {
-      if (e.streams && e.streams[0]) {
-        setRemoteStream(e.streams[0]);
-      }
-    };
 
     pc.current.onicecandidate = (e) => {
       if (e.candidate) {
@@ -133,61 +129,106 @@ export default function EvocaPerfectChat() {
       }
     };
 
+    pc.current.ontrack = (e) => {
+      if (e.streams && e.streams[0]) {
+        setRemoteStream(e.streams[0]);
+      }
+    };
+
     const remotePath = isCaller ? 'targetCandidates' : 'callerCandidates';
     onChildAdded(databaseRef(db, `calls/${cId}/${remotePath}`), (s) => {
-      if (s.val() && pc.current && pc.current.remoteDescription) {
-        pc.current.addIceCandidate(new RTCIceCandidate(s.val()));
+      if (s.val() && pc.current) {
+        pc.current.addIceCandidate(new RTCIceCandidate(s.val())).catch(console.error);
       }
     });
   };
 
   const startCall = async (video: boolean) => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video });
-    setLocalStream(stream);
-    setCallStatus('outgoing');
-    const callId = push(databaseRef(db, 'calls')).key as string;
-    await setupPeer(callId, true);
-    stream.getTracks().forEach(t => pc.current?.addTrack(t, stream));
-    const offer = await pc.current?.createOffer();
-    await pc.current?.setLocalDescription(offer);
-    const callData = { callId, callerId: user.uid, callerName: user.displayName, targetId: selectedUser.uid, status: 'offer', type: video ? 'video' : 'audio', offer: { type: offer?.type, sdp: offer?.sdp } };
-    await set(databaseRef(db, `calls/${callId}`), callData);
-    setActiveCall(callData);
-    onValue(databaseRef(db, `calls/${callId}/answer`), async (s) => {
-      if (s.val() && pc.current?.signalingState === 'have-local-offer') {
-        await pc.current.setRemoteDescription(new RTCSessionDescription(s.val()));
-        setCallStatus('active');
-      }
-    });
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video });
+      setLocalStream(stream);
+      setCallStatus('outgoing');
+
+      const callId = push(databaseRef(db, 'calls')).key as string;
+      setupPeer(callId, true);
+
+      stream.getTracks().forEach(t => pc.current?.addTrack(t, stream));
+
+      const offer = await pc.current?.createOffer();
+      await pc.current?.setLocalDescription(offer);
+
+      const callData = {
+        callId,
+        callerId: user.uid,
+        callerName: user.displayName,
+        targetId: selectedUser.uid,
+        status: 'offer',
+        type: video ? 'video' : 'audio',
+        offer: { type: offer?.type, sdp: offer?.sdp }
+      };
+
+      await set(databaseRef(db, `calls/${callId}`), callData);
+      setActiveCall(callData);
+
+      // Listen for answer
+      onValue(databaseRef(db, `calls/${callId}/answer`), async (s) => {
+        if (s.val() && pc.current && !pc.current.remoteDescription) {
+          await pc.current.setRemoteDescription(new RTCSessionDescription(s.val()));
+          setCallStatus('active');
+        }
+      });
+    } catch (err) {
+      console.error("Start call error:", err);
+      terminateCallLocally();
+    }
   };
 
   const acceptCall = async () => {
-    const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: activeCall.type === 'video' });
-    setLocalStream(stream);
-    await setupPeer(activeCall.id || activeCall.callId, false);
-    stream.getTracks().forEach(t => pc.current?.addTrack(t, stream));
-    await pc.current?.setRemoteDescription(new RTCSessionDescription(activeCall.offer));
-    const answer = await pc.current?.createAnswer();
-    await pc.current?.setLocalDescription(answer);
-    await update(databaseRef(db, `calls/${activeCall.id || activeCall.callId}`), { answer: { type: answer?.type, sdp: answer?.sdp }, status: 'active' });
-    setCallStatus('active');
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: activeCall.type === 'video' });
+      setLocalStream(stream);
+      
+      const cId = activeCall.id || activeCall.callId;
+      setupPeer(cId, false);
+
+      stream.getTracks().forEach(t => pc.current?.addTrack(t, stream));
+
+      await pc.current?.setRemoteDescription(new RTCSessionDescription(activeCall.offer));
+      const answer = await pc.current?.createAnswer();
+      await pc.current?.setLocalDescription(answer);
+
+      await update(databaseRef(db, `calls/${cId}`), {
+        answer: { type: answer?.type, sdp: answer?.sdp },
+        status: 'active'
+      });
+      setCallStatus('active');
+    } catch (err) {
+      console.error("Accept call error:", err);
+      terminateCallLocally();
+    }
   };
 
   const terminateCall = async () => {
     const cId = activeCall?.id || activeCall?.callId;
-    if (cId) await update(databaseRef(db, `calls/${cId}`), { status: 'ended' });
+    if (cId) {
+      await update(databaseRef(db, `calls/${cId}`), { status: 'ended' });
+      // Remove call from DB after a small delay
+      setTimeout(() => remove(databaseRef(db, `calls/${cId}`)), 2000);
+    }
     terminateCallLocally();
   };
 
   const terminateCallLocally = () => {
     if (localStream) localStream.getTracks().forEach(t => t.stop());
     if (pc.current) {
-        pc.current.ontrack = null;
-        pc.current.onicecandidate = null;
-        pc.current.close();
-        pc.current = null;
+      pc.current.close();
+      pc.current = null;
     }
-    setLocalStream(null); setRemoteStream(null); setCallStatus('idle'); setActiveCall(null);
+    setLocalStream(null);
+    setRemoteStream(null);
+    setCallStatus('idle');
+    setActiveCall(null);
+    setIsMicMuted(false);
   };
 
   useEffect(() => {
@@ -227,8 +268,12 @@ export default function EvocaPerfectChat() {
               <div className="w-24 h-24 bg-gray-50 rounded-full mx-auto mb-8 flex items-center justify-center">
                 <User size={40} className="text-gray-200" />
               </div>
-              <h2 className="text-xl font-light uppercase tracking-widest">{callStatus === 'incoming' ? activeCall?.callerName : selectedUser?.displayName}</h2>
-              <p className="text-gray-400 text-[10px] uppercase tracking-[0.3em] mt-4 animate-pulse">{callStatus === 'incoming' ? 'Incoming...' : callStatus === 'active' ? 'Connected' : 'Calling...'}</p>
+              <h2 className="text-xl font-light uppercase tracking-widest">
+                {callStatus === 'incoming' ? activeCall?.callerName : selectedUser?.displayName}
+              </h2>
+              <p className="text-gray-400 text-[10px] uppercase tracking-[0.3em] mt-4 animate-pulse">
+                {callStatus === 'incoming' ? 'Incoming...' : callStatus === 'active' ? 'Connected' : 'Calling...'}
+              </p>
             </div>
           )}
           <div className="absolute bottom-20 flex gap-8 items-center px-8 py-4 bg-gray-50/80 backdrop-blur rounded-full border border-gray-100">
