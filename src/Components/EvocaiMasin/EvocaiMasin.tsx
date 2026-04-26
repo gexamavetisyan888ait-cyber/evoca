@@ -3,7 +3,26 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination,Navigation } from 'swiper/modules';
 import { ChevronLeft, ChevronRight, CheckCircle2, Users, Building2, Globe, Award, Quote } from 'lucide-react';
+import { initializeApp } from "firebase/app";
+// Ավելացրու այս տողը Realtime Database-ի համար
+import { getDatabase } from "firebase/database";
 
+const firebaseConfig = {
+  apiKey: "ՔՈ_API_KEY",
+  authDomain: "ՔՈ_PROJECT_ID.firebaseapp.com",
+  // Realtime Database-ի համար սա կարևոր է
+  databaseURL: "https://ՔՈ_PROJECT_ID-default-rtdb.firebaseio.com", 
+  projectId: "ՔՈ_PROJECT_ID",
+  storageBucket: "ՔՈ_PROJECT_ID.appspot.com",
+  messagingSenderId: "...",
+  appId: "..."
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
+
+// Ստեղծում և էքսպորտ ենք անում db-ն
+export const db = getDatabase(app);
 
 
 // --- DATA ---
