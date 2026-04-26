@@ -35,6 +35,7 @@ import Akyntard from './Components/Akyntard/Akyntard';
 import EvocaiMasin from './Components/EvocaiMasin/EvocaiMasin'
 import Sakagner from './Components/Sakagner/Sakagner'
 import Haytararutyunner from './Components/Haytararutyunner/Haytararutyunner'
+import Norutyunner from './Components/Norutyunner/Norutyunner'
 const SalaryProject = () => (
   <div className="bg-white">
     <div className="max-w-[1140px] mx-auto py-10 px-4">
@@ -93,7 +94,7 @@ function App() {
             <Route path="/about/about" element={<EvocaiMasin />} />
             <Route path="/about/sakagin" element={<Sakagner />} />
             <Route path="/about/hayter" element={<Haytararutyunner />} />
-            
+            <Route path="/news" element={<Norutyunner/>} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">
                 404 - Էջը չի գտնվել

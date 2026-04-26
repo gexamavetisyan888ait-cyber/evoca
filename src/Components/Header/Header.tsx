@@ -56,7 +56,7 @@ const Header: React.FC = () => {
       { name: "Evoca-ի մասին", path: "/about/about" },
       { name: "Սակագներ", path: "/about/sakagin" },
       { name: "Հայտարարություններ", path: "/about/hayter" },
-    ]
+    ],
   };
 
   // Burger-ի աջ հատվածի բոլոր հավաքված բաժինները
@@ -89,6 +89,14 @@ const Header: React.FC = () => {
       items: [
         { name: "Evoca լայֆ", path: "/career/EvocaLife" },
         { name: "Աշխատանք և պրակտիկա", path: "/career/work" }
+      ]
+    },
+    {
+      title: "Նորություններ", // <--- Ավելացված բաժին
+      items: [
+        { name: "Բոլոր նորությունները", path: "/news" },
+        { name: "Բանկային", path: "/news?category=բանկային" },
+        { name: "Պրոդուկտներ", path: "/news?category=պրոդուկտներ" }
       ]
     },
     {
@@ -187,7 +195,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* --- ՆՈՐ ՀԶՈՐ BURGER MENU (Ավելացված բաժիններով) --- */}
+      {/* --- BURGER MENU --- */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -215,7 +223,7 @@ const Header: React.FC = () => {
                ))}
             </div>
 
-            {/* Աջ սյունակ (Բոլոր հավաքված բաժինները) */}
+            {/* Աջ սյունակ */}
             <div className="flex-1 h-full overflow-y-auto pt-32 pb-12 px-8 lg:px-20 custom-scrollbar">
               <div className="max-w-4xl grid grid-cols-1 md:grid-cols-2 gap-x-20 gap-y-12">
                 {burgerSections.map((section, idx) => (
