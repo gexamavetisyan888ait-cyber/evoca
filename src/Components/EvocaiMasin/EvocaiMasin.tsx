@@ -577,3 +577,319 @@ case "csr":
 };
 
 export default EvocaAboutPage;
+
+// import React, { useState } from 'react';
+// import { motion } from 'framer-motion';
+// import { Swiper, SwiperSlide } from 'swiper/react';
+// import { Pagination, Navigation } from 'swiper/modules';
+// import { useTranslation } from 'react-i18next';
+// import { 
+//   ChevronLeft, ChevronRight, CheckCircle2, Users, 
+//   Building2, Globe, Award, Quote 
+// } from 'lucide-react';
+
+// // --- DATA ---
+// const historyData = [
+//     { year: "2025", textKey: "about_page.history.2025", image: "https://www.evoca.am/images-cache/histories/1/17574211752061/450x330.png" },
+//     { year: "2024", textKey: "about_page.history.2024", image: "https://www.evoca.am/images-cache/histories/1/17240707281875/450x330.png" },
+//     { year: "2023", textKey: "about_page.history.2023", image: "https://www.evoca.am/images-cache/histories/1/17001230844576/450x330.jpg" },
+//     { year: "2022", textKey: "about_page.history.2022", image: "https://www.evoca.am/images-cache/histories/1/16542512333235/450x330.png" },
+//     { year: "2021", textKey: "about_page.history.2021", image: "https://www.evoca.am/images-cache/histories/1/16448252170155/450x330.png" },
+//     { year: "2020", textKey: "about_page.history.2020", image: "https://www.evoca.am/images-cache/histories/1/16328279547034/450x330.png" }
+// ];
+
+// const partnersList1 = [
+//     { name: "ChipStore", img: "https://www.evoca.am/images-cache/partners/1/17104032198171/348x150_grayscale.png" },
+//     { name: "Mastercard", img: "https://www.evoca.am/images-cache/partners/1/17077436606929/348x150_grayscale.png" },
+//     { name: "ArCa", img: "https://www.evoca.am/images-cache/partners/1/17107493820339/348x150_grayscale.png" },
+//     { name: "EBRD", img: "https://www.evoca.am/images-cache/partners/1/17072192942611/348x150_grayscale.png" },
+//     { name: "FMO", img: "https://www.evoca.am/images-cache/partners/1/17072192635138/348x150_grayscale.png" },
+//     { name: "EIB", img: "https://www.evoca.am/images-cache/partners/1/17072192435541/348x150_grayscale.png" },
+//     { name: "Symbiotics", img: "https://www.evoca.am/images-cache/partners/1/16104577054001/348x150_grayscale.png" },
+//     { name: "BlueOrchard", img: "https://www.evoca.am/images-cache/partners/1/16104583322099/348x150_grayscale.png" },
+//     { name: "ResponsAbility", img: "https://www.evoca.am/images-cache/partners/1/17689930369925/348x150_grayscale.png" },
+// ];
+
+// const partnersList2 = [
+//     { name: "J.P. Morgan", img: "https://www.evoca.am/images-cache/partners/1/16104594273635/348x150_grayscale.png" },
+//     { name: "Commerzbank", img: "https://www.evoca.am/images-cache/partners/1/1610459808737/348x150_grayscale.png" },
+//     { name: "Raiffeisen", img: "https://www.evoca.am/images-cache/partners/1/16104599802947/348x150_grayscale.png" },
+//     { name: "Bank of Georgia", img: "https://www.evoca.am/images-cache/partners/1/16104603665095/348x150_grayscale.png" },
+//     { name: "MoneyGram", img: "https://www.evoca.am/images-cache/partners/1/16104604109064/348x150_grayscale.png" },
+//     { name: "UniStream", img: "https://www.evoca.am/images-cache/partners/1/16104604382658/348x150_grayscale.png" },
+// ];
+
+// const EvocaAboutPage = () => {
+//     const { t } = useTranslation();
+//     const [currentTab, setCurrentTab] = useState("info");
+//     const [historyIdx, setHistoryIdx] = useState(0);
+
+//     const menuItems = [
+//         { id: "info", label: t('about_page.menu.info') },
+//         { id: "structure", label: t('about_page.menu.structure') },
+//         { id: "shareholders", label: t('about_page.menu.shareholders') },
+//         { id: "management", label: t('about_page.menu.management') },
+//         { id: "partners", label: t('about_page.menu.partners') },
+//         { id: "reviews", label: t('about_page.menu.reviews') },
+//         { id: "csr", label: t('about_page.menu.csr') }
+//     ];
+
+//     const renderContent = () => {
+//         switch (currentTab) {
+//             case "info":
+//                 return (
+//                     <div className="animate-in fade-in duration-500">
+//                         <section className="py-20 px-6 max-w-7xl mx-auto flex flex-col md:flex-row gap-12 items-center">
+//                             <div className="md:w-1/2 space-y-6">
+//                                 <h1 className="text-4xl font-black italic">{t('about_page.info.title')}</h1>
+//                                 <p className="text-lg text-gray-700 leading-relaxed">
+//                                     <span className="text-[#6c1cd3] font-bold">Evocabank</span>-{t('about_page.info.desc')}
+//                                 </p>
+//                             </div>
+//                             <div className="md:w-1/2">
+//                                 <img src="https://www.evoca.am/images-cache/about_pages/1/16201288751575/780x570.png" alt="Evoca" className="rounded-3xl shadow-xl w-full" />
+//                             </div>
+//                         </section>
+
+//                         <section className="bg-[#6c1cd3] text-white py-24 px-6 relative overflow-hidden">
+//                             <div className="max-w-7xl mx-auto relative z-10">
+//                                 <h2 className="text-3xl font-black uppercase italic mb-10 border-b-2 border-white w-fit pb-2">{t('about_page.vision.title')}</h2>
+//                                 <p className="text-2xl md:text-4xl font-medium leading-tight max-w-4xl">
+//                                     {t('about_page.vision.text')}
+//                                 </p>
+//                             </div>
+//                             <div className="absolute top-0 right-0 opacity-10 uppercase font-black italic text-[200px] translate-x-1/4">Vision</div>
+//                         </section>
+
+//                         <section className="py-24 px-6 max-w-7xl mx-auto flex flex-col md:flex-row gap-16 items-center">
+//                             <div className="md:w-1/2 relative">
+//                                 <img src="https://www.evoca.am/images-cache/about_pages/1/160992374514/946x430.jpg" className="rounded-[40px] shadow-xl" alt="Mission" />
+//                                 <div className="absolute -bottom-10 -right-5 bg-white p-8 rounded-[30px] shadow-2xl border border-gray-100 max-w-sm">
+//                                     <p className="text-gray-700 font-medium">{t('about_page.mission.badge')}</p>
+//                                 </div>
+//                             </div>
+//                             <div className="md:w-1/2">
+//                                 <p className="text-xl text-gray-500 italic">{t('about_page.mission.text')}</p>
+//                             </div>
+//                         </section>
+
+//                         <section className="py-24 px-6 max-w-7xl mx-auto">
+//                             <h2 className="text-3xl font-black uppercase italic mb-12">{t('about_page.history.title')}</h2>
+//                             <div className="relative mb-12 border-b border-gray-100 pb-10">
+//                                 <Swiper modules={[Navigation]} slidesPerView={3} centeredSlides onSlideChange={(s) => setHistoryIdx(s.activeIndex)} navigation={{ nextEl: '.n-btn', prevEl: '.p-btn' }} breakpoints={{ 1024: { slidesPerView: 5 } }}>
+//                                     {historyData.map((h, i) => (
+//                                         <SwiperSlide key={i} className="text-center font-black text-2xl cursor-pointer transition-all">
+//                                             <span className={i === historyIdx ? 'text-[#6c1cd3] scale-125' : 'text-gray-300'}>{h.year}</span>
+//                                             {i === historyIdx && <div className="w-3 h-3 bg-[#6c1cd3] rounded-full mx-auto mt-4"></div>}
+//                                         </SwiperSlide>
+//                                     ))}
+//                                 </Swiper>
+//                                 <button className="p-btn absolute left-0 top-2 z-10 text-[#6c1cd3]"><ChevronLeft size={32} /></button>
+//                                 <button className="n-btn absolute right-0 top-2 z-10 text-[#6c1cd3]"><ChevronRight size={32} /></button>
+//                             </div>
+//                             <div className="flex flex-col md:flex-row gap-12 items-center bg-[#fcfaff] p-10 rounded-[50px] border border-purple-50">
+//                                 <p className="md:w-1/2 text-xl leading-relaxed text-gray-700">{t(historyData[historyIdx]?.textKey)}</p>
+//                                 <img src={historyData[historyIdx]?.image} className="md:w-1/2 rounded-[40px] animate-in zoom-in-95 duration-500" alt="History" />
+//                             </div>
+//                         </section>
+
+//                         <section className="py-24 bg-gray-50 px-6">
+//                             <div className="max-w-7xl mx-auto">
+//                                 <h2 className="text-3xl font-black uppercase italic mb-16">{t('about_page.values.title')}</h2>
+//                                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-y-16 gap-x-12">
+//                                     {[0,1,2,3,4,5,6,7].map((i) => (
+//                                         <div key={i} className="group border-l-2 border-gray-200 pl-6 hover:border-[#6c1cd3] transition-all">
+//                                             <h3 className="text-[#6c1cd3] text-xl font-black uppercase mb-4 italic">{t(`about_page.values.list.${i}.title`)}</h3>
+//                                             <p className="text-gray-500 leading-snug">{t(`about_page.values.list.${i}.desc`)}</p>
+//                                         </div>
+//                                     ))}
+//                                 </div>
+//                             </div>
+//                         </section>
+
+//                         <section className="py-24 px-6 max-w-7xl mx-auto">
+//                             <h2 className="text-3xl font-black uppercase italic mb-12">{t('about_page.logo.title')}</h2>
+//                             <div className="py-16 bg-gray-50 rounded-[50px] mb-12 flex justify-center">
+//                                 <img src="https://www.evoca.am/file_manager/icons/logo.png" alt="Logo" className="h-24" />
+//                             </div>
+//                             <div className="grid grid-cols-1 md:grid-cols-3 gap-10">
+//                                 {[
+//                                     { color: "bg-white border-gray-200", key: "white" },
+//                                     { color: "bg-gray-500", key: "grey" },
+//                                     { color: "bg-[#6c1cd3]", key: "purple" }
+//                                 ].map((item, i) => (
+//                                     <div key={i} className="flex flex-col items-center text-center p-8 bg-gray-50 rounded-[40px]">
+//                                         <div className={`w-16 h-16 rounded-full mb-4 border ${item.color}`} />
+//                                         <h4 className="font-black text-[#6c1cd3] mb-1">{t(`about_page.logo.colors.${item.key}.name`)}</h4>
+//                                         <p className="text-xs font-bold text-gray-500">{t(`about_page.logo.colors.${item.key}.desc`)}</p>
+//                                     </div>
+//                                 ))}
+//                             </div>
+//                         </section>
+//                     </div>
+//                 );
+
+//             case "structure":
+//                 return <img src="https://www.evoca.am/file_manager/structure/Organizational%20Structure-arm.png" alt="" className="py-20 px-6 max-w-7xl mx-auto animate-in slide-in-from-bottom-10 duration-700" />;
+
+//             case "shareholders":
+//                 return (
+//                     <section className="py-20 px-6 max-w-7xl mx-auto animate-in fade-in duration-700">
+//                         <h2 className="text-3xl font-black italic uppercase mb-12 border-b-2 border-[#6c1cd3] w-fit pb-2">{t('about_page.menu.shareholders')}</h2>
+//                         <div className="flex flex-col lg:flex-row gap-12 items-start mb-20">
+//                             <div className="lg:w-1/3 w-full">
+//                                 <img src="https://www.evoca.am/file_manager/Shareholders/Mareta%20Gevorkyan%20Evocabank.png" alt="Mareta Gevorkyan" className="rounded-[40px] shadow-2xl w-full object-cover" />
+//                             </div>
+//                             <div className="lg:w-2/3 w-full space-y-6">
+//                                 <h3 className="text-3xl font-black text-[#6c1cd3] italic uppercase">{t('about_page.shareholders.name')}</h3>
+//                                 <div className="space-y-4 text-gray-700 leading-relaxed text-lg">
+//                                     <p>{t('about_page.shareholders.p1')}</p>
+//                                     <p>{t('about_page.shareholders.p2')}</p>
+//                                     <p>{t('about_page.shareholders.p3')}</p>
+//                                     <p className="text-sm font-bold mt-8 p-4 bg-gray-50 rounded-2xl border-l-4 border-[#6c1cd3]">{t('about_page.shareholders.note')}</p>
+//                                 </div>
+//                             </div>
+//                         </div>
+//                     </section>
+//                 );
+
+//             case "management":
+//                 return (
+//                     <section className="py-20 px-6 max-w-7xl mx-auto animate-in fade-in duration-700">
+//                         <h2 className="text-3xl font-black italic uppercase mb-12 border-b-2 border-[#6c1cd3] w-fit pb-2">{t('about_page.menu.management')}</h2>
+//                         <div className="mb-20">
+//                             <h3 className="text-2xl font-black italic uppercase mb-10 text-gray-800">{t('about_page.management.board')}</h3>
+//                             <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-x-6 gap-y-12">
+//                                 {[
+//                                     { name: "ԿԱՐԵՆ ԵՂԻԱԶԱՐՅԱՆ", pos: "Վարչության նախագահ", img: "https://www.evoca.am/images-cache/team_members/1/16776012013335/230x230.png" },
+//                                     { name: "ԱՐՄԵՆ ՀԱԿՈԲՅԱՆ", pos: "Առաջին տեղակալ", img: "https://www.evoca.am/images-cache/team_members/1/17544805530896/230x230.png" },
+//                                     { name: "ՏԱԹԵՎԻԿ ԽԱՉԱՏՐՅԱՆ", pos: "Տեղակալ", img: "https://www.evoca.am/images-cache/team_members/1/17550915579199/230x230.png" },
+//                                     { name: "ՀԱՅԿ ՊԵՏՐՈՍՅԱՆ", pos: "Տեղակալ", img: "https://www.evoca.am/images-cache/team_members/1/17544805642771/230x230.png" },
+//                                     { name: "ԼԻԼԻԹ ԳԱԲՈՅԱՆ", pos: "Տեղակալ ֆինանսական գծով", img: "https://www.evoca.am/images-cache/team_members/1/1675080847328/230x230.png" }
+//                                 ].map((m, i) => (
+//                                     <div key={i} className="flex flex-col items-center text-center group">
+//                                         <div className="w-full aspect-[4/5] overflow-hidden mb-5 relative" style={{ borderRadius: '60px 60px 0 0' }}>
+//                                             <img src={m.img} className="w-full h-full object-cover grayscale group-hover:grayscale-0 transition-all duration-500" alt={m.name} />
+//                                         </div>
+//                                         <h4 className="text-[13px] font-black italic uppercase leading-tight text-gray-800 px-2">{m.name}</h4>
+//                                         <p className="text-gray-500 text-[11px] mt-2 leading-snug px-2">{m.pos}</p>
+//                                     </div>
+//                                 ))}
+//                             </div>
+//                         </div>
+//                     </section>
+//                 );
+
+//             case "partners":
+//                 return (
+//                     <section className="py-20 px-6 max-w-7xl mx-auto animate-in fade-in duration-1000">
+//                         <h2 className="text-3xl font-black italic uppercase mb-12 border-b-2 border-[#6c1cd3] w-fit pb-2">{t('about_page.menu.partners')}</h2>
+//                         <Swiper modules={[Pagination]} pagination={{ clickable: true }} className="pb-16 partners-swiper">
+//                             <SwiperSlide>
+//                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6">
+//                                     {partnersList1.map((p, i) => (
+//                                         <div key={i} className="h-40 bg-gray-50 rounded-[40px] flex items-center justify-center p-6 grayscale hover:grayscale-0 transition-all duration-500 border border-transparent hover:border-purple-200 hover:bg-white hover:shadow-xl group">
+//                                             <img src={p.img} alt={p.name} className="max-h-12 object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
+//                                         </div>
+//                                     ))}
+//                                 </div>
+//                             </SwiperSlide>
+//                             <SwiperSlide>
+//                                 <div className="grid grid-cols-2 md:grid-cols-3 gap-6 relative">
+//                                     {partnersList2.map((p, i) => (
+//                                         <div key={i} className="h-40 bg-gray-50 rounded-[40px] flex items-center justify-center p-6 grayscale hover:grayscale-0 transition-all duration-500 border border-transparent hover:border-purple-200 hover:bg-white hover:shadow-xl group">
+//                                             <img src={p.img} alt={p.name} className="max-h-12 object-contain opacity-60 group-hover:opacity-100 transition-opacity" />
+//                                         </div>
+//                                     ))}
+//                                 </div>
+//                             </SwiperSlide>
+//                         </Swiper>
+//                         <style dangerouslySetInnerHTML={{ __html: `.partners-swiper .swiper-pagination-bullet-active { background: #6c1cd3 !important; width: 25px; border-radius: 5px; } .partners-swiper .swiper-pagination { bottom: 0 !important; }`}} />
+//                     </section>
+//                 );
+
+//             case "reviews":
+//                 return (
+//                     <section className="py-20 px-6 max-w-5xl mx-auto">
+//                         <div className="mb-16 text-center space-y-4">
+//                             <h2 className="text-4xl font-black italic uppercase text-[#6c1cd3]">{t('about_page.menu.reviews')}</h2>
+//                             <div className="h-1.5 w-24 bg-[#6c1cd3] mx-auto rounded-full" />
+//                         </div>
+//                         <div className="flex flex-col gap-10">
+//                             {[0,1,2].map((i) => (
+//                                 <motion.div key={i} initial={{ opacity: 0, y: 30 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="flex flex-col md:flex-row items-center gap-10 bg-white p-10 rounded-[50px] shadow-[0_20px_50px_rgba(108,28,211,0.06)] border border-gray-50 group">
+//                                     <div className="relative flex-shrink-0">
+//                                         <div className="w-32 h-32 md:w-44 md:h-44 rounded-full overflow-hidden border-4 border-white shadow-2xl relative z-10">
+//                                             <img src={i===0 ? "https://yt3.googleusercontent.com/o9nkNU6-YgBnfBPef0Tg6EuH7l4G8j6gewNzXspXUyQ-M7MYBZmoTZmILmoqWmNz_y9pbQudJQ=s900-c-k-c0x00ffffff-no-rj" : i===1 ? "https://www.evoca.am/images-cache/news/1/16184040636341/780x585.png" : "https://www.1tv.am/images/video/5/22400/02.jpeg"} className="w-full h-full object-cover" alt="" />
+//                                         </div>
+//                                         <div className="absolute -bottom-2 -right-2 bg-[#6c1cd3] p-4 rounded-full text-white z-20"><Quote size={24} fill="currentColor" /></div>
+//                                     </div>
+//                                     <div className="flex-1 space-y-6">
+//                                         <p className="text-xl md:text-2xl text-gray-700 font-medium italic">«{t(`about_page.reviews.list.${i}.text`)}»</p>
+//                                         <div>
+//                                             <h4 className="text-2xl font-black italic text-[#6c1cd3] uppercase">{t(`about_page.reviews.list.${i}.author`)}</h4>
+//                                             <p className="text-gray-400 font-bold text-xs uppercase tracking-widest">{t(`about_page.reviews.list.${i}.role`)}</p>
+//                                         </div>
+//                                     </div>
+//                                 </motion.div>
+//                             ))}
+//                         </div>
+//                     </section>
+//                 );
+
+//             case "csr":
+//                 return (
+//                     <section className="py-20 px-6 max-w-7xl mx-auto animate-in fade-in duration-700">
+//                         <div className="flex flex-col md:flex-row items-center gap-12 bg-gray-50 rounded-[60px] overflow-hidden mb-20 p-10 md:p-20">
+//                             <div className="md:w-1/2 space-y-8">
+//                                 <h2 className="text-4xl md:text-5xl font-black italic uppercase leading-tight">{t('about_page.csr.title')}</h2>
+//                                 <p className="text-xl text-gray-600 leading-relaxed max-w-md">{t('about_page.csr.hero_desc')}</p>
+//                             </div>
+//                             <div className="md:w-1/2 flex justify-center">
+//                                 <motion.img animate={{ y: [0, -20, 0] }} transition={{ duration: 4, repeat: Infinity }} src="https://www.evoca.am/images-cache/menu/1/17108330711252/780x585.png" className="w-full max-w-sm drop-shadow-2xl rounded-2xl" />
+//                             </div>
+//                         </div>
+//                         <div className="max-w-4xl mx-auto space-y-10">
+//                             <p className="text-lg text-gray-700"><span className="text-[#6c1cd3] font-bold">Evocabank</span>-{t('about_page.csr.main_desc')}</p>
+//                             <ul className="grid grid-cols-1 md:grid-cols-2 gap-6">
+//                                 {[0,1,2,3].map((i) => (
+//                                     <li key={i} className="flex items-start gap-4 bg-[#fcfaff] p-6 rounded-3xl border border-purple-50">
+//                                         <div className="w-2 h-2 rounded-full bg-[#6c1cd3] mt-2.5 flex-shrink-0" />
+//                                         <span className="font-medium text-gray-700">{t(`about_page.csr.items.${i}`)}</span>
+//                                     </li>
+//                                 ))}
+//                             </ul>
+//                             <div className="pt-10 border-t border-gray-100 italic text-gray-500 text-center">{t('about_page.csr.footer')}</div>
+//                         </div>
+//                     </section>
+//                 );
+
+//             default:
+//                 return <div className="py-40 text-center font-black italic text-gray-200 text-4xl uppercase">{t('common.soon')}</div>;
+//         }
+//     };
+
+//     return (
+//         <div className="w-full bg-white font-sans text-[#1d1d1f]">
+//             <nav className="bg-[#6c1cd3] text-white sticky top-0 z-[100] overflow-x-auto no-scrollbar shadow-2xl">
+//                 <div className="max-w-7xl mx-auto flex whitespace-nowrap px-4">
+//                     {menuItems.map((item) => (
+//                         <button
+//                             key={item.id}
+//                             onClick={() => setCurrentTab(item.id)}
+//                             className={`py-6 px-6 text-[11px] md:text-[13px] font-black uppercase italic tracking-widest transition-all border-b-4 ${currentTab === item.id ? "border-white opacity-100 bg-white/10" : "border-transparent opacity-50 hover:opacity-100"}`}
+//                         >
+//                             {item.label}
+//                         </button>
+//                     ))}
+//                 </div>
+//             </nav>
+//             <main className="min-h-[80vh]">{renderContent()}</main>
+//             <footer className="py-24 text-center opacity-[0.03] select-none pointer-events-none overflow-hidden">
+//                 <p className="text-[120px] md:text-[220px] font-black italic leading-none">EVOCABANK</p>
+//             </footer>
+//         </div>
+//     );
+// };
+
+// export default EvocaAboutPage;

@@ -226,7 +226,66 @@ const resources = {
       common: {
         login: "Մուտք",
         support: "Շուրջօրյա աջակցություն",
-        "LOGIN": "Մուտք"
+        "LOGIN": "Մուտք",
+        soon: "ՇՈՒՏՈՎ"
+      },
+      about_page: {
+        menu: {
+          info: "Բանկի մասին",
+          structure: "Կառուցվածք",
+          shareholders: "Բաժնետերեր",
+          management: "Ղեկավարություն",
+          partners: "Գործընկերներ",
+          reviews: "Կարծիքներ",
+          csr: "ՍՊՊ",
+        },
+        info: {
+          title: "ՄԵՆՔ ՄԱՏՈՒՑՈՒՄ ԵՆՔ ԹՎԱՅԻՆ ՖԻՆԱՆՍԱԿԱՆ ԾԱՌԱՅՈՒԹՅՈՒՆՆԵՐ",
+          desc: "Evocabank-ը առաջին և միակ Mobile-first բանկն է Հայաստանում, որն իր գործունեությունը սկսել է 1990 թվականին։"
+        }
+      },
+      footer: {
+        chat: "Chat",
+        address: "ք. Երևան, 0010, Հանրապետության 44/2",
+        central_bank_note: "Evocabank-ը վերահսկվում է Հայաստանի Հանրապետության Կենտրոնական բանկի կողմից",
+        all_rights_reserved: "ԲՈԼՈՐ ԻՐԱՎՈՒՆՔՆԵՐԸ ՊԱՇՏՊԱՆՎԱԾ ԵՆ",
+        about_bank: {
+          title: "Բանկի մասին",
+          about_us: "Մեր մասին",
+          management: "Ղեկավարություն",
+          shareholders: "Բաժնետերեր",
+          jobs: "Թափուր աշխատատեղեր",
+          legal_acts: "Իրավական ակտեր",
+          tariffs: "Սակագներ",
+          property: "Օտարվող գույք",
+        },
+        useful_links: {
+          title: "Օգտակար հղումներ",
+          customer_rights: "Հաճախորդի իրավունքները",
+          complaint_standards: "Հաճախորդի դժգոհությունների չափանիշներ",
+          regulation: "Կարգավորում",
+          privacy_policy: "Գաղտնիության քաղաքականություն",
+          fin_mediator: "Ֆին. հաշտարար",
+        },
+        other_links: {
+          title: "Այլ հղումներ",
+          online: "EvocaONLINE",
+          safes: "Պահատուփեր",
+          faq: "Հաճախ տրվող հարցեր",
+          announcements: "Հայտարարություններ",
+          library: "Library",
+        },
+        contact: {
+          branches: "Բանկի հասցեները և աշխատաժամերը",
+        }
+      },
+      partners_section: {
+        hero_title: "Թվային <br />Ապագան Այստեղ է",
+        hero_desc: "Evocabank-ը շարունակում է զարմացնել իր նորարար լուծումներով: Միացեք մեր տեխնոլոգիական աշխարհին:",
+        partners_title: "Մեր Գործընկերները",
+        partners_desc: "Դարձե՛ք Evocabank-ի Գործընկեր և եկե՛ք միասին գնանք դեպի գունեղ նոր իրականություն:",
+        all_partners: "Բոլոր գործընկերները",
+        loading: "Բեռնվում է..."
       }
     }
   },
@@ -453,7 +512,66 @@ const resources = {
       common: {
         login: "Login",
         support: "24/7 Support",
-        "LOGIN": "Login"
+        "LOGIN": "Login",
+        soon: "COMING SOON"
+      },
+      about_page: {
+        menu: {
+          info: "About Bank",
+          structure: "Structure",
+          shareholders: "Shareholders",
+          management: "Management",
+          partners: "Partners",
+          reviews: "Reviews",
+          csr: "CSR",
+        },
+        info: {
+          title: "WE PROVIDE DIGITAL FINANCIAL SERVICES",
+          desc: "Evocabank is the first and only Mobile-first bank in Armenia, established in 1990."
+        }
+      },
+      footer: {
+        chat: "Chat",
+        address: "44/2 Hanrapetutyan str., Yerevan 0010, RA",
+        central_bank_note: "Evocabank is supervised by the Central Bank of Armenia",
+        all_rights_reserved: "ALL RIGHTS RESERVED",
+        about_bank: {
+          title: "About Bank",
+          about_us: "About Us",
+          management: "Management",
+          shareholders: "Shareholders",
+          jobs: "Jobs",
+          legal_acts: "Legal Acts",
+          tariffs: "Tariffs",
+          property: "Sale of Property",
+        },
+        useful_links: {
+          title: "Useful Links",
+          customer_rights: "Customer Rights",
+          complaint_standards: "Customer Complaint Standards",
+          regulation: "Regulation",
+          privacy_policy: "Privacy Policy",
+          fin_mediator: "Financial Mediator",
+        },
+        other_links: {
+          title: "Other Links",
+          online: "EvocaONLINE",
+          safes: "Safe Deposit Boxes",
+          faq: "FAQ",
+          announcements: "Announcements",
+          library: "Library",
+        },
+        contact: {
+          branches: "Bank's addresses and working hours",
+        }
+      },
+      partners_section: {
+        hero_title: "Digital <br /> Future is Here",
+        hero_desc: "Evocabank continues to surprise with its innovative solutions. Join our technological world.",
+        partners_title: "Our Partners",
+        partners_desc: "Become an Evocabank Partner and let's go together towards a colorful new reality.",
+        all_partners: "All Partners",
+        loading: "Loading..."
       }
     }
   },
@@ -680,7 +798,66 @@ const resources = {
       common: {
         login: "Вход",
         support: "Круглосуточная поддержка",
-        "LOGIN": "Вход"
+        "LOGIN": "Вход",
+        soon: "СКОРО"
+      },
+      about_page: {
+        menu: {
+          info: "О Банке",
+          structure: "Структура",
+          shareholders: "Акционеры",
+          management: "Руководство",
+          partners: "Партнеры",
+          reviews: "Отзывы",
+          csr: "КСО",
+        },
+        info: {
+          title: "МЫ ПРЕДОСТАВЛЯЕМ ЦИФРОВЫЕ ФИНАНСОВЫЕ УСЛУГИ",
+          desc: "Evocabank - первый и единственный Mobile-first банк в Армении, основанный в 1990 году."
+        }
+      },
+      footer: {
+        chat: "Чат",
+        address: "г. Ереван, 0010, ул. Республики 44/2",
+        central_bank_note: "Эвокабанк контролируется Центральным банком Республики Армения",
+        all_rights_reserved: "ВСЕ ПРАВА ЗАЩИЩЕНЫ",
+        about_bank: {
+          title: "О Банке",
+          about_us: "О нас",
+          management: "Руководство",
+          shareholders: "Акционеры",
+          jobs: "Вакансии",
+          legal_acts: "Юридические акты",
+          tariffs: "Тарифы",
+          property: "Продажа имущества",
+        },
+        useful_links: {
+          title: "Полезные ссылки",
+          customer_rights: "Права клиента",
+          complaint_standards: "Стандарты жалоб клиентов",
+          regulation: "Регулирование",
+          privacy_policy: "Политика конфиденциальности",
+          fin_mediator: "Фин. посредник",
+        },
+        other_links: {
+          title: "Другие ссылки",
+          online: "EvocaONLINE",
+          safes: "Сейфы",
+          faq: "Часто задаваемые вопросы",
+          announcements: "Объявления",
+          library: "Библиотека",
+        },
+        contact: {
+          branches: "Адреса и часы работы Банка",
+        }
+      },
+      partners_section: {
+        hero_title: "Цифровое <br /> Будущее Здесь",
+        hero_desc: "Evocabank продолжает удивлять своими инновационными решениями. Присоединяйтесь к нашему технологическому миру.",
+        partners_title: "Наши Партнеры",
+        partners_desc: "Станьте партнером Evocabank и давайте вместе двигаться к красочной новой реальности.",
+        all_partners: "Все партнеры",
+        loading: "Загрузка..."
       }
     }
   }

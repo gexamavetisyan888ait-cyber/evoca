@@ -3,12 +3,11 @@ import { motion } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Autoplay, FreeMode, Navigation } from 'swiper/modules';
 import { ChevronRight, ChevronLeft } from 'lucide-react';
+import { useTranslation, Trans } from 'react-i18next';
 
 // Firebase imports
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
-
-
 
 interface Partner {
     id?: string;
@@ -17,11 +16,11 @@ interface Partner {
 }
 
 const EvocaPartners: React.FC = () => {
+    const { t } = useTranslation();
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Բեռնում ենք գործընկերների տվյալները Firebase-ից (օգտագործում ենք 'partners' node-ը)
         const partnersRef = ref(db, 'gorcynkerner');
         const unsubscribe = onValue(partnersRef, (snapshot) => {
             const data = snapshot.val();
@@ -46,10 +45,10 @@ const EvocaPartners: React.FC = () => {
                         whileInView={{ opacity: 1, y: 0 }}
                         className="text-[40px] md:text-[60px] font-[1000] text-[#1a1a1a] leading-none uppercase italic tracking-tighter"
                     >
-                        Թվային <br /> <span className="text-[#6610f2]">Ապագան</span> Այստեղ է
+                        <Trans i18nKey="partners_section.hero_title" />
                     </motion.h1>
                     <p className="text-gray-500 text-lg font-medium italic max-w-xl">
-                        Evocabank-ը շարունակում է զարմացնել իր նորարար լուծումներով: Միացեք մեր տեխնոլոգիական աշխարհին:
+                        {t('partners_section.hero_desc')}
                     </p>
                 </div>
 
@@ -60,7 +59,6 @@ const EvocaPartners: React.FC = () => {
                     className="relative w-full lg:w-1/2 flex justify-center lg:justify-end"
                 >
                     <div className="relative w-full max-w-[500px] md:max-w-[650px] lg:max-w-none">
-                        {/* Laptop/Desktop Frame Simulation */}
                         <div className="relative aspect-video bg-black rounded-t-2xl md:rounded-t-3xl border-[4px] md:border-[8px] border-[#222] shadow-2xl overflow-hidden">
                             <video autoPlay loop muted playsInline className="w-full h-full object-cover">
                                 <source src="https://www.evoca.am/static/video/evoca_touch.mp4" type="video/mp4" />
@@ -68,7 +66,6 @@ const EvocaPartners: React.FC = () => {
                         </div>
                         <div className="h-2 md:h-4 w-full bg-gradient-to-b from-gray-700 to-gray-900 rounded-b-2xl mx-auto"></div>
 
-                        {/* Floating Mobile Image */}
                         <motion.div 
                             animate={{ y: [0, -20, 0] }}
                             transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
@@ -90,13 +87,13 @@ const EvocaPartners: React.FC = () => {
                             whileInView={{ opacity: 1, x: 0 }}
                             className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-6 uppercase italic tracking-tighter"
                         >
-                            Մեր <span className="text-[#6610f2]">Գործընկերները</span>
+                            <Trans i18nKey="partners_section.partners_title" />
                         </motion.h2>
                         <p className="text-gray-500 font-medium leading-relaxed mb-10 text-sm md:text-base italic">
-                            Դարձե՛ք Evocabank-ի Գործընկեր և եկե՛ք միասին գնանք դեպի գունեղ նոր իրականություն:
+                            {t('partners_section.partners_desc')}
                         </p>
                         <button className="group inline-flex items-center gap-3 text-[#6610f2] font-bold text-lg uppercase italic">
-                            Բոլոր գործընկերները 
+                            {t('partners_section.all_partners')}
                             <span className="bg-gray-50 p-2 rounded-full group-hover:bg-[#6610f2] group-hover:text-white transition-all transform group-hover:translate-x-2">
                                 <ChevronRight size={20} />
                             </span>
@@ -104,7 +101,6 @@ const EvocaPartners: React.FC = () => {
                     </div>
 
                     <div className="w-full lg:w-2/3 relative">
-                        {/* Decorative Hand Element (Hidden on small screens) */}
                         <div className="absolute -left-20 top-1/2 -translate-y-1/2 z-10 hidden xl:block pointer-events-none">
                             <img src="https://lightscamerasocial.com/images/footer-rock.png" alt="Hand" className="w-32 h-auto rotate-12 relative z-20" />
                             <div className="absolute inset-0 flex items-center justify-center -left-6 -top-6">
@@ -115,7 +111,9 @@ const EvocaPartners: React.FC = () => {
 
                         <div className="bg-[#f9f9fb] rounded-[32px] md:rounded-[50px] p-6 md:p-12 relative">
                             {loading ? (
-                                <div className="flex justify-center items-center h-32 text-[#6610f2] font-black italic uppercase">Բեռնվում է...</div>
+                                <div className="flex justify-center items-center h-32 text-[#6610f2] font-black italic uppercase">
+                                    {t('partners_section.loading')}
+                                </div>
                             ) : (
                                 <Swiper
                                     modules={[Autoplay, Navigation, FreeMode]}
@@ -141,7 +139,6 @@ const EvocaPartners: React.FC = () => {
                                 </Swiper>
                             )}
 
-                            {/* Custom Navigation Buttons */}
                             <div className="flex justify-center lg:justify-start gap-4 mt-8 lg:absolute lg:top-1/2 lg:-right-6 lg:flex-col lg:mt-0 lg:-translate-y-1/2">
                                 <button className="nav-prev bg-white p-3 rounded-full shadow-md text-gray-400 hover:text-[#6610f2] transition-colors z-20">
                                     <ChevronLeft size={24} />

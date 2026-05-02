@@ -1,8 +1,11 @@
 import React from 'react';
 import { Phone, MessageCircle } from 'lucide-react';
-import { Link } from 'react-router-dom'; // Եթե օգտագործում ես react-router-dom
+import { useTranslation } from 'react-i18next';
+import { Link } from 'react-router-dom';
 
 const Footer = () => {
+  const { t } = useTranslation();
+
   return (
     <>
       {/* Floating Chat Button */}
@@ -12,7 +15,7 @@ const Footer = () => {
       >
         <MessageCircle size={28} fill="currentColor" className="opacity-90" />
         <span className="absolute right-full mr-3 bg-white text-[#662d91] px-3 py-1 rounded-lg text-xs font-bold uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity duration-300 shadow-md pointer-events-none">
-          Chat
+          {t('footer.chat')}
         </span>
       </a>
 
@@ -26,49 +29,49 @@ const Footer = () => {
                 <h2 className="text-2xl font-bold tracking-tighter italic">evoca<span className="font-light">BANK</span></h2>
               </div>
               <div className="text-[13px] leading-relaxed text-gray-500 space-y-4">
-                <p>ք. Երևան, 0010, Հանրապետության 44/2</p>
+                <p>{t('footer.address')}</p>
                 <p className="mt-6 italic">
-                  Evocabank-ը վերահսկվում է Հայաստանի Հանրապետության Կենտրոնական բանկի կողմից
+                  {t('footer.central_bank_note')}
                 </p>
-                <p className="text-[11px] mt-4">1990 - 2026 © ԲՈԼՈՐ ԻՐԱՎՈՒՆՔՆԵՐԸ ՊԱՇՏՊԱՆՎԱԾ ԵՆ</p>
+                <p className="text-[11px] mt-4">1990 - 2026 © {t('footer.all_rights_reserved')}</p>
               </div>
             </div>
 
             {/* Links Column 1 */}
             <div>
-              <h4 className="text-[15px] font-bold mb-6">Բանկի մասին</h4>
+              <h4 className="text-[15px] font-bold mb-6">{t('footer.about_bank.title')}</h4>
               <ul className="text-[13px] space-y-3 text-gray-600">
-                <li><a href="#" className="hover:text-black">Մեր մասին</a></li>
-                <li><a href="#" className="hover:text-black">Ղեկավարություն</a></li>
-                <li><a href="#" className="hover:text-black">Բաժնետերեր</a></li>
-                <li><a href="#" className="hover:text-black">Թափուր աշխատատեղեր</a></li>
-                <li><a href="#" className="hover:text-black">Իրավական ակտեր</a></li>
-                <li><a href="#" className="hover:text-black">Սակագներ</a></li>
-                <li><a href="#" className="hover:text-black">Օտարվող գույք</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.about_us')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.management')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.shareholders')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.jobs')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.legal_acts')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.tariffs')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.about_bank.property')}</a></li>
               </ul>
             </div>
 
             {/* Links Column 2 */}
             <div>
-              <h4 className="text-[15px] font-bold mb-6">Օգտակար հղումներ</h4>
+              <h4 className="text-[15px] font-bold mb-6">{t('footer.useful_links.title')}</h4>
               <ul className="text-[13px] space-y-3 text-gray-600">
-                <li><a href="#" className="hover:text-black">Հաճախորդի իրավունքները</a></li>
-                <li><a href="#" className="hover:text-black">Հաճախորդի դժգոհությունների չափանիշներ</a></li>
-                <li><a href="#" className="hover:text-black">Կարգավորում</a></li>
-                <li><a href="#" className="hover:text-black">Գաղտնիության քաղաքականություն</a></li>
-                <li><a href="#" className="hover:text-black">Ֆին. հաշտարար</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.useful_links.customer_rights')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.useful_links.complaint_standards')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.useful_links.regulation')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.useful_links.privacy_policy')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.useful_links.fin_mediator')}</a></li>
               </ul>
             </div>
 
             {/* Links Column 3 */}
             <div>
-              <h4 className="text-[15px] font-bold mb-6">Այլ հղումներ</h4>
+              <h4 className="text-[15px] font-bold mb-6">{t('footer.other_links.title')}</h4>
               <ul className="text-[13px] space-y-3 text-gray-600">
-                <li><a href="#" className="hover:text-black">EvocaONLINE</a></li>
-                <li><a href="#" className="hover:text-black">Պահատուփեր</a></li>
-                <li><a href="#" className="hover:text-black">Հաճախ տրվող հարցեր</a></li>
-                <li><a href="#" className="hover:text-black">Հայտարարություններ</a></li>
-                <li><a href="#" className="hover:text-black">Library</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.other_links.online')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.other_links.safes')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.other_links.faq')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.other_links.announcements')}</a></li>
+                <li><a href="#" className="hover:text-black">{t('footer.other_links.library')}</a></li>
               </ul>
             </div>
 
@@ -81,7 +84,7 @@ const Footer = () => {
                 </div>
                 
                 <div className="mt-4">
-                  <a href="#" className="text-[13px] text-purple-600 font-medium hover:underline">Բանկի հասցեները և աշխատաժամերը</a>
+                  <a href="#" className="text-[13px] text-purple-600 font-medium hover:underline">{t('footer.contact.branches')}</a>
                 </div>
                 
                 <div className="mt-2 text-[15px] font-bold text-purple-700">
