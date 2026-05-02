@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { useTranslation } from 'react-i18next';
 // Firebase ներմուծումներ
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
@@ -17,17 +18,15 @@ export interface DepositType {
 
 const Avandner: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const [deposits, setDeposits] = useState<DepositType[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'avand' ճյուղին
     const depositsRef = ref(db, 'avand');
-    
     const unsubscribe = onValue(depositsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե տվյալները օբյեկտ են, դարձնում ենք զանգված
         const depositsList = Object.keys(data).map(key => ({
           ...data[key],
           id: data[key].id || key
@@ -38,8 +37,7 @@ const Avandner: React.FC = () => {
       }
       setLoading(false);
     });
-
-    return () => unsubscribe(); // Փակում ենք կապը կոմպոնենտը ջնջվելիս
+    return () => unsubscribe();
   }, []);
 
   if (loading) {
@@ -55,7 +53,7 @@ const Avandner: React.FC = () => {
       <div className="max-w-[1200px] mx-auto px-4 pt-16">
         <div className="flex border-b-[3px] border-[#6600cc]">
           <div className="bg-[#6600cc] text-white px-8 py-3.5 font-black text-[13px] uppercase tracking-widest rounded-t-xl">
-            Ավանդներ
+            {t('deposits_page.title')}
           </div>
         </div>
       </div>
@@ -84,7 +82,7 @@ const Avandner: React.FC = () => {
 
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-12">
                   <div className="flex flex-col">
-                    <span className="text-[#adb5bd] text-[10px] uppercase font-black tracking-widest mb-2">Սկսած</span>
+                    <span className="text-[#adb5bd] text-[10px] uppercase font-black tracking-widest mb-2">{t('deposits_page.start_from')}</span>
                     <div className="text-[#6610f2] text-[34px] font-[900] leading-none mb-1">{item.minAmount}</div>
                     <span className="text-[#495057] text-[12px] font-bold uppercase">{item.amountLabel}</span>
                   </div>
@@ -99,7 +97,7 @@ const Avandner: React.FC = () => {
                   onClick={() => navigate(`/deposit/${item.id}`)}
                   className="group flex items-center gap-4 px-10 py-4 bg-[#f4f0ff] text-[#6610f2] rounded-full font-black text-[13px] transition-all hover:bg-[#6610f2] hover:text-white uppercase tracking-widest"
                 >
-                  Մանրամասն
+                  {t('deposits_page.more')}
                   <span className="text-xl leading-none transition-transform group-hover:translate-x-1.5">›</span>
                 </button>
               </div>
@@ -107,7 +105,7 @@ const Avandner: React.FC = () => {
           ))
         ) : (
           <div className="text-center py-20 text-gray-400 font-bold uppercase italic tracking-widest">
-            Ավանդներ չեն գտնվել
+            {t('deposits_page.no_deposits')}
           </div>
         )}
       </main>

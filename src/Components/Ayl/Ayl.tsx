@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 // --- Firebase Imports ---
 import { db } from '../../lib/firebase'
@@ -8,6 +9,7 @@ import { ref, push, set } from "firebase/database";
 
 const OtherServicesTabs: React.FC = () => {
   const [activeTab, setActiveTab] = useState(0);
+  const { t } = useTranslation();
 
   // Ֆունկցիա՝ Firebase-ում հետաքրքրվածության հայտ գրանցելու համար
   const handleRegisterInterest = async (serviceTitle: string) => {
@@ -19,7 +21,7 @@ const OtherServicesTabs: React.FC = () => {
         timestamp: Date.now(),
         status: 'new_lead'
       });
-      alert("Շնորհակալություն հետաքրքրվածության համար:");
+      alert(t('other_services.banner.success'));
     } catch (error) {
       console.error("Firebase error:", error);
     }
@@ -27,14 +29,13 @@ const OtherServicesTabs: React.FC = () => {
 
   const tabs = [
     {
-      title: "Հեռահար բանկային ծառայություններ",
+      title: t('other_services.tab1_title'),
       content: (
         <div className="space-y-10">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <div className="flex-1">
               <p className="text-[#4d4d4d] text-lg leading-relaxed">
-                Կառավարեք Ձեր հաշիվները աշխարհի ցանկացած կետից՝ շուրջօրյա ռեժիմով: 
-                Evoca-ի հեռահար համակարգերը հնարավորություն են տալիս կատարել գործարքներ առանց բանկ այցելելու:
+                {t('other_services.tab1_desc')}
               </p>
             </div>
             <div className="w-full lg:w-[450px] h-[300px] rounded-[40px] overflow-hidden">
@@ -53,29 +54,29 @@ const OtherServicesTabs: React.FC = () => {
       )
     },
     {
-      title: "Պահատուփերի վարձակալություն",
+      title: t('other_services.tab2_title'),
       content: (
         <div className="space-y-10">
           <div className="flex flex-col lg:flex-row gap-12 items-start">
             <div className="flex-1">
               <p className="text-[#4d4d4d] text-lg leading-relaxed mb-8">
-                Բանկն առաջարկում է անհատական պահատուփերի վարձակալություն Ձեր արժեքավոր իրերի, փաստաթղթերի և դրամական միջոցների անվտանգ պահպանման համար:
+                {t('other_services.tab2_desc')}
               </p>
               <div className="overflow-hidden rounded-[30px] border border-gray-100">
                 <table className="w-full text-left border-collapse">
                   <thead>
                     <tr className="bg-[#f8f9fb]">
-                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">Չափսեր</th>
-                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">Ժամկետ</th>
-                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">Սակագին</th>
+                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">{t('other_services.table.size')}</th>
+                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">{t('other_services.table.term')}</th>
+                      <th className="p-5 text-[12px] font-black uppercase text-gray-400 italic">{t('other_services.table.rate')}</th>
                     </tr>
                   </thead>
                   <tbody className="text-[#1a1a1a] font-bold text-sm">
                     <tr className="border-t border-gray-50">
-                      <td className="p-5">Փոքր</td><td className="p-5">1 ամիս</td><td className="p-5 text-[#6610f2]">10,000 ֏</td>
+                      <td className="p-5">{t('other_services.table.small')}</td><td className="p-5">{t('other_services.table.month')}</td><td className="p-5 text-[#6610f2]">{t('other_services.table.price_small')}</td>
                     </tr>
                     <tr className="border-t border-gray-50">
-                      <td className="p-5">Միջին</td><td className="p-5">1 ամիս</td><td className="p-5 text-[#6610f2]">15,000 ֏</td>
+                      <td className="p-5">{t('other_services.table.medium')}</td><td className="p-5">{t('other_services.table.month')}</td><td className="p-5 text-[#6610f2]">{t('other_services.table.price_medium')}</td>
                     </tr>
                   </tbody>
                 </table>
@@ -89,14 +90,14 @@ const OtherServicesTabs: React.FC = () => {
       )
     },
     {
-      title: "Այլ ծառայություններ",
+      title: t('other_services.tab3_title'),
       content: (
         <div className="space-y-8">
            <div className="flex flex-col lg:flex-row gap-12 items-center mb-10">
             <div className="flex-1">
-              <h3 className="text-2xl font-black italic uppercase text-[#1a1a1a] mb-4">Չեկային գրքույկներ և տեղեկանքներ</h3>
+              <h3 className="text-2xl font-black italic uppercase text-[#1a1a1a] mb-4">{t('other_services.tab3_subtitle')}</h3>
               <p className="text-[#4d4d4d] text-lg leading-relaxed">
-                Մենք տրամադրում ենք բոլոր անհրաժեշտ փաստաթղթերը, տեղեկանքները և քաղվածքները հաշիվների վերաբերյալ՝ հնարավորինս սեղմ ժամկետներում։
+                {t('other_services.tab3_desc')}
               </p>
             </div>
             <div className="w-full lg:w-[400px]">
@@ -105,12 +106,12 @@ const OtherServicesTabs: React.FC = () => {
           </div>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
              <div className="p-10 bg-[#f3ebff] rounded-[40px] border border-purple-50">
-                <h4 className="text-xl font-[1000] italic uppercase text-[#6610f2] mb-3">Տեղեկանքների տրամադրում</h4>
-                <p className="text-sm text-purple-900/60 font-medium tracking-tight">Հաշվի մնացորդի, շրջանառության և այլ տվյալների վերաբերյալ:</p>
+                <h4 className="text-xl font-[1000] italic uppercase text-[#6610f2] mb-3">{t('other_services.extra.references')}</h4>
+                <p className="text-sm text-purple-900/60 font-medium tracking-tight">{t('other_services.extra.references_desc')}</p>
              </div>
              <div className="p-10 bg-[#f8f9fb] rounded-[40px] border border-gray-100">
-                <h4 className="text-xl font-[1000] italic uppercase text-[#1a1a1a] mb-3">Պատասխանատու պահպանություն</h4>
-                <p className="text-sm text-gray-400 font-medium tracking-tight">Արժեթղթերի և այլ փաստաթղթերի պահպանում բանկում:</p>
+                <h4 className="text-xl font-[1000] italic uppercase text-[#1a1a1a] mb-3">{t('other_services.extra.safekeeping')}</h4>
+                <p className="text-sm text-gray-400 font-medium tracking-tight">{t('other_services.extra.safekeeping_desc')}</p>
              </div>
           </div>
         </div>
@@ -123,7 +124,9 @@ const OtherServicesTabs: React.FC = () => {
       <div className="max-w-[1450px] mx-auto px-6">
         
         <div className="mb-16">
-          <motion.span className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.3em] block mb-4">Լրացուցիչ</motion.span>
+          <motion.span className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.3em] block mb-4">
+            {t('other_services.badge')}
+          </motion.span>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16 lg:gap-24">
@@ -194,15 +197,19 @@ const OtherServicesTabs: React.FC = () => {
             whileInView={{ opacity: 1, scale: 1 }}
             className="w-full md:w-1/2 text-white text-center md:text-left mt-10 md:mt-0"
           >
-            <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6 leading-tight">Օնլայն բանկինգ</h2>
-            <p className="text-white/80 mb-8 text-lg">Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:</p>
+            <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6 leading-tight">
+              {t('other_services.banner.title')}
+            </h2>
+            <p className="text-white/80 mb-8 text-lg">
+              {t('other_services.banner.desc')}
+            </p>
             <motion.button 
               onClick={() => handleRegisterInterest("Online Banking Banner")}
               whileHover={{ scale: 1.05, boxShadow: "0px 0px 20px rgba(255,255,255,0.3)" }}
               whileTap={{ scale: 0.95 }}
               className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest transition-all"
             >
-              Դառնալ հաճախորդ
+              {t('other_services.banner.btn')}
             </motion.button>
           </motion.div>
         </div>

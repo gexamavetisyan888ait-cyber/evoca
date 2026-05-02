@@ -1,24 +1,20 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 import { ChevronRight, ChevronDown, FileText, Download, ExternalLink, ShieldCheck, PieChart, Smartphone } from 'lucide-react';
 
 const Securities: React.FC = () => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
 
-    const tabs1 = [
-        "Ներդրումային ծառայություններ",
-        "Պարտատոմսեր",
-        "ՀԿԾ ծառայություններ",
-        "Ռեպո/Հակադարձ Ռեպո",
-        "EvocaINVEST"
-    ];
+    const tabs1 = t('securities_page.tabs', { returnObjects: true }) as string[];
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a]">
             <div className="max-w-[1140px] mx-auto px-4 pt-10">
                 <div className="flex items-center gap-2 text-[10px] text-gray-400 uppercase tracking-[0.2em] mb-8 font-bold">
-                    <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-gray-800">Արժեթղթեր</span>
+                    <span>{t('nav.personal')}</span> <ChevronRight size={10} /> <span className="text-gray-800">{t('menu.securities')}</span>
                 </div>
                 
                 <motion.h1 
@@ -26,7 +22,7 @@ const Securities: React.FC = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="text-[36px] md:text-[50px] font-[900] italic uppercase leading-none mb-12 tracking-tighter"
                 >
-                    Արժեթղթեր
+                    {t('securities_page.title')}
                 </motion.h1>
 
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
@@ -56,13 +52,20 @@ const Securities: React.FC = () => {
                                     <img src="https://www.evoca.am/images-cache/menu/1/16783474498811/780x585.jpg" className="w-full h-full object-cover" alt="Investment" />
                                     <div className="absolute inset-0 bg-gradient-to-r from-black/50 to-transparent" />
                                 </div>
-                                <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">Ներդրումային <br /> ծառայություններ</h2>
+                                <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">
+                                    {t('securities_page.investment_title')}
+                                </h2>
                             </div>
                             <div className="max-w-4xl space-y-6">
-                                <p className="text-[#1a1a1a] text-[18px] font-medium leading-relaxed">Evocabank-ն առաջարկում է ներդրումային ծառայությունների լայն ընտրանի:</p>
+                                <p className="text-[#1a1a1a] text-[18px] font-medium leading-relaxed">{t('securities_page.investment_desc')}</p>
                             </div>
                             <div className="divide-y divide-gray-100 border-t border-b border-gray-100">
-                                <AccordionItem title="ԱՆՀՐԱԺԵՇՏ ՏԵՂԵԿԱՏՎՈՒԹՅՈՒՆ" isOpen={openAccordion === 1} toggle={() => setOpenAccordion(openAccordion === 1 ? null : 1)} docs={["Ներդրումային ծառայությունների սակագներ", "Հաճախորդների դասակարգման քաղաքականություն"]} />
+                                <AccordionItem 
+                                    title={t('securities_page.info_title')} 
+                                    isOpen={openAccordion === 1} 
+                                    toggle={() => setOpenAccordion(openAccordion === 1 ? null : 1)} 
+                                    docs={t('securities_page.docs', { returnObjects: true })} 
+                                />
                             </div>
                         </motion.div>
                     )}
@@ -74,15 +77,17 @@ const Securities: React.FC = () => {
                                     <img src="https://www.evoca.am/images-cache/menu/1/16783474498811/780x585.jpg" className="w-full h-full object-cover" alt="Bonds" />
                                     <div className="absolute inset-0 bg-black/40" />
                                 </div>
-                                <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">Պարտատոմսեր</h2>
+                                <h2 className="relative z-10 text-white text-[32px] md:text-[45px] font-[900] italic uppercase leading-tight">
+                                    {t('securities_page.bonds_title')}
+                                </h2>
                             </div>
                             <div className="overflow-x-auto shadow-sm rounded-3xl border border-gray-100">
                                 <table className="w-full text-left border-collapse">
                                     <thead>
                                         <tr className="bg-[#f8f9fb]">
-                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">Տրանշ</th>
-                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">Արժույթ</th>
-                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">Տոկոսադրույք</th>
+                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">{t('securities_page.table.tranche')}</th>
+                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">{t('securities_page.table.currency')}</th>
+                                            <th className="p-6 text-[11px] font-black uppercase italic text-gray-400">{t('securities_page.table.rate')}</th>
                                         </tr>
                                     </thead>
                                     <tbody className="divide-y divide-gray-50">
@@ -97,11 +102,16 @@ const Securities: React.FC = () => {
                         <motion.div key="sec2" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="bg-[#f8f9fb] p-12 rounded-[50px] border border-gray-100">
                                 <div className="flex items-center gap-4 mb-6 text-[#6610f2]"><ShieldCheck size={40} /></div>
-                                <h2 className="text-[32px] font-[900] italic uppercase mb-6">ՀԿԾ ծառայություններ</h2>
-                                <p className="text-gray-600 leading-relaxed max-w-3xl text-[18px]">Բանկն իրականացնում է Հայաստանի Կենտրոնական Դեպոզիտարիայի օպերատորի գործառույթներ՝ ապահովելով ռեեստրի վարում և պահառություն:</p>
+                                <h2 className="text-[32px] font-[900] italic uppercase mb-6">{t('securities_page.cda_title')}</h2>
+                                <p className="text-gray-600 leading-relaxed max-w-3xl text-[18px]">{t('securities_page.cda_desc')}</p>
                             </div>
                             <div className="divide-y divide-gray-100 border-t border-b border-gray-100">
-                                <AccordionItem title="ՍԱԿԱԳՆԵՐ ԵՎ ՊԱՅՄԱՆՆԵՐ" isOpen={openAccordion === 5} toggle={() => setOpenAccordion(openAccordion === 5 ? null : 5)} content="Ծառայությունները մատուցվում են համաձայն Կենտրոնական Դեպոզիտարիայի կողմից սահմանված կանոնների:" />
+                                <AccordionItem 
+                                    title={t('securities_page.cda_rates')} 
+                                    isOpen={openAccordion === 5} 
+                                    toggle={() => setOpenAccordion(openAccordion === 5 ? null : 5)} 
+                                    content={t('securities_page.cda_content')} 
+                                />
                             </div>
                         </motion.div>
                     )}
@@ -110,17 +120,17 @@ const Securities: React.FC = () => {
                         <motion.div key="sec3" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="space-y-12">
                             <div className="bg-[#1a1a1a] p-12 rounded-[50px] text-white">
                                 <div className="flex items-center gap-4 mb-6 text-[#6610f2]"><PieChart size={40} /></div>
-                                <h2 className="text-[32px] font-[900] italic uppercase mb-6">Ռեպո/Հակադարձ Ռեպո</h2>
-                                <p className="text-gray-400 leading-relaxed max-w-3xl text-[18px]">Իրականացրեք կարճաժամկետ դրամական միջոցների ներգրավում կամ տեղաբաշխում՝ որպես գրավ օգտագործելով պետական և կորպորատիվ պարտատոմսեր:</p>
+                                <h2 className="text-[32px] font-[900] italic uppercase mb-6">{t('securities_page.repo_title')}</h2>
+                                <p className="text-gray-400 leading-relaxed max-w-3xl text-[18px]">{t('securities_page.repo_desc')}</p>
                             </div>
                             <div className="grid md:grid-cols-2 gap-6">
                                 <div className="p-8 bg-gray-50 rounded-3xl">
-                                    <h3 className="font-black italic uppercase mb-4">Ռեպո</h3>
-                                    <p className="text-gray-600">Միջոցների ներգրավում արժեթղթերի գրավադրմամբ:</p>
+                                    <h3 className="font-black italic uppercase mb-4">{t('securities_page.repo_type1')}</h3>
+                                    <p className="text-gray-600">{t('securities_page.repo_type1_desc')}</p>
                                 </div>
                                 <div className="p-8 bg-gray-50 rounded-3xl">
-                                    <h3 className="font-black italic uppercase mb-4">Հակադարձ Ռեպո</h3>
-                                    <p className="text-gray-600">Միջոցների տեղաբաշխում արժեթղթերի ձեռքբերմամբ:</p>
+                                    <h3 className="font-black italic uppercase mb-4">{t('securities_page.repo_type2')}</h3>
+                                    <p className="text-gray-600">{t('securities_page.repo_type2_desc')}</p>
                                 </div>
                             </div>
                         </motion.div>
@@ -131,10 +141,10 @@ const Securities: React.FC = () => {
                             <div className="max-w-2xl mx-auto space-y-8">
                                 <div className="inline-flex p-6 bg-[#f1edff] rounded-full text-[#6610f2] mb-4"><Smartphone size={60} /></div>
                                 <h2 className="text-[40px] font-[900] italic uppercase leading-none">EvocaINVEST</h2>
-                                <p className="text-[18px] text-gray-600">Հարթակ, որը հնարավորություն է տալիս հասանելիություն ունենալ աշխարհի ավելի քան 20 ֆոնդային բորսաներին անմիջապես Ձեր սմարթֆոնից:</p>
+                                <p className="text-[18px] text-gray-600">{t('securities_page.invest_desc')}</p>
                                 <div className="flex flex-wrap justify-center gap-4">
                                     <button className="bg-[#6610f2] text-white px-10 py-4 rounded-full font-bold italic uppercase hover:bg-[#520dc2] transition-all flex items-center gap-2">
-                                        Միանալ հիմա <ExternalLink size={18} />
+                                        {t('securities_page.join_now')} <ExternalLink size={18} />
                                     </button>
                                 </div>
                             </div>

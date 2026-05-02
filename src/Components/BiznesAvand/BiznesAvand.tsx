@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase";
+import { useTranslation } from "react-i18next"; // Ավելացված է թարգմանության hook-ը
 
 interface HeroCard {
   id: string;
@@ -12,6 +13,7 @@ interface HeroCard {
 }
 
 const HeroSection: React.FC = () => {
+  const { t } = useTranslation(); // Թարգմանության ֆունկցիայի սահմանում
   const [cards, setCards] = useState<HeroCard[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -22,7 +24,6 @@ const HeroSection: React.FC = () => {
     const unsubscribe = onValue(cardsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Տվյալների վերափոխում զանգվածի
         const formattedData: HeroCard[] = Object.keys(data).map(key => ({
           ...data[key],
           id: key
@@ -55,7 +56,8 @@ const HeroSection: React.FC = () => {
             transition={{ duration: 0.8 }}
             className="text-white text-[55px] md:text-[85px] lg:text-[110px] font-[900] italic uppercase leading-[0.8] tracking-[-0.05em]"
           >
-            Պարզ, արագ, <br /> ժամանակակից
+            {/* Օգտագործում ենք i18n տեքստերը */}
+            {t('biznes_avand.title')}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -63,7 +65,7 @@ const HeroSection: React.FC = () => {
             transition={{ delay: 0.4 }}
             className="text-white text-lg md:text-2xl font-bold uppercase italic mt-8 tracking-tight"
           >
-            Քո թվային բանկը
+            {t('biznes_avand.desc')}
           </motion.p>
         </div>
       </div>
@@ -88,6 +90,7 @@ const HeroSection: React.FC = () => {
               >
                 <div className="mb-4">
                   <span className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.2em] block mb-2">
+                    {/* Եթե կատեգորիաները ևս Firebase-ում թարգմանված չեն, կարելի է օգտագործել t(card.category) */}
                     {card.category}
                   </span>
                   <h2 className="text-[40px] font-[900] italic uppercase text-[#1a1a1a] leading-[0.9] tracking-tighter mb-4">

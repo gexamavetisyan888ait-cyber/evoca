@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; // Համոզվիր, որ հասցեն ճիշտ է
+import { db } from "../../lib/firebase";
+import { useTranslation } from "react-i18next"; // Ավելացված է
 
-// Տիպերի սահմանում (TypeScript interface)
 interface SecurityTab {
   id: string;
   title: string;
@@ -17,13 +17,12 @@ interface SecurityTab {
 }
 
 const SecuritiesMarket: React.FC = () => {
+  const { t } = useTranslation(); // Ավելացված է
   const [activeTab, setActiveTab] = useState(0);
   const [tabs, setTabs] = useState<SecurityTab[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // Տվյալների ստացում Firebase-ից
   useEffect(() => {
-    // Ենթադրենք բազայում 'securities_market' ճյուղի տակ է
     const securitiesRef = ref(db, 'arjetxtiShuka');
     
     const unsubscribe = onValue(securitiesRef, (snapshot) => {
@@ -41,13 +40,11 @@ const SecuritiesMarket: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  // JSX-ի դինամիկ գեներացում ըստ Firebase-ի տվյալների
   const renderContent = (tab: SecurityTab) => {
     return (
       <div className="space-y-6">
         <p>{tab.description}</p>
 
-        {/* Կետերով ցուցակ (Ներդրումային ծառայություններ) */}
         {tab.bullet_points && (
           <ul className="list-none space-y-4">
             {tab.bullet_points.map((point, i) => (
@@ -59,7 +56,6 @@ const SecuritiesMarket: React.FC = () => {
           </ul>
         )}
 
-        {/* Շուկաների ցանց (Պարտատոմսեր) */}
         {tab.markets && (
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-4">
             {tab.markets.map((m, i) => (
@@ -71,7 +67,6 @@ const SecuritiesMarket: React.FC = () => {
           </div>
         )}
 
-        {/* Ծառայությունների ցանկ (ՀԿԴ) */}
         {tab.services_list && (
           <ul className="grid grid-cols-1 md:grid-cols-2 gap-3">
             {tab.services_list.map((item, i) => (
@@ -83,7 +78,6 @@ const SecuritiesMarket: React.FC = () => {
           </ul>
         )}
 
-        {/* Շեշտված տեքստ (Ռեպո) */}
         {tab.highlight_text && (
           <div className="space-y-4">
             <p className="font-bold text-[#1a1a1a] italic uppercase">{tab.benefits_label}</p>
@@ -93,7 +87,6 @@ const SecuritiesMarket: React.FC = () => {
           </div>
         )}
 
-        {/* Հաշվետվություններ (EvocaINVEST) */}
         {tab.reports && (
           <div className="space-y-3">
             {tab.reports.map((report, i) => (
@@ -121,15 +114,15 @@ const SecuritiesMarket: React.FC = () => {
       <div className="max-w-[1450px] mx-auto px-6">
         
         <div className="mb-12">
-          <span className="text-[#6610f2] text-xs font-black uppercase tracking-[0.2em]">Բիզնես</span>
+          <span className="text-[#6610f2] text-xs font-black uppercase tracking-[0.2em]">
+            {t("menu.business_label")}
+          </span>
           <h2 className="text-[40px] md:text-[60px] font-[900] italic uppercase text-[#1a1a1a] tracking-tighter leading-none mt-2">
-            Արժեթղթերի շուկա
+            {t("securities_page.title")}
           </h2>
         </div>
 
         <div className="flex flex-col lg:flex-row gap-16">
-          
-          {/* Sidebar */}
           <div className="w-full lg:w-1/3 flex flex-col border-l border-gray-100">
             {tabs.map((tab, index) => (
               <button
@@ -155,7 +148,6 @@ const SecuritiesMarket: React.FC = () => {
             ))}
           </div>
 
-          {/* Tab Content */}
           <div className="w-full lg:w-2/3 min-h-[400px]">
             <AnimatePresence mode="wait">
               <motion.div

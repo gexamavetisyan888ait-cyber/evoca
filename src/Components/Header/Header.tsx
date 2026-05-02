@@ -2,8 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation } from 'react-router-dom';
 import { MapPin, Globe, Search, Menu, X, MessageCircle } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const Header: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [isOpen, setIsOpen] = useState(false);
   const location = useLocation();
 
@@ -17,98 +19,79 @@ const Header: React.FC = () => {
     document.body.style.overflow = !isOpen ? 'hidden' : 'unset';
   };
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+  };
+
+  // Բոլոր տեքստերը վերցնում ենք i18n-ից
   const topNavLinks = [
-    { name: "Անհատ", path: "/" },
-    { name: "Բիզնես", path: "/business/loans" },
-    { name: "Ակնթարդային վճարումներ", path: "/instant-payments" },
-    { name: "Մեր մասին", path: "/about/about" },
-    { name: "Նորություններ", path: "/news" },
-    { name: "Բլոգ", path: "/blog" },
-    { name: "Կարիերա", path: "/career/EvocaLife" },
+    { name: t('nav.personal'), path: "/" },
+    { name: t('nav.business'), path: "/business/loans" },
+    { name: t('nav.instant_payments'), path: "/instant-payments" },
+    { name: t('nav.about'), path: "/about/about" },
+    { name: t('nav.news'), path: "/news" },
+    { name: t('nav.blog'), path: "/blog" },
+    { name: t('nav.career'), path: "/career/EvocaLife" },
   ];
 
   const secondaryMenus: Record<string, { name: string, path: string }[]> = {
     "/": [
-      { name: "Վարկեր", path: "/personal-loans" },
-      { name: "Քարտեր", path: "/cards" },
-      { name: "Ավանդներ", path: "/deposits" },
-      { name: "Հաշիվներ", path: "/accounts" },
-      { name: "Փոխանցումներ", path: "/transfers" },
-      { name: "Արժեթղթեր", path: "/securities" },
-      { name: "EvocaSALARY", path: "/evoca-salary" },
-      { name: "EvocaTOUCH", path: "/touch" }
+      { name: t('menu.loans'), path: "/personal-loans" },
+      { name: t('menu.cards'), path: "/cards" },
+      { name: t('menu.deposits'), path: "/deposits" },
+      { name: t('menu.accounts'), path: "/accounts" },
+      { name: t('menu.transfers'), path: "/transfers" },
+      { name: t('menu.securities'), path: "/securities" },
+      { name: t('menu.salary'), path: "/evoca-salary" },
+      { name: t('menu.touch'), path: "/touch" }
     ],
     "/business": [
-      { name: "Վարկեր", path: "/business/loans" },
-      { name: "Լիզինգ", path: "/business/leasing" },
-      { name: "Հաշիվներ", path: "/business/accounts" },
-      { name: "Ավանդներ", path: "/business/deposits" },
-      { name: "Արժեթղթի շուկա", path: "/business/securities" },
-      { name: "Առևտրի ֆինանսավորում", path: "/business/trade-finance" },
-      { name: "Դիջիթալ", path: "/business/digital" },
-      { name: "Այլ", path: "/business/other" }
+      { name: t('menu.loans'), path: "/business/loans" },
+      { name: t('menu.leasing'), path: "/business/leasing" },
+      { name: t('menu.accounts'), path: "/business/accounts" },
+      { name: t('menu.deposits'), path: "/business/deposits" },
+      { name: t('menu.securities'), path: "/business/securities" },
+      { name: t('menu.trade_finance'), path: "/business/trade-finance" },
+      { name: t('menu.digital'), path: "/business/digital" },
+      { name: t('menu.other'), path: "/business/other" }
     ],
     "/career": [
-      { name: "Evoca լայֆ", path: "/career/EvocaLife" },
-      { name: "Աշխատանք և պրակտիկա", path: "/career/work" },
+      { name: t('menu.life'), path: "/career/EvocaLife" },
+      { name: t('menu.work'), path: "/career/work" },
     ],
     "/about": [
-      { name: "Evoca-ի մասին", path: "/about/about" },
-      { name: "Սակագներ", path: "/about/sakagin" },
-      { name: "Հայտարարություններ", path: "/about/hayter" },
+      { name: t('menu.about_evoca'), path: "/about/about" },
+      { name: t('menu.rates'), path: "/about/sakagin" },
+      { name: t('menu.announcements'), path: "/about/hayter" },
     ],
   };
 
   const burgerSections = [
     {
-      title: "Վարկեր",
+      title: t('menu.loans'),
       items: [
-        { name: "Անհատական վարկեր", path: "/personal-loans" },
-        { name: "Բիզնես վարկեր", path: "/business/loans" },
-        { name: "Լիզինգ", path: "/business/leasing" }
+        { name: t('burger.personal_loans'), path: "/personal-loans" },
+        { name: t('burger.business_loans'), path: "/business/loans" },
+        { name: t('menu.leasing'), path: "/business/leasing" }
       ]
     },
     {
-      title: "Ավանդներ",
+      title: t('menu.deposits'),
       items: [
-        { name: "Անհատական ավանդներ", path: "/deposits" },
-        { name: "Բիզնես ավանդներ", path: "/business/deposits" }
+        { name: t('burger.personal_deposits'), path: "/deposits" },
+        { name: t('burger.business_deposits'), path: "/business/deposits" }
       ]
     },
     {
-      title: "Քարտեր & Հաշիվներ",
+      title: t('burger.cards_accounts'),
       items: [
-        { name: "Քարտեր", path: "/cards" },
-        { name: "Հաշիվներ", path: "/accounts" },
-        { name: "Evoca Benefits", path: "/benefits" }
-      ]
-    },
-    {
-      title: "Կարիերա",
-      items: [
-        { name: "Evoca լայֆ", path: "/career/EvocaLife" },
-        { name: "Աշխատանք և պրակտիկա", path: "/career/work" }
-      ]
-    },
-    {
-      title: "Նորություններ",
-      items: [
-        { name: "Բոլոր նորությունները", path: "/news" },
-        { name: "Բանկային", path: "/news?category=բանկային" },
-        { name: "Պրոդուկտներ", path: "/news?category=պրոդուկտներ" }
-      ]
-    },
-    {
-      title: "Մեր մասին",
-      items: [
-        { name: "Evoca-ի մասին", path: "/about/about" },
-        { name: "Սակագներ", path: "/about/sakagin" },
-        { name: "Հայտարարություններ", path: "/about/hayter" }
+        { name: t('menu.cards'), path: "/cards" },
+        { name: t('menu.accounts'), path: "/accounts" },
+        { name: t('burger.benefits'), path: "/benefits" }
       ]
     }
   ];
 
-  // Ստուգում ենք ընթացիկ ակտիվ բաժինը վերին մենյուի գծի համար
   const getActiveTopPath = () => {
     const path = location.pathname;
     if (path.startsWith("/business")) return "/business/loans";
@@ -122,22 +105,18 @@ const Header: React.FC = () => {
 
   const activeTopPath = getActiveTopPath();
 
-  // Որոշում ենք՝ արդյոք պետք է ցուցադրել երկրորդական մենյուն
-  const shouldShowSecondaryMenu = () => {
-    const path = location.pathname;
-    // Եթե էջը նորություններ է, բլոգ է կամ ակնթարդային վճարումներ, ապա ենթամենյու պետք չէ
-    if (path.startsWith("/news") || path.startsWith("/blog") || path.startsWith("/instant-payments")) {
-      return false;
-    }
-    return true;
-  };
-
   const getBaseFolder = () => {
     const path = location.pathname;
     if (path.startsWith("/business")) return "/business";
     if (path.startsWith("/career")) return "/career";
     if (path.startsWith("/about")) return "/about";
     return "/";
+  };
+
+  const shouldShowSecondaryMenu = () => {
+    const path = location.pathname;
+    if (path.startsWith("/news") || path.startsWith("/blog") || path.startsWith("/instant-payments")) return false;
+    return true;
   };
 
   const currentSecondaryMenu = shouldShowSecondaryMenu() ? (secondaryMenus[getBaseFolder()] || []) : [];
@@ -170,7 +149,21 @@ const Header: React.FC = () => {
             <div className="flex items-center space-x-4 border-r pr-4 border-gray-200">
               <Search size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
               <MapPin size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
-              <Globe size={15} className="hover:text-[#6610f2] cursor-pointer transition-colors" />
+              
+              {/* Language Switcher Dropdown/Buttons */}
+              <div className="flex items-center gap-2 ml-2">
+                {['AM', 'EN', 'RU'].map((lang) => (
+                  <button
+                    key={lang}
+                    onClick={() => changeLanguage(lang.toLowerCase())}
+                    className={`text-[10px] font-bold hover:text-[#6610f2] transition-colors ${
+                      i18n.language === lang.toLowerCase() ? 'text-[#6610f2]' : 'text-gray-400'
+                    }`}
+                  >
+                    {lang}
+                  </button>
+                ))}
+              </div>
             </div>
             <span className="text-gray-400 hover:text-[#6610f2] text-[11px] font-black uppercase tracking-widest cursor-pointer transition-colors">
               EvocaONLINE
@@ -190,7 +183,6 @@ const Header: React.FC = () => {
                 alt="Logo" 
               />
             </Link>
-            {/* Ենթամենյուն ցուցադրվում է միայն եթե currentSecondaryMenu-ն դատարկ չէ */}
             <nav className="hidden lg:flex items-center space-x-8">
               {currentSecondaryMenu.map((item) => (
                 <Link
@@ -210,7 +202,7 @@ const Header: React.FC = () => {
             <button className={`hidden sm:block px-7 py-2 rounded-full font-black text-[12px] uppercase shadow-md transition-all ${
               isOpen ? 'bg-white text-[#6610f2]' : 'bg-[#6610f2] text-white hover:bg-[#520dc2]'
             }`}>
-              Մուտք
+              {t('common.login')}
             </button>
             <button onClick={toggleMenu} className={`p-2 transition-colors ${isOpen ? 'text-white' : 'text-[#1a1a1a]'}`}>
               {isOpen ? <X size={30} /> : <Menu size={30} />}
@@ -219,7 +211,7 @@ const Header: React.FC = () => {
         </div>
       </div>
 
-      {/* --- BURGER MENU (Չփոփոխված) --- */}
+      {/* --- BURGER MENU --- */}
       <AnimatePresence>
         {isOpen && (
           <motion.div
@@ -272,13 +264,9 @@ const Header: React.FC = () => {
               <div className="mt-16 pt-10 border-t border-white/10 flex flex-wrap gap-10">
                 <div className="flex items-center gap-4 text-white">
                     <MessageCircle size={24} />
-                    <span className="font-bold">Շուրջօրյա աջակցություն: 8444</span>
+                    <span className="font-bold">{t('common.support')}: 8444</span>
                 </div>
               </div>
-            </div>
-            
-            <div className="absolute bottom-[-50px] right-[-50px] opacity-[0.04] pointer-events-none select-none">
-                <h1 className="text-[300px] font-black italic text-white leading-none">EVOCA</h1>
             </div>
           </motion.div>
         )}

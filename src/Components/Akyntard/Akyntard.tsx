@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { ChevronLeft, Loader2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next';
 // Firebase-ի ներմուծումները
 import { db } from "../../lib/firebase"; 
 import { ref, push, set, onValue, serverTimestamp } from "firebase/database";
 
 export default function Akyntard() {
+    const { t } = useTranslation();
     const [categories, setCategories] = useState<any[]>([]);
     const [step, setStep] = useState<'categories' | 'sub' | 'input'>('categories');
     const [selectedCat, setSelectedCat] = useState<any>(null);
@@ -13,15 +15,12 @@ export default function Akyntard() {
     const [loading, setLoading] = useState(false);
     const [fetching, setFetching] = useState(true);
 
-    // 1. Տվյալները քաշում ենք Firebase-ից էջը բացելիս
+    // Տվյալները քաշում ենք Firebase-ից
     useEffect(() => {
         const categoriesRef = ref(db, 'akyntard');
-        
-        // onValue-ն թույլ է տալիս իրական ժամանակում թարմացնել տվյալները
         const unsubscribe = onValue(categoriesRef, (snapshot) => {
             const data = snapshot.val();
             if (data) {
-                // Եթե տվյալները օբյեկտ են, դարձնում ենք զանգված
                 const categoriesList = Object.keys(data).map(key => ({
                     id: key,
                     ...data[key]
@@ -31,7 +30,7 @@ export default function Akyntard() {
             setFetching(false);
         });
 
-        return () => unsubscribe(); // Մաքրում ենք լիսեները
+        return () => unsubscribe();
     }, []);
 
     const handleBack = () => {
@@ -39,9 +38,8 @@ export default function Akyntard() {
         else if (step === 'sub') setStep('categories');
     };
 
-    // 2. Վճարման տվյալները ուղարկում ենք Firebase
     const handlePayment = async () => {
-        if (!inputValue.trim()) return alert("Մուտքագրեք տվյալները");
+        if (!inputValue.trim()) return alert(t('payments.enter_data_alert'));
 
         setLoading(true);
         try {
@@ -56,12 +54,12 @@ export default function Akyntard() {
                 timestamp: serverTimestamp()
             });
 
-            alert("Վճարումն ընդունված է");
+            alert(t('payments.success_alert'));
             setInputValue("");
             setStep('categories');
         } catch (error) {
             console.error("Error:", error);
-            alert("Խնդիր առաջացավ վճարման ժամանակ");
+            alert(t('payments.error_alert'));
         } finally {
             setLoading(false);
         }
@@ -96,12 +94,12 @@ export default function Akyntard() {
 
                 <div className="text-center mb-12">
                     <h2 className="text-3xl font-bold mb-2">
-                        {step === 'categories' ? 'Գլխավոր' : selectedCat?.name}
+                        {step === 'categories' ? t('payments.main_title') : selectedCat?.name}
                     </h2>
                     <div className="h-1 w-12 bg-purple-600 mx-auto rounded-full"></div>
                 </div>
 
-                {/* 1. Categories Grid (Firebase-ից եկած) */}
+                {/* Categories Grid */}
                 {step === 'categories' && (
                     <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
                         {categories.map((cat) => (
@@ -121,7 +119,7 @@ export default function Akyntard() {
                     </div>
                 )}
 
-                {/* 2. Sub Categories Grid */}
+                {/* Sub Categories Grid */}
                 {step === 'sub' && (
                     <div className="max-w-4xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-6">
                         {selectedCat?.subCategories && Object.values(selectedCat.subCategories).map((sub: any, index: number) => (
@@ -139,7 +137,7 @@ export default function Akyntard() {
                     </div>
                 )}
 
-                {/* 3. Input Form */}
+                {/* Input Form */}
                 {step === 'input' && (
                     <div className="max-w-md mx-auto bg-white p-10 rounded-[40px] shadow-2xl border border-gray-50 animate-in fade-in zoom-in duration-300">
                         <div className="flex flex-col items-center mb-8">
@@ -149,13 +147,15 @@ export default function Akyntard() {
 
                         <div className="space-y-6">
                             <div className="relative">
-                                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-purple-400 block mb-2 ml-4">Մուտքագրեք տվյալները</label>
+                                <label className="text-[10px] uppercase font-black tracking-[0.2em] text-purple-400 block mb-2 ml-4">
+                                    {t('payments.input_label')}
+                                </label>
                                 <input
                                     autoFocus
                                     type="text"
                                     value={inputValue}
                                     onChange={(e) => setInputValue(e.target.value)}
-                                    placeholder="Հաշվեհամար կամ հեռախոս"
+                                    placeholder={t('payments.placeholder')}
                                     className="w-full p-5 bg-gray-50 rounded-3xl outline-none border-2 border-transparent focus:border-purple-100 text-center font-bold text-xl transition-all"
                                 />
                             </div>
@@ -164,7 +164,7 @@ export default function Akyntard() {
                                 disabled={loading}
                                 className="w-full py-5 bg-[#1d1d1f] text-white rounded-3xl font-black uppercase tracking-[0.3em] hover:bg-purple-700 shadow-lg transition-all active:scale-95 disabled:opacity-50"
                             >
-                                {loading ? "Մշակվում է..." : "Վճարել"}
+                                {loading ? t('payments.processing') : t('payments.pay_btn')}
                             </button>
                         </div>
                     </div>
