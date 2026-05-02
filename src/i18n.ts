@@ -45,12 +45,64 @@ const resources = {
         "SALARY": "EvocaSALARY",
         "TOUCH": "EvocaTOUCH"
       },
-      // HeroSection-ի համար անհրաժեշտ տվյալները
       biznes_avand: {
         badge: "Բիզնես ավանդ",
         title: "Պարզ, արագ, ժամանակակից",
         desc: "Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:",
         button: "Դառնալ հաճախորդ"
+      },
+      hashivner: {
+        breadcrumb_parent: "Անհատ",
+        title: "Հաշիվներ",
+        become_client: "Դառնալ հաճախորդ",
+        online_banking: "Օնլայն բանկինգ",
+        online_desc: "Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:",
+        loading: "Բեռնվում է..."
+      },
+      news: {
+        title: "Monthly Recap",
+        blog_label: "Բլոգ",
+        see_all: "Տեսնել բոլորը",
+        archive: "Արխիվ",
+        back: "Վերադառնալ",
+        read_more: "Կարդալ ավելին",
+        reading_time: "8 րոպե ընթերցում",
+        share: "Կիսվել",
+        featured: "Հատուկ",
+        categories: {
+          all: "Բոլորը",
+          business: "Բիզնես",
+          lifestyle: "Կենսակերպ",
+          investments: "Ներդրումներ"
+        }
+      },
+      exchange: {
+        loading: "Բեռնվում է...",
+        disclaimer: "20,000 ԱՄՆ դոլարից ավել կամ դրան հարժեք այլ արտարժույթի փոխարկման դեպքում գործարքը հաստատվում է Բանկի հայեցողությամբ և Բանկի կողմից որոշված փոխարժեքով:",
+        tabs: {
+          cash: "Կանխիկ",
+          cashless: "Անկանխիկ",
+          gold: "Ոսկու փոխարժեք"
+        },
+        table: {
+          currency: "Արժույթ",
+          buy: "Առք",
+          sell: "Վաճառք"
+        },
+        calc: {
+          have: "Ունեմ",
+          get: "Կստանամ",
+          info: "* Հաշվարկը կատարվում է {{code}} վաճառքի փոխարժեքով ({{rate}})"
+        },
+        gold: {
+          purity: "Հարգ",
+          price: "Արժեքը (1 գրամ)"
+        },
+        address: {
+          title: "Մեր հասցեները",
+          desc: "Բանկի հասցեները, աշխատաժամերը և բանկոմատները:",
+          btn: "ԴԻՏԵԼ ՔԱՐՏԵԶԸ"
+        }
       },
       other_services: {
         badge: "Լրացուցիչ",
@@ -89,7 +141,7 @@ const resources = {
         details_title: "Ավանդի Մանրամասներ",
         more: "Մանրամասն",
         start_from: "Սկսած",
-        min_amount: "Նվազագույն գումար",
+        min_amount: "Նվազագույյն գումար",
         annual_rate: "Տարեկան տոկոսադրույք",
         term: "Ժամկետ",
         term_value: "30-ից 1095 օր",
@@ -220,12 +272,64 @@ const resources = {
         "SALARY": "EvocaSALARY",
         "TOUCH": "EvocaTOUCH"
       },
-      // HeroSection-ի համար անհրաժեշտ տվյալները (EN)
       biznes_avand: {
         badge: "Business Deposit",
         title: "Simple, Fast, Modern",
         desc: "Evocabank is a bank providing fast, simple, and innovative services.",
         button: "Become a client"
+      },
+      hashivner: {
+        breadcrumb_parent: "Personal",
+        title: "Accounts",
+        become_client: "Become a client",
+        online_banking: "Online Banking",
+        online_desc: "Evocabank is a fast, simple and innovative service provider.",
+        loading: "Loading..."
+      },
+      news: {
+        title: "Monthly Recap",
+        blog_label: "Blog",
+        see_all: "See all",
+        archive: "Archive",
+        back: "Back",
+        read_more: "Read More",
+        reading_time: "8 min read",
+        share: "Share",
+        featured: "Featured",
+        categories: {
+          all: "All",
+          business: "Business",
+          lifestyle: "Lifestyle",
+          investments: "Investments"
+        }
+      },
+      exchange: {
+        loading: "Loading...",
+        disclaimer: "For exchange of more than 20,000 USD or equivalent, the transaction is subject to the Bank's approval and at the rate determined by the Bank.",
+        tabs: {
+          cash: "Cash",
+          cashless: "Cashless",
+          gold: "Gold Rate"
+        },
+        table: {
+          currency: "Currency",
+          buy: "Buy",
+          sell: "Sell"
+        },
+        calc: {
+          have: "I Have",
+          get: "I Get",
+          info: "* Calculation is based on {{code}} selling rate ({{rate}})"
+        },
+        gold: {
+          purity: "Purity",
+          price: "Price (1 gram)"
+        },
+        address: {
+          title: "Our Addresses",
+          desc: "Bank branches, working hours and ATMs.",
+          btn: "VIEW ON MAP"
+        }
       },
       other_services: {
         badge: "Extra",
@@ -395,12 +499,64 @@ const resources = {
         "SALARY": "EvocaSALARY",
         "TOUCH": "EvocaTOUCH"
       },
-      // HeroSection-ի համար անհրաժեշտ տվյալները (RU)
       biznes_avand: {
         badge: "Бизнес депозит",
         title: "Просто, Быстро, Современнo",
         desc: "Evocabank - это банк, предоставляющий быстрые, простые и инновационные услуги.",
         button: "Стать клиентом"
+      },
+      hashivner: {
+        breadcrumb_parent: "Физическим лицам",
+        title: "Счета",
+        become_client: "Стать клиентом",
+        online_banking: "Онлайн банкинг",
+        online_desc: "Evocabank - банк, предоставляющий быстрые, простые и инновационные услуги.",
+        loading: "Загрузка..."
+      },
+      news: {
+        title: "Ежемесячный отчет",
+        blog_label: "Блог",
+        see_all: "Смотреть все",
+        archive: "Архив",
+        back: "Назад",
+        read_more: "Читать далее",
+        reading_time: "8 мин чтения",
+        share: "Поделиться",
+        featured: "Специальное",
+        categories: {
+          all: "Все",
+          business: "Бизнес",
+          lifestyle: "Лайфстайл",
+          investments: "Инвестиции"
+        }
+      },
+      exchange: {
+        loading: "Загрузка...",
+        disclaimer: "При обмене суммы свыше 20 000 долларов США или эквивалента сделка осуществляется на усмотрение Банка по курсу, установленному Банком.",
+        tabs: {
+          cash: "Наличные",
+          cashless: "Безналичные",
+          gold: "Курс золота"
+        },
+        table: {
+          currency: "Валюта",
+          buy: "Покупка",
+          sell: "Продажа"
+        },
+        calc: {
+          have: "У меня есть",
+          get: "Я получу",
+          info: "* Расчет производится по курсу продажи {{code}} ({{rate}})"
+        },
+        gold: {
+          purity: "Проба",
+          price: "Цена (1 грамм)"
+        },
+        address: {
+          title: "Наши адреса",
+          desc: "Адреса отделений банка, часы работы и банкоматы.",
+          btn: "ПОСМОТРЕТЬ НА КАРТЕ"
+        }
       },
       other_services: {
         badge: "Дополнительно",
@@ -518,7 +674,7 @@ const resources = {
         pay_btn: "Оплатить",
         processing: "Обработка...",
         enter_data_alert: "Введите данные",
-        success_alert: "Платеж приняտ",
+        success_alert: "Платеж принят",
         error_alert: "Произошла ошибка при оплате"
       },
       common: {

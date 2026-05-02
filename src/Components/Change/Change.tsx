@@ -3,14 +3,12 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronRight, MapPin } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { useTranslation } from 'react-i18next';
 
-// Firebase ներմուծումներ
+// Firebase
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
 
-
-
-// Տիպերի սահմանում
 interface Currency {
   code: string;
   name: string;
@@ -32,10 +30,10 @@ interface Testimonial {
 }
 
 const DynamicExchange: React.FC = () => {
+  const { t, i18n } = useTranslation();
   const [activeTab, setActiveTab] = useState('cash');
-  const [amount, setAmount] = useState<string>('0');
+  const [amount, setAmount] = useState<string>('1000');
   
-  // Տվյալների States
   const [currencies, setCurrencies] = useState<Currency[]>([]);
   const [goldRates, setGoldRates] = useState<GoldRate[]>([]);
   const [testimonials, setTestimonials] = useState<Testimonial[]>([]);
@@ -48,32 +46,26 @@ const DynamicExchange: React.FC = () => {
   });
 
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'change' node-ին
-    const dataRef = ref(db, 'change');
+    const currentLang = i18n.language.includes('hy') ? 'am' : 'en';
+    const dataRef = ref(db, `change_${currentLang}`);
     
     const unsubscribe = onValue(dataRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        if (data.currencies) {
-            const currencyList = Array.isArray(data.currencies) ? data.currencies : Object.values(data.currencies);
-            setCurrencies(currencyList as Currency[]);
-            
-            // Սկզբնական ընտրված արժույթը թարմացված տվյալներից
-            const usd = (currencyList as Currency[]).find(c => c.code === 'USD');
-            if (usd) setSelectedCurrency({ code: usd.code, sell: usd.sell, symbol: usd.symbol });
-        }
-        if (data.goldRates) {
-            setGoldRates(Array.isArray(data.goldRates) ? data.goldRates : Object.values(data.goldRates));
-        }
-        if (data.testimonials) {
-            setTestimonials(Array.isArray(data.testimonials) ? data.testimonials : Object.values(data.testimonials));
-        }
+        const currencyList = Array.isArray(data.currencies) ? data.currencies : Object.values(data.currencies || {});
+        setCurrencies(currencyList as Currency[]);
+        
+        if (data.goldRates) setGoldRates(Object.values(data.goldRates));
+        if (data.testimonials) setTestimonials(Object.values(data.testimonials));
+        
+        const usd = (currencyList as Currency[]).find(c => c.code === 'USD');
+        if (usd) setSelectedCurrency({ code: usd.code, sell: usd.sell, symbol: usd.symbol });
       }
       setLoading(false);
     });
 
     return () => unsubscribe();
-  }, []);
+  }, [i18n.language]);
 
   const calculateResult = () => {
     const numAmount = Number(amount.replace(/,/g, ''));
@@ -81,7 +73,7 @@ const DynamicExchange: React.FC = () => {
     return (numAmount / selectedCurrency.sell).toFixed(2);
   };
 
-  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8] uppercase tracking-widest italic animate-pulse">Բեռնվում է...</div>;
+  if (loading) return <div className="py-20 text-center font-black text-[#7d2ae8] uppercase italic animate-pulse">{t('exchange.loading')}</div>;
 
   return (
     <section className="py-16 px-4 md:px-20 max-w-[1440px] mx-auto bg-white font-sans">
@@ -89,7 +81,7 @@ const DynamicExchange: React.FC = () => {
         
         <div className="flex-1">
           <p className="text-[#1a1a1a] text-[13px] font-medium opacity-70 mb-8 max-w-3xl leading-relaxed">
-            20,000 ԱՄՆ դոլարից ավել կամ դրան հարժեք այլ արտարժույթի փոխարկման դեպքում գործարքը հաստատվում է Բանկի հայեցողությամբ և Բանկի կողմից որոշված փոխարժեքով:
+            {t('exchange.disclaimer')}
           </p>
 
           <div className="bg-[#f9f9fb] rounded-[40px] p-4 md:p-10 border border-gray-100">
@@ -102,7 +94,7 @@ const DynamicExchange: React.FC = () => {
                     activeTab === tab ? 'bg-[#7d2ae8] text-white shadow-lg' : 'text-gray-400 hover:text-gray-600'
                   }`}
                 >
-                  {tab === 'cash' ? 'Կանխիկ' : tab === 'cashless' ? 'Անկանխիկ' : 'Ոսկու փոխարժեք'}
+                  {t(`exchange.tabs.${tab}`)}
                 </button>
               ))}
             </div>
@@ -118,9 +110,9 @@ const DynamicExchange: React.FC = () => {
                 >
                   <div className="flex-1">
                     <div className="grid grid-cols-3 text-[10px] font-black text-gray-400 uppercase tracking-widest mb-5 px-6">
-                      <div>Արժույթ</div>
-                      <div className="text-center">Առք</div>
-                      <div className="text-center">Վաճառք</div>
+                      <div>{t('exchange.table.currency')}</div>
+                      <div className="text-center">{t('exchange.table.buy')}</div>
+                      <div className="text-center">{t('exchange.table.sell')}</div>
                     </div>
                     <div className="space-y-3">
                       {currencies.map((curr) => (
@@ -128,9 +120,7 @@ const DynamicExchange: React.FC = () => {
                           key={curr.code} 
                           onClick={() => setSelectedCurrency({ code: curr.code, sell: curr.sell, symbol: curr.symbol })}
                           className={`grid grid-cols-3 items-center p-5 rounded-[24px] border transition-all cursor-pointer group ${
-                            selectedCurrency.code === curr.code 
-                            ? 'bg-white border-[#7d2ae8] shadow-md' 
-                            : 'bg-white border-transparent hover:border-gray-200'
+                            selectedCurrency.code === curr.code ? 'bg-white border-[#7d2ae8] shadow-md' : 'bg-white border-transparent hover:border-gray-200'
                           }`}
                         >
                           <div className="flex items-center gap-4">
@@ -146,7 +136,7 @@ const DynamicExchange: React.FC = () => {
 
                   <div className="w-full xl:w-80 flex flex-col gap-4 justify-center">
                     <div className="bg-white p-7 rounded-[32px] border border-gray-100 shadow-sm focus-within:border-[#7d2ae8] transition-all">
-                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">Ունեմ (AMD)</label>
+                      <label className="text-[10px] font-black text-gray-400 uppercase tracking-widest block mb-2">{t('exchange.calc.have')} (AMD)</label>
                       <div className="flex justify-between items-center">
                         <input 
                           type="text" 
@@ -160,7 +150,7 @@ const DynamicExchange: React.FC = () => {
 
                     <div className="bg-[#f0e7ff]/30 p-7 rounded-[32px] border border-[#7d2ae8]/10 shadow-inner">
                       <label className="text-[10px] font-black text-[#7d2ae8] uppercase tracking-widest block mb-2">
-                        Կստանամ ({selectedCurrency.code})
+                        {t('exchange.calc.get')} ({selectedCurrency.code})
                       </label>
                       <div className="flex justify-between items-center">
                         <input 
@@ -173,7 +163,7 @@ const DynamicExchange: React.FC = () => {
                       </div>
                     </div>
                     <p className="text-[10px] text-center text-gray-400 font-medium">
-                      * Հաշվարկը կատարվում է {selectedCurrency.code} վաճառքի փոխարժեքով ({selectedCurrency.sell})
+                      {t('exchange.calc.info', { code: selectedCurrency.code, rate: selectedCurrency.sell })}
                     </p>
                   </div>
                 </motion.div>
@@ -186,8 +176,8 @@ const DynamicExchange: React.FC = () => {
                   className="bg-white rounded-[32px] overflow-hidden border border-gray-100 shadow-sm"
                 >
                   <div className="grid grid-cols-2 bg-gray-50/50 p-5 border-b border-gray-100 text-[10px] font-black text-gray-400 uppercase tracking-widest">
-                    <div className="pl-4">Հարգ</div>
-                    <div>Արժեքը (1 գրամ)</div>
+                    <div className="pl-4">{t('exchange.gold.purity')}</div>
+                    <div>{t('exchange.gold.price')}</div>
                   </div>
                   <div className="divide-y divide-gray-50">
                     {goldRates.map((rate) => (
@@ -203,17 +193,11 @@ const DynamicExchange: React.FC = () => {
           </div>
         </div>
 
-        {/* Addresses Sidebar */}
         <div className="w-full lg:w-[350px]">
-          <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">Մեր հասցեները</h3>
-          <p className="text-gray-400 text-sm mb-8 leading-relaxed">Բանկի հասցեները, աշխատաժամերը և բանկոմատները:</p>
+          <h3 className="text-2xl font-bold text-[#1a1a1a] mb-2">{t('exchange.address.title')}</h3>
+          <p className="text-gray-400 text-sm mb-8 leading-relaxed">{t('exchange.address.desc')}</p>
           
-          <a 
-            href="https://www.evoca.am/en/branches-and-atms" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="block group relative overflow-hidden rounded-[40px] shadow-lg"
-          >
+          <div className="block group relative overflow-hidden rounded-[40px] shadow-lg cursor-pointer">
             <div className="absolute inset-0 bg-[#7d2ae8]/5 group-hover:bg-transparent transition-colors z-10"></div>
             <img 
               src="https://scontent.fevn2-1.fna.fbcdn.net/v/t39.30808-6/486292077_1087632580068124_5141256942071665595_n.jpg?_nc_cat=101&ccb=1-7&_nc_sid=13d280&_nc_ohc=oOv1ZfWOa_QQ7kNvwG4ZDa3&_nc_oc=AdpO7qOX150Ykdk3QhPRNWK5fo4HfiTEBbMquch00TzVIZ5tECFH7plbJM46175PB4zkztdkNNMi_UDcPEEh952q&_nc_zt=23&_nc_ht=scontent.fevn2-1.fna&_nc_gid=f0bhC4q6d5ks-YKgt4JT2Q&_nc_ss=7b289&oh=00_Af0kKdc7SEb4Dj0mK9cpwlAQqt0Uu8mE158NJ_ID5bYv8Q&oe=69F2DBCC" 
@@ -225,27 +209,18 @@ const DynamicExchange: React.FC = () => {
                 <MapPin size={32} fill="currentColor" />
               </div>
             </div>
-          </a>
+          </div>
           
           <button className="mt-8 w-full py-4 bg-[#f0e7ff] text-[#7d2ae8] rounded-full font-black text-sm flex items-center justify-center gap-2 hover:bg-[#7d2ae8] hover:text-white transition-all">
-            ԴԻՏԵԼ ՔԱՐՏԵԶԸ <ChevronRight size={18} />
+            {t('exchange.address.btn')} <ChevronRight size={18} />
           </button>
         </div>
       </div>
 
-      {/* Testimonials Swiper */}
       <div className="max-w-[1140px] mx-auto px-4 py-24 bg-[#fcfcfc] mt-16 rounded-[40px]">
         <div className="flex justify-center gap-2 mb-12">
             {[1, 2, 3, 4, 5].map(s => (
-                <motion.span 
-                    key={s}
-                    initial={{ opacity: 0, rotate: -180 }}
-                    whileInView={{ opacity: 1, rotate: 0 }}
-                    transition={{ delay: s * 0.1 }}
-                    className="text-yellow-400 text-4xl"
-                >
-                    ★
-                </motion.span>
+                <span key={s} className="text-yellow-400 text-4xl">★</span>
             ))}
         </div>
 
@@ -260,12 +235,7 @@ const DynamicExchange: React.FC = () => {
         >
             {testimonials.map((t, idx) => (
                 <SwiperSlide key={idx}>
-                    <motion.div 
-                        initial={{ opacity: 0, y: 30, scale: 0.95 }}
-                        whileInView={{ opacity: 1, y: 0, scale: 1 }}
-                        transition={{ duration: 0.8 }}
-                        className="text-center max-w-3xl mx-auto"
-                    >
+                    <div className="text-center max-w-3xl mx-auto">
                         <div className="relative inline-block">
                             <span className="text-[80px] text-[#6610f2]/10 absolute -left-10 -top-10 font-serif">“</span>
                             <p className="text-[20px] md:text-[26px] font-medium italic leading-relaxed text-gray-700 relative z-10 px-6">
@@ -273,16 +243,11 @@ const DynamicExchange: React.FC = () => {
                             </p>
                             <span className="text-[80px] text-[#6610f2]/10 absolute -right-10 bottom-0 font-serif">”</span>
                         </div>
-                        <motion.div 
-                            initial={{ opacity: 0 }}
-                            whileInView={{ opacity: 1 }}
-                            transition={{ delay: 0.5 }}
-                            className="mt-10"
-                        >
+                        <div className="mt-10">
                             <h4 className="text-[#7d2ae8] font-black text-xl uppercase tracking-tighter">{t.name}</h4>
                             <p className="text-gray-400 text-xs uppercase tracking-[0.3em] mt-2">{t.role}</p>
-                        </motion.div>
-                    </motion.div>
+                        </div>
+                    </div>
                 </SwiperSlide>
             ))}
         </Swiper>

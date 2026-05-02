@@ -110,7 +110,7 @@ const BestOffers: React.FC = () => {
               />
               
               <h2 className="absolute top-[28%] left-[60%] whitespace-nowrap text-white text-[28px] md:text-[48px] font-[1000] italic uppercase leading-[0.85] tracking-tighter z-30 drop-shadow-lg">
-                Լավագույնը <br /> Evocabank-ից
+                <br /> Evocabank
               </h2>
             </motion.div>
           </div>

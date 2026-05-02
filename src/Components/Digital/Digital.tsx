@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { useTranslation } from 'react-i18next'; // Ավելացված է
 import { 
   Smartphone, Monitor, Phone, CreditCard, 
   CheckCircle2 
@@ -32,6 +33,7 @@ interface TariffType {
 }
 
 const Digital: React.FC = () => {
+  const { t } = useTranslation(); // Ավելացված է
   const [activeTab, setActiveTab] = useState(0);
   const [tabs, setTabs] = useState<TabType[]>([]);
   const [testimonials, setTestimonials] = useState<TestimonialType[]>([]);
@@ -72,8 +74,8 @@ const Digital: React.FC = () => {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-[#1a1a1a] text-white">
-              <th className="p-7 text-[11px] font-black uppercase italic tracking-widest">Ծառայության տեսակ</th>
-              <th className="p-7 text-[11px] font-black uppercase italic tracking-widest">Սակագին</th>
+              <th className="p-7 text-[11px] font-black uppercase italic tracking-widest">{t('securities_page.table.currency')}</th> {/* Փոխված է */}
+              <th className="p-7 text-[11px] font-black uppercase italic tracking-widest">{t('securities_page.table.rate')}</th> {/* Փոխված է */}
             </tr>
           </thead>
           <tbody className="text-[#1a1a1a] font-bold italic uppercase text-[13px]">
@@ -89,7 +91,7 @@ const Digital: React.FC = () => {
         </table>
       </div>
       <p className="text-gray-400 text-[11px] font-semibold italic uppercase tracking-wider pb-6 border-b border-gray-100">
-        * Սակագները կարող են փոփոխվել համաձայն գործընկեր համակարգի պայմանների:
+        * {t('exchange.disclaimer')} {/* Օգտագործում է disclaimer-ի տեքստը */}
       </p>
     </div>
   );
@@ -118,11 +120,11 @@ const Digital: React.FC = () => {
                 <div className="flex flex-wrap gap-4 pt-4">
                   <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-full border border-gray-100">
                     <CheckCircle2 size={18} className="text-[#6610f2]" />
-                    <span className="text-[#1a1a1a] font-bold text-sm uppercase italic">Արագ ինտեգրում</span>
+                    <span className="text-[#1a1a1a] font-bold text-sm uppercase italic">{t('menu.advantages')}</span> {/* Փոխված է */}
                   </div>
                   <div className="flex items-center gap-3 bg-gray-50 px-6 py-3 rounded-full border border-gray-100">
                     <CheckCircle2 size={18} className="text-[#6610f2]" />
-                    <span className="text-[#1a1a1a] font-bold text-sm uppercase italic">24/7 Աջակցություն</span>
+                    <span className="text-[#1a1a1a] font-bold text-sm uppercase italic">{t('common.support')}</span> {/* Փոխված է */}
                   </div>
                 </div>
               </div>
@@ -140,8 +142,8 @@ const Digital: React.FC = () => {
         return (
           <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-16 pb-20">
             <div className="space-y-4">
-              <h3 className="text-4xl md:text-6xl font-[1000] italic uppercase text-[#1a1a1a] tracking-tighter">Սակագներ</h3>
-              <p className="text-gray-500 font-medium text-lg italic">Գործընկեր համակարգերի սպասարկման պայմաններ</p>
+              <h3 className="text-4xl md:text-6xl font-[1000] italic uppercase text-[#1a1a1a] tracking-tighter">{t('menu.rates')}</h3> {/* Փոխված է */}
+              <p className="text-gray-500 font-medium text-lg italic">{t('other_services.extra.references_desc')}</p> {/* Փոխված է */}
             </div>
             <div className="grid grid-cols-1 gap-16">
               {tariffs.map(tariff => renderTariffTable(tariff))}
@@ -153,13 +155,13 @@ const Digital: React.FC = () => {
     }
   };
 
-  if (loading) return <div className="py-40 text-center font-[1000] italic text-[#6610f2] animate-pulse uppercase">ԲԵՌՆՎՈՒՄ Է...</div>;
+  if (loading) return <div className="py-40 text-center font-[1000] italic text-[#6610f2] animate-pulse uppercase">{t('menu.loading')}</div>;
 
   return (
     <div className="w-full bg-white font-sans py-20 lg:py-32">
       <div className="max-w-[1450px] mx-auto px-6">
         <div className="mb-16">
-          <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.4em] block mb-4">Բիզնեսի համար</motion.span>
+          <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-[#6610f2] text-[11px] font-[900] uppercase tracking-[0.4em] block mb-4">{t('menu.business_label')}</motion.span>
           <motion.h2 initial={{ opacity: 0, x: -20 }} whileInView={{ opacity: 1, x: 0 }} className="text-[55px] md:text-[100px] font-[1000] italic uppercase text-[#1a1a1a] tracking-tighter leading-[0.8]">Digital</motion.h2>
         </div>
 
@@ -197,9 +199,9 @@ const Digital: React.FC = () => {
                 <motion.img initial={{ y: 150, opacity: 0, scale: 0.5 }} whileInView={{ y: 0, opacity: 1, scale: 1 }} transition={{ delay: 0.5 }} src="https://www.evoca.am/images-cache/banners/1/16153622710205/140x300.jpg" className="absolute right-10 bottom-0 w-[30%] z-20 border-4 border-[#1a1a1a] rounded-[2rem]" />
               </div>
               <div className="w-full md:w-1/2 text-center md:text-left mt-10 md:mt-0">
-                <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6">Օնլայն բանկինգ</h2>
-                <p className="text-white/80 mb-8 text-lg">Evocabank-ը արագ, պարզ և նորարար ծառայություններ մատուցող բանկ է:</p>
-                <button className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest hover:bg-gray-100 transition-colors">Դառնալ հաճախորդ</button>
+                <h2 className="text-[36px] md:text-[48px] font-black uppercase italic mb-6">{t('other_services.banner.title')}</h2>
+                <p className="text-white/80 mb-8 text-lg">{t('other_services.banner.desc')}</p>
+                <button className="bg-white text-[#6610f2] px-12 py-5 rounded-full font-black uppercase text-sm tracking-widest hover:bg-gray-100 transition-colors">{t('other_services.banner.btn')}</button>
               </div>
             </div>
           </div>
