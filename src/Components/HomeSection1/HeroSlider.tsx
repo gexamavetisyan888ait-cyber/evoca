@@ -1,12 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
+import { useTranslation } from 'react-i18next'; // Ավելացված է
 
 // --- Firebase Imports ---
-import { db } from '../../lib/firebase'; // Ստուգիր հասցեն ըստ քո նախագծի կառուցվածքի
+import { db } from '../../lib/firebase';
 import { ref, onValue } from 'firebase/database';
-
-
 
 interface SlideItem {
   title: string;
@@ -18,13 +17,12 @@ interface SlideItem {
 }
 
 const HeroSlider: React.FC = () => {
-  // --- Dynamic Slides State ---
+  const { t } = useTranslation(); // Ավելացված է
   const [slides, setSlides] = useState<SlideItem[]>([]);
   const [loading, setLoading] = useState(true);
 
-  // --- Fetch Slides from Firebase ---
   useEffect(() => {
-    const slidesRef = ref(db, 'heroslider'); // Ենթադրվում է, որ JSON-ը տեղադրել ես hero_slides node-ի տակ
+    const slidesRef = ref(db, 'heroslider');
     const unsubscribe = onValue(slidesRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -38,7 +36,9 @@ const HeroSlider: React.FC = () => {
   }, []);
 
   if (loading) {
-    return <div className="w-full h-[550px] md:h-[650px] bg-gray-50 flex items-center justify-center font-bold text-[#6610f2]">ԲԵՌՆՎՈՒՄ Է...</div>;
+    return <div className="w-full h-[550px] md:h-[650px] bg-gray-50 flex items-center justify-center font-bold text-[#6610f2]">
+      {t('common.loading')}
+    </div>;
   }
 
   return (
@@ -101,37 +101,9 @@ const HeroSlider: React.FC = () => {
       </button>
 
       <style>{`
-        /* Ինդիկատորների ոճը */
-        .swiper-pagination {
-          bottom: 30px !important;
-          display: flex;
-          justify-content: center;
-          gap: 8px;
-        }
-        .swiper-pagination-bullet {
-          width: 40px;
-          height: 3px;
-          background: #ccc !important;
-          border-radius: 2px;
-          opacity: 0.5;
-          transition: all 0.3s ease;
-          margin: 0 !important;
-        }
-        .swiper-pagination-bullet-active {
-          background: #6610f2 !important;
-          width: 60px;
-          opacity: 1;
-        }
-
-        /* Նկարի թեթև շարժման անիմացիա */
-        @keyframes float {
-          0% { transform: translateY(0px); }
-          50% { transform: translateY(-10px); }
-          100% { transform: translateY(0px); }
-        }
-        .animate-float {
-          animation: float 4s ease-in-out infinite;
-        }
+        .swiper-pagination-bullet-active { background: #6610f2 !important; width: 60px; opacity: 1; }
+        @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
+        .animate-float { animation: float 4s ease-in-out infinite; }
       `}</style>
     </div>
   );

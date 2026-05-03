@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronDown, ChevronUp, ChevronRight } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; // Ավելացված է
 
 type TabType = 'evoca' | 'special';
 
@@ -49,6 +50,7 @@ const AccordionItem: React.FC<AccordionProps> = ({ title, children, isOpen, onCl
 };
 
 const Leasing: React.FC = () => {
+  const { t } = useTranslation(); // Ավելացված է
   const [activeTab, setActiveTab] = useState<TabType>('evoca');
   const [openSection, setOpenSection] = useState<string | null>('main');
 
@@ -62,8 +64,8 @@ const Leasing: React.FC = () => {
       <div className="w-full bg-[#6610f2] sticky top-0 md:top-20 z-40 overflow-x-auto scrollbar-hide">
         <div className="max-w-[1200px] mx-auto flex whitespace-nowrap">
           {[
-            { id: 'evoca', label: 'Evoca Leasing' },
-            { id: 'special', label: 'Հատուկ առաջարկ' },
+            { id: 'evoca', label: t('leasing.tabs.evoca') },
+            { id: 'special', label: t('leasing.tabs.special') },
           ].map((tab) => (
             <button
               key={tab.id}
@@ -88,27 +90,27 @@ const Leasing: React.FC = () => {
           className="animate-in fade-in duration-500"
         >
           <h1 className="text-[28px] md:text-[40px] font-black uppercase mb-8 italic leading-none">
-            {activeTab === 'evoca' ? 'Evoca Leasing' : 'Հատուկ առաջարկ'}
+            {activeTab === 'evoca' ? t('leasing.tabs.evoca') : t('leasing.tabs.special')}
           </h1>
 
           <h2 className="text-lg font-bold text-gray-400 mb-8 uppercase tracking-widest">
-            Անհրաժեշտ տեղեկատվություն
+            {t('leasing.necessary_info')}
           </h2>
 
           {activeTab === 'evoca' ? (
             <div className="space-y-4">
               <AccordionItem 
-                title="Evoca Leasing" 
+                title={t('leasing.tabs.evoca')} 
                 isOpen={openSection === 'main'} 
                 onClick={() => toggleSection('main')}
               >
-                <p className="mb-6">Լիզինգի առարկան կարող է ձեռք բերվել ինչպես ՀՀ-ից, այնպես էլ արտերկրից՝ առաջնային և երկրորդային շուկաներից։ Լիզինգի առարկա կարող են հանդիսանալ՝</p>
+                <p className="mb-6">{t('leasing.evoca_main.desc')}</p>
                 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
                   <div>
-                    <h4 className="font-bold text-[#6610f2] mb-3 uppercase text-xs tracking-wider">Առարկաներ</h4>
+                    <h4 className="font-bold text-[#6610f2] mb-3 uppercase text-xs tracking-wider">{t('leasing.evoca_main.objects_title')}</h4>
                     <ul className="space-y-2">
-                      {['Արտադրական սարքավորումներ', 'Բժշկական սարքավորումներ', 'Շինարարական տեխնիկա', 'Արևային կայաններ'].map((item) => (
+                      {(t('leasing.evoca_main.objects', { returnObjects: true }) as string[]).map((item) => (
                         <li key={item} className="flex items-center gap-2 text-sm">
                           <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" /> {item}
                         </li>
@@ -116,9 +118,9 @@ const Leasing: React.FC = () => {
                     </ul>
                   </div>
                   <div>
-                    <h4 className="font-bold text-[#6610f2] mb-3 uppercase text-xs tracking-wider">Առավելություններ</h4>
+                    <h4 className="font-bold text-[#6610f2] mb-3 uppercase text-xs tracking-wider">{t('leasing.evoca_main.advantages_title')}</h4>
                     <ul className="space-y-2">
-                      {['Առանց գրավի առկայության', 'Առանց նոտարական ծախսերի', 'ԱԱՀ-ի հաշվանցում'].map((item) => (
+                      {(t('leasing.evoca_main.advantages', { returnObjects: true }) as string[]).map((item) => (
                         <li key={item} className="flex items-center gap-2 text-sm">
                           <div className="w-1.5 h-1.5 bg-purple-400 rounded-full" /> {item}
                         </li>
@@ -130,14 +132,14 @@ const Leasing: React.FC = () => {
                 <div className="overflow-hidden border border-gray-100 rounded-xl shadow-sm">
                   <table className="w-full text-left text-sm border-collapse">
                     <thead className="bg-gray-50 border-b border-gray-100">
-                      <tr><th colSpan={2} className="p-4 font-bold text-[#2d2d2d]">Պայմաններ և սակագներ</th></tr>
+                      <tr><th colSpan={2} className="p-4 font-bold text-[#2d2d2d]">{t('leasing.evoca_main.table_head')}</th></tr>
                     </thead>
                     <tbody className="divide-y divide-gray-50">
                       {[
-                        { label: 'Արժույթ', value: 'ՀՀ դրամ, ԱՄՆ դոլար, Եվրո' },
-                        { label: 'Կանխավճար', value: 'Նվազագույնը 10%' },
-                        { label: 'Ժամկետ', value: '6-72 ամիս' },
-                        { label: 'Տոկոսադրույք', value: 'AMD: 10.5% | USD: 8% | EUR: 6%' },
+                        { label: t('leasing.table.currency'), value: t('leasing.table.currency_val') },
+                        { label: t('leasing.table.prepayment'), value: t('leasing.table.prepayment_val') },
+                        { label: t('leasing.table.term'), value: t('leasing.table.term_val') },
+                        { label: t('leasing.table.rate'), value: 'AMD: 10.5% | USD: 8% | EUR: 6%' },
                       ].map((row) => (
                         <tr key={row.label} className="hover:bg-gray-50 transition-colors">
                           <td className="p-4 bg-gray-50/50 font-medium text-gray-500 w-1/3">{row.label}</td>
@@ -150,24 +152,24 @@ const Leasing: React.FC = () => {
               </AccordionItem>
 
               <AccordionItem 
-                title="Տնտեսության Արդիականացման ծրագիր" 
+                title={t('leasing.modernization.title')} 
                 isOpen={openSection === 'modern'} 
                 onClick={() => toggleSection('modern')}
               >
                 <div className="bg-purple-50 p-4 rounded-lg mb-4 text-sm text-purple-800 font-bold">
-                   Գործելու է մինչև 31.12.2026թ.
+                   {t('leasing.modernization.date')}
                 </div>
-                <p className="text-gray-600 text-sm">Լիզինգի տոկոսադրույքի սուբսիդավորումն իրականացվում է պետության կողմից։</p>
+                <p className="text-gray-600 text-sm">{t('leasing.modernization.desc')}</p>
               </AccordionItem>
             </div>
           ) : (
             <div className="space-y-4">
               <AccordionItem 
-                title="Լոջիք Գրուպ ՍՊԸ" 
+                title={t('leasing.special_offers.logiq.title')} 
                 isOpen={openSection === 'logiq'} 
                 onClick={() => toggleSection('logiq')}
               >
-                <p className="mb-6 font-medium text-[#6610f2]">Հատուկ սակագներ Լոջիք Գրուպի հաճախորդների համար.</p>
+                <p className="mb-6 font-medium text-[#6610f2]">{t('leasing.special_offers.logiq.subtitle')}</p>
                 <div className="relative overflow-x-auto border border-purple-100 rounded-xl shadow-md">
                   <table className="w-full text-center border-collapse min-w-[500px]">
                     <thead className="bg-[#6610f2] text-white">
@@ -175,7 +177,7 @@ const Leasing: React.FC = () => {
                         <th className="p-4 border-r border-white/20 text-xs uppercase font-black">AMD</th>
                         <th className="p-4 border-r border-white/20 text-xs uppercase font-black">USD</th>
                         <th className="p-4 border-r border-white/20 text-xs uppercase font-black">EUR</th>
-                        <th className="p-4 text-xs uppercase font-black">Ժամկետ (ամիս)</th>
+                        <th className="p-4 text-xs uppercase font-black">{t('leasing.table.term_month')}</th>
                       </tr>
                     </thead>
                     <tbody className="divide-y divide-purple-50">
@@ -198,23 +200,23 @@ const Leasing: React.FC = () => {
               </AccordionItem>
 
               <AccordionItem 
-                title="Ավտո Գելերի ՓԲԸ" 
+                title={t('leasing.special_offers.auto.title')} 
                 isOpen={openSection === 'auto'} 
                 onClick={() => toggleSection('auto')}
               >
                 <div className="bg-gray-50 p-6 rounded-2xl border border-dashed border-purple-300">
-                  <h3 className="font-bold text-xl mb-6 text-center">Բեռնատարների լիզինգ</h3>
+                  <h3 className="font-bold text-xl mb-6 text-center">{t('leasing.special_offers.auto.subtitle')}</h3>
                   <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                     <div className="p-4 bg-white rounded-xl shadow-sm border border-purple-100 text-center">
-                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Տոկոս</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t('leasing.table.rate_short')}</p>
                       <p className="text-2xl font-black text-[#6610f2]">0.1%</p>
                     </div>
                     <div className="p-4 bg-white rounded-xl shadow-sm border border-purple-100 text-center">
-                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Ժամկետ</p>
-                      <p className="text-2xl font-black text-[#6610f2]">36 ամիս</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t('leasing.table.term_short')}</p>
+                      <p className="text-2xl font-black text-[#6610f2]">36 {t('leasing.table.month_short')}</p>
                     </div>
                     <div className="p-4 bg-white rounded-xl shadow-sm border border-purple-100 text-center">
-                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">Կանխավճար</p>
+                      <p className="text-[10px] text-gray-400 uppercase font-bold mb-1">{t('leasing.table.prepayment_short')}</p>
                       <p className="text-2xl font-black text-[#6610f2]">5%</p>
                     </div>
                   </div>
@@ -223,13 +225,12 @@ const Leasing: React.FC = () => {
             </div>
           )}
 
-          {/* Footer Info */}
           <div className="mt-16 flex flex-col md:flex-row justify-between items-center border-t pt-8 gap-6">
              <p className="text-gray-400 text-[11px] tracking-widest uppercase font-bold">
-               Վերջին թարմացում՝ 14.05.2025 10:01
+               {t('leasing.last_update')}՝ 14.05.2025 10:01
              </p>
              <button className="flex items-center gap-2 bg-[#f0f0f0] px-8 py-3 rounded-full font-black text-[12px] uppercase hover:bg-[#6610f2] hover:text-white transition-all">
-               Մանրամասն <ChevronRight size={16} />
+               {t('leasing.details')} <ChevronRight size={16} />
              </button>
           </div>
         </motion.div>

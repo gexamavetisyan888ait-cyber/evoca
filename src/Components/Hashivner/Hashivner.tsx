@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Monitor, ChevronRight, Plus, Minus } from 'lucide-react';
+import { Monitor, ChevronRight } from 'lucide-react';
+import { useTranslation, Trans } from 'react-i18next';
 
 // Firebase imports
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
 
-// Տիպերի սահմանում
 interface AccordionItem {
     id: number;
     title: string;
@@ -23,13 +23,13 @@ interface Section {
 }
 
 const Hashivner: React.FC = () => {
+    const { t } = useTranslation();
     const [activeTab, setActiveTab] = useState(0);
     const [openAccordion, setOpenAccordion] = useState<number | null>(null);
     const [sections, setSections] = useState<Section[]>([]);
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
-        // Բեռնում ենք հաշիվների տվյալները Firebase-ից ('hashivner' node-ից)
         const accountsRef = ref(db, 'hashivner');
         const unsubscribe = onValue(accountsRef, (snapshot) => {
             const data = snapshot.val();
@@ -46,21 +46,21 @@ const Hashivner: React.FC = () => {
     if (loading) {
         return (
             <div className="w-full h-screen flex justify-center items-center font-black text-[#6610f2] uppercase italic animate-pulse">
-                Բեռնվում է...
+                {t('common.loading')}
             </div>
         );
     }
 
     return (
         <div className="w-full bg-white font-sans text-[#1a1a1a] overflow-hidden">
-            {/* Breadcrumbs & Header */}
             <div className="max-w-[1140px] mx-auto px-4 pt-16">
                 <div className="flex items-center gap-2 text-[10px] text-gray-300 uppercase tracking-[0.2em] mb-8 font-black">
-                    <span>Անհատ</span> <ChevronRight size={10} /> <span className="text-[#6610f2]">Հաշիվներ</span>
+                    <span>{t('common.personal')}</span> <ChevronRight size={10} /> <span className="text-[#6610f2]">{t('hashivner_page.title')}</span>
                 </div>
-                <h1 className="text-[40px] md:text-[65px] font-[1000] italic uppercase leading-none mb-12 tracking-tighter">Հաշիվներ</h1>
+                <h1 className="text-[40px] md:text-[65px] font-[1000] italic uppercase leading-none mb-12 tracking-tighter">
+                    {t('hashivner_page.title')}
+                </h1>
                 
-                {/* Tabs */}
                 <div className="flex gap-8 border-b border-gray-100 mb-16 overflow-x-auto no-scrollbar">
                     {sections.map((section, idx) => (
                         <button
@@ -80,7 +80,6 @@ const Hashivner: React.FC = () => {
                 </div>
             </div>
 
-            {/* Content Section */}
             <div className="max-w-[1140px] mx-auto px-4 pb-32 min-h-[600px]">
                 <AnimatePresence mode="wait">
                     {sections[activeTab] && (
@@ -92,7 +91,6 @@ const Hashivner: React.FC = () => {
                             transition={{ duration: 0.5 }}
                             className="grid grid-cols-1 lg:grid-cols-2 gap-20"
                         >
-                            {/* Left Side: Info */}
                             <div className="space-y-12">
                                 <motion.div 
                                     initial={{ scale: 0.9, opacity: 0 }}
@@ -121,12 +119,11 @@ const Hashivner: React.FC = () => {
                                         whileTap={{ scale: 0.95 }}
                                         className="bg-[#6610f2] text-white px-14 py-6 rounded-full font-[1000] uppercase text-[11px] tracking-[0.2em] shadow-lg shadow-[#6610f2]/30"
                                     >
-                                        Դառնալ հաճախորդ
+                                        {t('common.become_client')}
                                     </motion.button>
                                 </div>
                             </div>
 
-                            {/* Right Side: Accordions */}
                             <div className="divide-y divide-gray-100 bg-[#fcfcfc] rounded-[50px] p-8 md:p-12 self-start">
                                 {sections[activeTab].accordions.map((item) => (
                                     <div key={item.id} className="border-b border-gray-50 last:border-0">
@@ -166,7 +163,6 @@ const Hashivner: React.FC = () => {
                 </AnimatePresence>
             </div>
 
-            {/* Bottom Banner Section */}
             <div className="w-full bg-[#6610f2] py-24 relative overflow-hidden">
                 <motion.div 
                     animate={{ y: [0, -40, 0], opacity: [0.1, 0.2, 0.1] }}
@@ -193,13 +189,15 @@ const Hashivner: React.FC = () => {
 
                     <div className="w-full md:w-1/2 text-white text-center md:text-left">
                         <h2 className="text-[40px] md:text-[60px] font-[1000] uppercase italic mb-6 leading-[0.9]">
-                            Evoca<br/>Online
+                            <Trans i18nKey="hashivner_page.online_title">
+                                Evoca<br/>Online
+                            </Trans>
                         </h2>
                         <p className="text-white/70 mb-10 text-xl font-bold italic">
-                            Կառավարի՛ր հաշիվներդ աշխարհի ցանկացած կետից:
+                            {t('hashivner_page.online_desc')}
                         </p>
                         <button className="bg-white text-[#6610f2] px-14 py-6 rounded-full font-[1000] uppercase text-[11px] tracking-[0.2em] hover:bg-gray-100 transition-colors">
-                            Միանալ հիմա
+                            {t('common.join_now')}
                         </button>
                     </div>
                 </div>

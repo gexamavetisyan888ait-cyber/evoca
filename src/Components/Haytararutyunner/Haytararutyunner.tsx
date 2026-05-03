@@ -3,6 +3,7 @@ import { ChevronDown, Calendar } from 'lucide-react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Pagination, Navigation } from 'swiper/modules';
 import { motion, AnimatePresence } from 'framer-motion';
+import { useTranslation } from 'react-i18next'; // Ավելացված է
 
 // Swiper Bundle CSS
 import 'swiper/swiper-bundle.css';
@@ -16,10 +17,10 @@ interface Announcement {
 }
 
 const Announcements: React.FC = () => {
+    const { t } = useTranslation(); // Հուկի սահմանում
     const [openId, setOpenId] = useState<number | null>(null);
 
-    // --- DATA FOR DIFFERENT PAGES ---
-
+    // --- DATA ---
     const page1Data: Announcement[] = [
         { id: 1, title: "«ԷՎՈԿԱԲԱՆԿ» ՓԲԸ-ի Բաժնետերերի տարեկան ընդհանուր ժողով", date: "04.06.2025", content: "«Էվոկաբանկ» ՓԲԸ խորհուրդը տեղեկացնում է բաժնետերերի տարեկան ընդհանուր ժողովի գումարման մասին..." },
         { id: 2, title: "«ԷՎՈԿԱԲԱՆԿ» ՓԲԸ Բաժնետերերի արտահերթ ընդհանուր ժողով", date: "28.03.2025", content: "Հայտարարվում է արտահերթ ժողովի անցկացման մասին՝ օրակարգում ներառված հարցերի քննարկման նպատակով:" },
@@ -124,12 +125,12 @@ const Announcements: React.FC = () => {
                 {/* Header */}
                 <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-12 gap-6">
                     <motion.h1 initial={{ opacity: 0, x: -20 }} animate={{ opacity: 1, x: 0 }} className="text-3xl md:text-4xl font-black italic uppercase text-gray-900 tracking-tighter">
-                        Հայտարարություններ
+                        {t('announcements_page.title')}
                     </motion.h1>
                     <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} className="flex items-center gap-4 bg-white p-3 rounded-2xl shadow-sm border border-gray-100">
                         <Calendar size={18} className="text-gray-300" />
                         <div className="text-[10px] font-black uppercase text-gray-400 tracking-widest">
-                            Սկսած <span className="mx-2 text-gray-200">|</span> Մինչև
+                            {t('announcements_page.filter_from')} <span className="mx-2 text-gray-200">|</span> {t('announcements_page.filter_to')}
                         </div>
                     </motion.div>
                 </div>
@@ -144,7 +145,7 @@ const Announcements: React.FC = () => {
                         clickable: true,
                         renderBullet: (index, className) => `<span class="${className}">${index + 1}</span>`
                     }}
-                    onSlideChange={() => setOpenId(null)} // Փակել ակորդեոնը էջ փոխելիս
+                    onSlideChange={() => setOpenId(null)}
                     className="announcements-swiper pb-20"
                 >
                     {allSlides.map((slideItems, slideIdx) => (
@@ -180,7 +181,7 @@ const Announcements: React.FC = () => {
                 </Swiper>
 
                 <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 0.5 }} className="mt-12 text-right">
-                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">Թարմացվել է՝ 05/06/2025 10:58</p>
+                    <p className="text-[10px] font-bold text-gray-400 uppercase tracking-tighter">{t('announcements_page.updated_at')} 05/06/2025 10:58</p>
                 </motion.div>
             </div>
 
