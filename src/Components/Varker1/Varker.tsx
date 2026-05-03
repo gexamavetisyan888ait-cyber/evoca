@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { RefreshCw } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; //
 
 // Firebase Imports
 import { db } from "../../lib/firebase";
@@ -19,6 +20,7 @@ export interface LoanType {
 }
 
 const Varker: React.FC = () => {
+  const { t } = useTranslation(); //
   const navigate = useNavigate();
   const [loans, setLoans] = useState<LoanType[]>([]);
   const [loading, setLoading] = useState(true);
@@ -29,7 +31,6 @@ const Varker: React.FC = () => {
     const unsubscribe = onValue(loansRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Ձևավորում ենք տվյալները՝ զտելով հնարավոր դատարկ (null) արժեքները
         const loansList: LoanType[] = Array.isArray(data)
           ? data.filter(item => item !== null)
           : Object.keys(data).map(key => ({
@@ -53,7 +54,7 @@ const Varker: React.FC = () => {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white">
         <RefreshCw className="animate-spin text-[#6600cc] mb-4" size={40} />
-        <p className="font-bold uppercase text-gray-300 italic tracking-widest">Բեռնվում է...</p>
+        <p className="font-bold uppercase text-gray-300 italic tracking-widest">{t('loans.loading')}</p>
       </div>
     );
   }
@@ -63,7 +64,7 @@ const Varker: React.FC = () => {
       <div className="max-w-[1200px] mx-auto px-4 pt-16">
         <div className="flex border-b-[3px] border-[#6600cc]">
           <div className="bg-[#6600cc] text-white px-6 py-3 font-bold text-sm uppercase tracking-wide rounded-t-sm">
-            Բիզնես վարկեր
+            {t('loans.business_loans')}
           </div>
         </div>
       </div>
@@ -99,15 +100,15 @@ const Varker: React.FC = () => {
 
                 <div className="grid grid-cols-2 lg:grid-cols-3 gap-6 mb-10">
                   <div>
-                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">Մինչև</span>
+                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">{t('loans.up_to')}</span>
                     <div className="text-[#6600cc] text-3xl font-black">{loan.duration}</div>
-                    <span className="text-gray-400 text-[11px] font-medium block mt-1">ժամկետ</span>
+                    <span className="text-gray-400 text-[11px] font-medium block mt-1">{t('loans.term_label')}</span>
                   </div>
                   <div>
-                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">Մինչև</span>
+                    <span className="text-gray-400 text-[10px] uppercase font-bold block mb-1">{t('loans.up_to')}</span>
                     <div className="text-[#6600cc] text-3xl font-black tracking-tight">{loan.amount}</div>
                     <span className="text-gray-400 text-[11px] font-medium block mt-1 leading-tight">
-                      Սահմանաչափ
+                      {t('loans.limit_label')}
                     </span>
                   </div>
                   <div className="col-span-2 lg:col-span-1">
@@ -121,7 +122,7 @@ const Varker: React.FC = () => {
                   onClick={() => navigate(`/loan/${loan.id}`)}
                   className="group flex items-center gap-3 px-8 py-3 bg-[#f3ebff] text-[#6600cc] rounded-full font-bold text-sm transition-all hover:bg-[#6600cc] hover:text-white"
                 >
-                  Մանրամասն
+                  {t('loans.more_details')}
                   <span className="text-xl transition-transform group-hover:translate-x-1">›</span>
                 </button>
               </div>
@@ -129,7 +130,7 @@ const Varker: React.FC = () => {
           ))
         ) : (
           <div className="text-center py-20 text-gray-400 font-bold uppercase italic">
-            Վարկեր չեն գտնվել
+            {t('loans.not_found')}
           </div>
         )}
       </main>

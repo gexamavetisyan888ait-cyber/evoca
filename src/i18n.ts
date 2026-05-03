@@ -476,6 +476,26 @@ const resources = {
                 "principal_repayment": "Մասնակի մարում",
                 "monthly_payment": "Ամսական վճար",
                 "total_summary": "Ընդամենը"
+            },
+            "loans": {
+                "loading": "Բեռնվում է...",
+                "business_loans": "Բիզնես վարկեր",
+                "up_to": "Մինչև",
+                "term_label": "Ժամկետ",
+                "limit_label": "Սահմանաչափ",
+                "rate_label": "Տոկոսադրույք",
+                "more_details": "Մանրամասն",
+                "not_found": "Վարկը չի գտնվել",
+                "back_to_list": "Վերադառնալ ցուցակին",
+                "about_tab": "Վարկի մասին",
+                "terms_tab": "Պայմաններ",
+                "why_choose": "Ինչու՞ ընտրել Evocabank-ի այս վարկատեսակը",
+                "advantage_1": "Արագ որոշման կայացում",
+                "advantage_2": "Նվազագույն փաստաթղթեր",
+                "advantage_3": "Անհատական մոտեցում",
+                "advantage_4": "Ճկուն մարման գրաֆիկ",
+                "apply_now": "Դիմել հիմա",
+                "request_call": "Պատվիրել զանգ"
             }
         }
     },
@@ -954,6 +974,26 @@ const resources = {
                 "principal_repayment": "Principal repayment",
                 "monthly_payment": "Monthly payment",
                 "total_summary": "Total"
+            },
+            "loans": {
+                "loading": "Loading...",
+                "business_loans": "Business Loans",
+                "up_to": "Up to",
+                "term_label": "Term",
+                "limit_label": "Limit",
+                "rate_label": "Interest Rate",
+                "more_details": "Details",
+                "not_found": "Loan not found",
+                "back_to_list": "Back to list",
+                "about_tab": "About Loan",
+                "terms_tab": "Terms",
+                "why_choose": "Why choose this loan type from Evocabank?",
+                "advantage_1": "Fast decision making",
+                "advantage_2": "Minimal documentation",
+                "advantage_3": "Individual approach",
+                "advantage_4": "Flexible repayment schedule",
+                "apply_now": "Apply Now",
+                "request_call": "Request a call"
             }
         }
     },
@@ -1498,6 +1538,25 @@ const resources = {
                 "principal_repayment": "Погашение основного долга",
                 "monthly_payment": "Ежемесячный платеж",
                 "total_summary": "Всего"
+            }, "loans": {
+                "loading": "Загрузка...",
+                "business_loans": "Бизнес кредиты",
+                "up_to": "До",
+                "term_label": "Срок",
+                "limit_label": "Лимит",
+                "rate_label": "Процентная ставка",
+                "more_details": "Подробнее",
+                "not_found": "Кредит не найден",
+                "back_to_list": "Вернуться к списку",
+                "about_tab": "О кредите",
+                "terms_tab": "Условия",
+                "why_choose": "Почему выбрать этот тип кредита в Evocabank?",
+                "advantage_1": "Быстрое принятие решения",
+                "advantage_2": "Минимум документов",
+                "advantage_3": "Индивидуальный подход",
+                "advantage_4": "Гибкий график погашения",
+                "apply_now": "Подать заявку",
+                "request_call": "Заказать звонок"
             }
         }
     }

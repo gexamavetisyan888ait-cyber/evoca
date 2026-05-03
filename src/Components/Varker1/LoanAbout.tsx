@@ -2,6 +2,7 @@ import React, { useEffect, useState, useMemo } from 'react';
 import { useParams, useNavigate, Link } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, RefreshCw, Phone, CheckCircle2 } from 'lucide-react';
+import { useTranslation } from 'react-i18next'; //
 
 // Firebase Imports
 import { ref, onValue } from "firebase/database";
@@ -19,6 +20,7 @@ export interface LoanType {
 }
 
 const LoanAbout: React.FC = () => {
+  const { t } = useTranslation(); //
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'about' | 'terms'>('about');
@@ -27,7 +29,6 @@ const LoanAbout: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Միանում ենք բազայի 'varker' հանգույցին
     const loansRef = ref(db, 'varker');
     const unsubscribe = onValue(loansRef, (snapshot) => {
       const data = snapshot.val();
@@ -59,8 +60,8 @@ const LoanAbout: React.FC = () => {
   if (!loan) {
     return (
       <div className="flex flex-col items-center justify-center min-h-screen bg-white">
-        <p className="text-gray-400 font-bold uppercase italic mb-4">Վարկը չի գտնվել</p>
-        <Link to="/varker" className="text-[#6600cc] underline">Վերադառնալ ցուցակին</Link>
+        <p className="text-gray-400 font-bold uppercase italic mb-4">{t('loans.not_found')}</p>
+        <Link to="/varker" className="text-[#6600cc] underline">{t('loans.back_to_list')}</Link>
       </div>
     );
   }
@@ -74,7 +75,7 @@ const LoanAbout: React.FC = () => {
             <ChevronLeft size={24} />
           </button>
           <span className="text-white font-bold text-sm uppercase tracking-wide truncate">
-            Բիզնես վարկեր / {loan.title}
+            {t('loans.business_loans')} / {loan.title}
           </span>
         </div>
       </div>
@@ -120,26 +121,26 @@ const LoanAbout: React.FC = () => {
                 onClick={() => setActiveTab('about')}
                 className={`pb-4 font-bold text-sm uppercase tracking-widest transition-all relative ${activeTab === 'about' ? 'text-[#6600cc] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-[#6600cc]' : 'text-gray-400'}`}
               >
-                Վարկի մասին
+                {t('loans.about_tab')}
               </button>
               <button 
                 onClick={() => setActiveTab('terms')}
                 className={`pb-4 font-bold text-sm uppercase tracking-widest transition-all relative ${activeTab === 'terms' ? 'text-[#6600cc] after:absolute after:bottom-0 after:left-0 after:w-full after:h-[3px] after:bg-[#6600cc]' : 'text-gray-400'}`}
               >
-                Պայմաններ
+                {t('loans.terms_tab')}
               </button>
             </div>
 
             <div className="text-gray-700 leading-loose">
               <p className="mb-6 font-bold text-[#6600cc] italic text-xl">
-                Ինչու՞ ընտրել Evocabank-ի այս վարկատեսակը
+                {t('loans.why_choose')}
               </p>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 {[
-                  'Արագ որոշման կայացում',
-                  'Նվազագույն փաստաթղթեր',
-                  'Անհատական մոտեցում',
-                  'Ճկուն մարման գրաֆիկ'
+                  t('loans.advantage_1'),
+                  t('loans.advantage_2'),
+                  t('loans.advantage_3'),
+                  t('loans.advantage_4')
                 ].map((item, idx) => (
                   <div key={idx} className="flex items-center gap-3 bg-gray-50 p-4 rounded-2xl">
                     <CheckCircle2 className="text-[#6600cc]" size={20} />
@@ -167,27 +168,27 @@ const LoanAbout: React.FC = () => {
 
               <div className="space-y-8 mb-10">
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Ժամկետ</span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">{t('loans.term_label')}</span>
                   <div className="text-2xl font-black text-[#6600cc]">{loan.duration}</div>
                 </div>
                 <div className="h-[1px] bg-gray-100"></div>
                 <div>
-                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Սահմանաչափ</span>
+                  <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">{t('loans.limit_label')}</span>
                   <div className="text-2xl font-black text-[#6600cc]">{loan.amount}</div>
                 </div>
                 <div className="h-[1px] bg-gray-100"></div>
                 <div>
-                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">Տոկոսադրույք</span>
+                   <span className="text-[10px] text-gray-400 font-bold uppercase tracking-widest block mb-1">{t('loans.rate_label')}</span>
                   <div className="text-2xl font-black text-[#6600cc]">{loan.rate}</div>
                   <span className="text-[10px] text-gray-400 font-medium uppercase">{loan.rateLabel}</span>
                 </div>
               </div>
 
               <button className="w-full bg-[#6600cc] text-white py-4 rounded-2xl font-bold text-sm uppercase tracking-widest hover:scale-[1.02] transition-all shadow-xl shadow-purple-200 mb-4">
-                Դիմել հիմա
+                {t('loans.apply_now')}
               </button>
               <button className="w-full border-2 border-gray-100 py-4 rounded-2xl font-bold text-sm text-gray-500 uppercase tracking-widest hover:border-[#6600cc] hover:text-[#6600cc] transition-all flex items-center justify-center gap-2">
-                <Phone size={16} /> Պատվիրել զանգ
+                <Phone size={16} /> {t('loans.request_call')}
               </button>
             </div>
           </div>
