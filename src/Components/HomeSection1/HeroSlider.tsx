@@ -1,7 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Pagination, Autoplay, EffectFade } from 'swiper/modules';
-import { useTranslation } from 'react-i18next'; // Ավելացված է
+import { useTranslation } from 'react-i18next';
+
+
 
 // --- Firebase Imports ---
 import { db } from '../../lib/firebase';
@@ -17,7 +19,7 @@ interface SlideItem {
 }
 
 const HeroSlider: React.FC = () => {
-  const { t } = useTranslation(); // Ավելացված է
+  const { t } = useTranslation();
   const [slides, setSlides] = useState<SlideItem[]>([]);
   const [loading, setLoading] = useState(true);
 
@@ -42,10 +44,11 @@ const HeroSlider: React.FC = () => {
   }
 
   return (
-    <div className="relative w-full h-[550px] md:h-[650px] overflow-hidden">
+    <div className="relative w-full h-[550px] md:h-[650px] overflow-hidden bg-white">
       <Swiper
         modules={[Navigation, Pagination, Autoplay, EffectFade]}
-        effect="fade" 
+        effect="fade"
+        fadeEffect={{ crossFade: true }} // Սա թույլ չի տալիս նկարներին իրար վրա մնալ
         spaceBetween={0}
         slidesPerView={1}
         navigation={{
@@ -63,7 +66,7 @@ const HeroSlider: React.FC = () => {
         className="h-full"
       >
         {slides.map((slide, index) => (
-          <SwiperSlide key={index}>
+          <SwiperSlide key={index} className="overflow-hidden">
             <div className={`w-full h-full flex items-center transition-colors duration-500 ${slide.bg}`}>
               <div className="max-w-[1240px] mx-auto w-full px-6 md:px-12 grid grid-cols-1 md:grid-cols-2 items-center gap-4">
                 
@@ -101,7 +104,26 @@ const HeroSlider: React.FC = () => {
       </button>
 
       <style>{`
-        .swiper-pagination-bullet-active { background: #6610f2 !important; width: 60px; opacity: 1; }
+        .swiper-fade .swiper-slide {
+          pointer-events: none;
+          transition-property: opacity;
+        }
+        .swiper-fade .swiper-slide-active {
+          pointer-events: auto;
+        }
+        .swiper-pagination-bullet {
+          width: 12px;
+          height: 12px;
+          background: #ccc;
+          opacity: 0.5;
+          transition: all 0.3s ease;
+        }
+        .swiper-pagination-bullet-active { 
+          background: #6610f2 !important; 
+          width: 60px !important; 
+          border-radius: 10px;
+          opacity: 1; 
+        }
         @keyframes float { 0% { transform: translateY(0px); } 50% { transform: translateY(-10px); } 100% { transform: translateY(0px); } }
         .animate-float { animation: float 4s ease-in-out infinite; }
       `}</style>
