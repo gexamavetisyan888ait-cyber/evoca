@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Autoplay, FreeMode, Navigation } from 'swiper/modules';
-import { ChevronRight, ChevronLeft } from 'lucide-react';
-import { useTranslation, Trans } from 'react-i18next';
+import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom';
 
 // Firebase imports
 import { ref, onValue } from "firebase/database";
@@ -16,7 +13,6 @@ interface Partner {
 }
 
 const EvocaPartners: React.FC = () => {
-    const { t } = useTranslation();
     const [partners, setPartners] = useState<Partner[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -26,145 +22,95 @@ const EvocaPartners: React.FC = () => {
             const data = snapshot.val();
             if (data) {
                 const formattedData = Array.isArray(data) ? data : Object.values(data);
-                setPartners(formattedData);
+                // Վերցնում ենք միայն առաջին 4 գործընկերոջը, որպեսզի դասավորությունը լինի իդեալական
+                setPartners(formattedData.slice(0, 4));
             }
             setLoading(false);
         });
-
         return () => unsubscribe();
     }, []);
 
     return (
-        <div className="w-full bg-white overflow-hidden">
-            
-            {/* --- Hero / Video Banner Section --- */}
-            <section className="max-w-[1440px] mx-auto px-6 py-12 flex flex-col lg:flex-row items-center gap-16">
-                <div className="w-full lg:w-1/2 space-y-8">
-                    <motion.h1 
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        className="text-[40px] md:text-[60px] font-[1000] text-[#1a1a1a] leading-none uppercase italic tracking-tighter"
-                    >
-                        <Trans i18nKey="partners_section.hero_title" />
-                    </motion.h1>
-                    <p className="text-gray-500 text-lg font-medium italic max-w-xl">
-                        {t('partners_section.hero_desc')}
+        <section className="w-full bg-white py-24 overflow-hidden font-sans">
+            <div className="max-w-[1440px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+                
+                {/* --- Ձախ մաս. Տեքստ --- */}
+                <div className="lg:col-span-4 z-10">
+                    <h2 className="text-[40px] font-black text-[#333] leading-tight mb-6 uppercase italic tracking-tighter">
+                        Գործընկերներ
+                    </h2>
+                    <p className="text-gray-500 text-[16px] leading-relaxed mb-8 font-medium italic">
+                        Դարձե՛ք Evocabank-ի Գործընկեր և եկե՛ք միասին գնանք դեպի գունեղ նոր իրականություն:
                     </p>
+                    <Link 
+                        to="/about/about" 
+                        className="text-[#6610f2] font-bold text-[14px] uppercase flex items-center gap-2 group transition-all"
+                    >
+                        Բոլոր գործընկերները 
+                        <span className="bg-[#f0f0f5] p-2 rounded-full group-hover:bg-[#6610f2] group-hover:text-white transition-colors">
+                            <ChevronRight size={16} strokeWidth={3} />
+                        </span>
+                    </Link>
                 </div>
 
-                <motion.div 
-                    initial={{ opacity: 0, scale: 0.9 }}
-                    whileInView={{ opacity: 1, scale: 1 }}
-                    transition={{ duration: 0.8 }}
-                    className="relative w-full lg:w-1/2 flex justify-center lg:justify-end"
-                >
-                    <div className="relative w-full max-w-[500px] md:max-w-[650px] lg:max-w-none">
-                        <div className="relative aspect-video bg-black rounded-t-2xl md:rounded-t-3xl border-[4px] md:border-[8px] border-[#222] shadow-2xl overflow-hidden">
-                            <video autoPlay loop muted playsInline className="w-full h-full object-cover">
-                                <source src="https://www.evoca.am/static/video/evoca_touch.mp4" type="video/mp4" />
-                            </video>
-                        </div>
-                        <div className="h-2 md:h-4 w-full bg-gradient-to-b from-gray-700 to-gray-900 rounded-b-2xl mx-auto"></div>
-
-                        <motion.div 
-                            animate={{ y: [0, -20, 0] }}
-                            transition={{ repeat: Infinity, duration: 5, ease: "easeInOut" }}
-                            className="absolute -right-2 -bottom-6 md:-right-8 md:-bottom-12 w-28 sm:w-36 md:w-44 lg:w-52 aspect-[9/19] bg-[#1a1a1a] rounded-[24px] md:rounded-[40px] border-[3px] md:border-[5px] border-[#222] shadow-2xl overflow-hidden z-20"
-                        >
-                            <img src="https://www.evoca.am/images-cache/banners/1/16153622710205/140x300.jpg" alt="Mobile App" className="w-full h-full object-cover" />
-                        </motion.div>
-                    </div>
-                </motion.div>
-            </section>
-
-            {/* --- Partners Slider Section --- */}
-            <section className="py-20 md:py-32 px-6 max-w-[1440px] mx-auto">
-                <div className="flex flex-col lg:flex-row items-center gap-16">
+                {/* --- Աջ մաս. 4 քարտ իրար կողք --- */}
+                <div className="lg:col-span-8 relative">
                     
-                    <div className="w-full lg:w-1/3 text-center lg:text-left">
-                        <motion.h2 
-                            initial={{ opacity: 0, x: -20 }}
-                            whileInView={{ opacity: 1, x: 0 }}
-                            className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-6 uppercase italic tracking-tighter"
-                        >
-                            <Trans i18nKey="partners_section.partners_title" />
-                        </motion.h2>
-                        <p className="text-gray-500 font-medium leading-relaxed mb-10 text-sm md:text-base italic">
-                            {t('partners_section.partners_desc')}
-                        </p>
-                        <button className="group inline-flex items-center gap-3 text-[#6610f2] font-bold text-lg uppercase italic">
-                            {t('partners_section.all_partners')}
-                            <span className="bg-gray-50 p-2 rounded-full group-hover:bg-[#6610f2] group-hover:text-white transition-all transform group-hover:translate-x-2">
-                                <ChevronRight size={20} />
-                            </span>
-                        </button>
+                    {/* Դեկորատիվ էլեմենտներ (Ձեռք և Օղակներ) */}
+                    <div className="absolute -left-24 top-1/2 -translate-y-1/2 z-20 pointer-events-none hidden xl:block">
+                        <div className="relative flex items-center justify-center">
+                            <img 
+                                src="https://lightscamerasocial.com/images/footer-rock.png" 
+                                alt="hand" 
+                                className="w-36 h-auto relative z-30" 
+                            />
+                                <div className="absolute w-[180px] h-[180px] border-[3px] border-dotted border-yellow-500 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                                <div className="absolute w-[210px] h-[210px] border-[3px] border-dashed border-yellow-500 rounded-full animate-[spin_20s_linear_infinite] reverse"></div>
+                                <div className="absolute w-[240px] h-[240px] border-[3px] border-dotted  border-yellow-500 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                                <div className="absolute w-[270px] h-[270px] border-[3px] border-dashed border-yellow-500 rounded-full animate-[spin_20s_linear_infinite] reverse   "></div>
+                                <div className="absolute w-[300px] h-[300px] border-[3px] border-dotted  border-yellow-500 rounded-full animate-[spin_30s_linear_infinite]"></div>
+                        </div>
                     </div>
 
-                    <div className="w-full lg:w-2/3 relative">
-                        <div className="absolute -left-20 top-1/2 -translate-y-1/2 z-10 hidden xl:block pointer-events-none">
-                            <img src="https://lightscamerasocial.com/images/footer-rock.png" alt="Hand" className="w-32 h-auto rotate-12 relative z-20" />
-                            <div className="absolute inset-0 flex items-center justify-center -left-6 -top-6">
-                                <div className="absolute border border-dashed border-yellow-400/30 rounded-full w-44 h-44 animate-spin-slow"></div>
-                                <div className="absolute border border-dotted border-[#6610f2]/20 rounded-full w-60 h-60 animate-spin-medium"></div>
+                    {/* Մոխրագույն բլոկ Grid-ով */}
+                    <div className="bg-[#f2f2f7] rounded-l-[100px] py-20 pl-32 pr-12 relative min-h-[220px] flex items-center">
+                        {loading ? (
+                            <div className="w-full text-center text-gray-400 font-bold italic animate-pulse">ԲԵՌՆՎՈՒՄ Է...</div>
+                        ) : (
+                            <div className="grid grid-cols-2 md:grid-cols-4 w-full divide-x divide-gray-300">
+                                {partners.map((partner, idx) => (
+                                    <div 
+                                        key={idx} 
+                                        className="flex items-center justify-center px-4 h-16 transition-all duration-500 hover:scale-105"
+                                    >
+                                        <img 
+                                            src={partner.logo} 
+                                            alt={partner.name} 
+                                            className="max-h-[55px] max-w-full object-contain grayscale opacity-60 hover:grayscale-0 hover:opacity-100 transition-all duration-500" 
+                                        />
+                                    </div>
+                                ))}
                             </div>
-                        </div>
-
-                        <div className="bg-[#f9f9fb] rounded-[32px] md:rounded-[50px] p-6 md:p-12 relative">
-                            {loading ? (
-                                <div className="flex justify-center items-center h-32 text-[#6610f2] font-black italic uppercase">
-                                    {t('partners_section.loading')}
-                                </div>
-                            ) : (
-                                <Swiper
-                                    modules={[Autoplay, Navigation, FreeMode]}
-                                    spaceBetween={20}
-                                    slidesPerView={2}
-                                    loop={true}
-                                    autoplay={{ delay: 3000, disableOnInteraction: false }}
-                                    navigation={{ prevEl: '.nav-prev', nextEl: '.nav-next' }}
-                                    breakpoints={{
-                                        480: { slidesPerView: 2, spaceBetween: 20 },
-                                        768: { slidesPerView: 3, spaceBetween: 30 },
-                                        1024: { slidesPerView: 3, spaceBetween: 30 },
-                                    }}
-                                    className="partners-swiper"
-                                >
-                                    {partners.map((partner, idx) => (
-                                        <SwiperSlide key={idx}>
-                                            <div className="h-24 md:h-32 flex items-center justify-center p-6 bg-white rounded-3xl shadow-sm border border-transparent hover:border-gray-100 grayscale hover:grayscale-0 transition-all duration-500">
-                                                <img src={partner.logo} alt={partner.name} className="max-h-full max-w-full object-contain" />
-                                            </div>
-                                        </SwiperSlide>
-                                    ))}
-                                </Swiper>
-                            )}
-
-                            <div className="flex justify-center lg:justify-start gap-4 mt-8 lg:absolute lg:top-1/2 lg:-right-6 lg:flex-col lg:mt-0 lg:-translate-y-1/2">
-                                <button className="nav-prev bg-white p-3 rounded-full shadow-md text-gray-400 hover:text-[#6610f2] transition-colors z-20">
-                                    <ChevronLeft size={24} />
-                                </button>
-                                <button className="nav-next bg-white p-3 rounded-full shadow-md text-gray-400 hover:text-[#6610f2] transition-colors z-20">
-                                    <ChevronRight size={24} />
-                                </button>
-                            </div>
-                        </div>
+                        )}
                     </div>
                 </div>
-            </section>
+            </div>
 
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
-                .font-sans { font-family: 'Montserrat', sans-serif; }
+                @keyframes spin-slow {
+                    from { transform: rotate(0deg); }
+                    to { transform: rotate(360deg); }
+                }
+                .animate-spin-slow {
+                    animation: spin-slow 20s linear infinite;
+                }
                 
-                @keyframes spin-right { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
-                .animate-spin-slow { animation: spin-right 15s linear infinite; }
-                .animate-spin-medium { animation: spin-right 10s linear infinite; }
-                
-                .partners-swiper .swiper-wrapper {
-                    transition-timing-function: ease-in-out;
+                /* Հեռացնում ենք առաջին էլեմենտի ձախ գիծը, որը Divide-ը ավտոմատ դնում է */
+                .divide-x > :first-child {
+                    border-left-width: 0px;
                 }
             `}</style>
-        </div>
+        </section>
     );
 };
 

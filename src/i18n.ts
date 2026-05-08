@@ -446,6 +446,88 @@ const resources = {
                         "summary_title": "Տեղեկատվական ամփոփագիր",
                         "updated": "Թարմացված է",
                         "download_btn": "Ներբեռնել"
+                    },
+                    "common": {
+                        "details": "Մանրամասն",
+                        "back_to_list": "Հետ դեպի ցուցակ",
+                        "apply_now": "Դիմել հիմա",
+                        "send": "Ուղարկել"
+                    },
+                    "careers": {
+                        "tabs": {
+                            "work": "Աշխատանք Evoca-ում",
+                            "internship": "Ուսումնական պրակտիկա",
+                            "bridge": "EvocaBridge"
+                        },
+                        "work_at_evoca": {
+                            "title": "Աշխատանք Evoca-ում",
+                            "subtitle": "Միացիր մեր նորարար թիմին և սկսիր քո կարիերայի հաջողության պատմությունը մեզ հետ:"
+                        },
+                        "features": {
+                            "motivated": "Մոտիվացված",
+                            "purposeful": "Նպատակասլաց",
+                            "flexible": "Արագ և ճկուն",
+                            "loving": "Իր աշխատանքը շա~տ սիրող"
+                        },
+                        "jobs_list": {
+                            "title": "Բաց մի թող քո նոր հնարավորությունը"
+                        },
+                        "job_detail": {
+                            "description": "Նկարագրություն",
+                            "responsibilities": "Պարտականություններ",
+                            "requirements": "Պահանջներ",
+                            "sidebar_title": "Աշխատանքի մասին",
+                            "location": "Վայրը",
+                            "deadline": "Վերջնաժամկետ"
+                        },
+                        "internship": {
+                            "title": "Ուսումնական պրակտիկա",
+                            "subtitle": "Համագործակցում ենք հայաստանյան առաջատար բուհերի հետ:",
+                            "partner_universities": "Մեր գործընկեր Բուհերը՝"
+                        },
+                        "universities": {
+                            "ysu": "Երևանի պետական համալսարան",
+                            "aua": "Հայաստանի ամերիկյան համալսարան",
+                            "asue": "Հայաստանի պետական տնտեսագիտական համալսարան",
+                            "rau": "Հայ-Ռուսական Համալսարան"
+                        },
+                        "internship_steps": {
+                            "step1": {
+                                "title": "Առաջին փուլ` Համագործակցություն",
+                                "content": "Բարձրագույն ուսումնական հաստատության և Evocabank-ի միջև կնքվում է ուսումնական պրակտիկայի վերաբերյալ պայմանագիր` համաձայն ուսումնական պլանի:"
+                            },
+                            "step2": {
+                                "title": "Երկրորդ փուլ` Դիմում-Հայտ",
+                                "content": "Ուսանողը, ով ցանկանում է անցնել պրակտիկա, պետք է լրացնի դիմում-հայտ՝ կցելով ինքնակենսագրականը:"
+                            },
+                            "step3": {
+                                "title": "Երրորդ փուլ` Թեստավորում",
+                                "content": "Դիմորդներն անցնում են թեստավորում՝ hard և soft skills ստուգելու համար։ Թեստավորումն իրականացվում է երկու փուլով..."
+                            },
+                            "step4": {
+                                "title": "Չորրորդ փուլ` Ուսումնական պրակտիկա",
+                                "content": "Լավագույն արդյունք ցուցաբերած դիմորդներն անմիջապես ներգրավվում են ամենօրյա աշխատանքներում և սկսում պրակտիկան:"
+                            },
+                            "step5": {
+                                "title": "Հինգերորդ փուլ` Աշխատանքի առաջարկ",
+                                "content": "Պրակտիկայի ընթացքում դրական արդյունքների և ստուգումների դեպքում մենք ներկայացնում ենք աշխատանքի առաջարկ:"
+                            }
+                        },
+                        "form": {
+                            "title": "Դիմում-հայտ",
+                            "first_name": "Անուն *",
+                            "last_name": "Ազգանուն *",
+                            "phone": "Հեռախոս *",
+                            "email": "Էլ. Հասցե *",
+                            "cv_label": "Կցել CV *",
+                            "cv_upload": "Սեղմեք ֆայլը վերբեռնելու համար",
+                            "captcha": "Կոդը"
+                        },
+                        "bridge": {
+                            "title": "Evoca Bridge",
+                            "text1": "Evocabank-ն իրականացնում է հատուկ կրթական ծրագիր՝ Evoca Bridge, որի նպատակն է կամրջել կրթությունն ու աշխատաշուկան:",
+                            "text2": "Մենք հավատում ենք, որ կրթությունը հաջողության հիմքն է, և Evoca Bridge-ը հենց այն հարթակն է, որտեղ սկսվում է Ձեր մասնագիտական վերելքը:"
+                        }
                     }
                 }
             }, "calculator": {
@@ -943,6 +1025,88 @@ const resources = {
                         "summary_title": "Information Bulletin",
                         "updated": "Updated on",
                         "download_btn": "Download"
+                    },
+                    "common": {
+                        "details": "Details",
+                        "back_to_list": "Back to list",
+                        "apply_now": "Apply Now",
+                        "send": "Send"
+                    },
+                    "careers": {
+                        "tabs": {
+                            "work": "Work at Evoca",
+                            "internship": "Internship",
+                            "bridge": "EvocaBridge"
+                        },
+                        "work_at_evoca": {
+                            "title": "Work at Evoca",
+                            "subtitle": "Join our innovative team and start your success story with us."
+                        },
+                        "features": {
+                            "motivated": "Motivated",
+                            "purposeful": "Purposeful",
+                            "flexible": "Fast & Flexible",
+                            "loving": "Loving their work"
+                        },
+                        "jobs_list": {
+                            "title": "Don't miss your new opportunity"
+                        },
+                        "job_detail": {
+                            "description": "Description",
+                            "responsibilities": "Responsibilities",
+                            "requirements": "Requirements",
+                            "sidebar_title": "About the job",
+                            "location": "Location",
+                            "deadline": "Deadline"
+                        },
+                        "internship": {
+                            "title": "Internship",
+                            "subtitle": "We cooperate with the leading universities in Armenia.",
+                            "partner_universities": "Our Partner Universities:"
+                        },
+                        "universities": {
+                            "ysu": "Yerevan State University",
+                            "aua": "American University of Armenia",
+                            "asue": "Armenian State University of Economics",
+                            "rau": "Russian-Armenian University"
+                        },
+                        "internship_steps": {
+                            "step1": {
+                                "title": "Phase 1: Cooperation",
+                                "content": "A contract regarding the internship is signed between the university and Evocabank according to the curriculum."
+                            },
+                            "step2": {
+                                "title": "Phase 2: Application",
+                                "content": "A student who wants to take an internship must fill out an application and attach a CV."
+                            },
+                            "step3": {
+                                "title": "Phase 3: Testing",
+                                "content": "Applicants undergo testing to check hard and soft skills. The testing is carried out in two stages..."
+                            },
+                            "step4": {
+                                "title": "Phase 4: Internship",
+                                "content": "Applicants with the best results are immediately involved in daily work and start their internship."
+                            },
+                            "step5": {
+                                "title": "Phase 5: Job Offer",
+                                "content": "In case of positive results and checks during the internship, we present a job offer."
+                            }
+                        },
+                        "form": {
+                            "title": "Application Form",
+                            "first_name": "First Name *",
+                            "last_name": "Last Name *",
+                            "phone": "Phone *",
+                            "email": "Email *",
+                            "cv_label": "Attach CV *",
+                            "cv_upload": "Click to upload file",
+                            "captcha": "Code"
+                        },
+                        "bridge": {
+                            "title": "Evoca Bridge",
+                            "text1": "Evocabank implements a special educational program, Evoca Bridge, aimed at bridging education and the labor market.",
+                            "text2": "We believe that education is the basis of success, and Evoca Bridge is the platform where your professional rise begins."
+                        }
                     }
                 }
             },
@@ -1508,6 +1672,87 @@ const resources = {
                         "summary_title": "Информационный бюллетень",
                         "updated": "Обновлено",
                         "download_btn": "Скачать"
+                    }, "common": {
+                        "details": "Подробнее",
+                        "back_to_list": "Назад к списку",
+                        "apply_now": "Подать заявку",
+                        "send": "Отправить"
+                    },
+                    "careers": {
+                        "tabs": {
+                            "work": "Работа в Evoca",
+                            "internship": "Учебная практика",
+                            "bridge": "EvocaBridge"
+                        },
+                        "work_at_evoca": {
+                            "title": "Работа в Evoca",
+                            "subtitle": "Присоединяйтесь к нашей инновационной команде и начните свою историю успеха вместе с нами."
+                        },
+                        "features": {
+                            "motivated": "Мотивированный",
+                            "purposeful": "Целеустремленный",
+                            "flexible": "Быстрый и гибкий",
+                            "loving": "Очень любящий свою работу"
+                        },
+                        "jobs_list": {
+                            "title": "Не упусти свою новую возможность"
+                        },
+                        "job_detail": {
+                            "description": "Описание",
+                            "responsibilities": "Обязанности",
+                            "requirements": "Требования",
+                            "sidebar_title": "О вакансии",
+                            "location": "Местоположение",
+                            "deadline": "Крайний срок"
+                        },
+                        "internship": {
+                            "title": "Учебная практика",
+                            "subtitle": "Сотрудничаем с ведущими вузами Армении.",
+                            "partner_universities": "Наши вузы-партнеры:"
+                        },
+                        "universities": {
+                            "ysu": "Ереванский государственный университет",
+                            "aua": "Американский университет Армении",
+                            "asue": "Армянский государственный экономический университет",
+                            "rau": "Российско-Армянский университет"
+                        },
+                        "internship_steps": {
+                            "step1": {
+                                "title": "Первый этап: Сотрудничество",
+                                "content": "Между высшим учебным заведением и Evocabank заключается договор об учебной практике согласно учебному плану."
+                            },
+                            "step2": {
+                                "title": "Второй этап: Заявка",
+                                "content": "Студент, желающий пройти практику, должен заполнить заявку и приложить резюме."
+                            },
+                            "step3": {
+                                "title": "Третий этап: Тестирование",
+                                "content": "Кандидаты проходят тестирование для проверки hard и soft skills. Тестирование проводится в два этапа..."
+                            },
+                            "step4": {
+                                "title": "Четвертый этап: Учебная практика",
+                                "content": "Кандидаты, показавшие лучшие результаты, немедленно вовлекаются в ежедневную работу и начинают практику."
+                            },
+                            "step5": {
+                                "title": "Пятый этап: Предложение о работе",
+                                "content": "При положительных результатах и проверках в ходе практики мы делаем предложение о работе."
+                            }
+                        },
+                        "form": {
+                            "title": "Заявка",
+                            "first_name": "Имя *",
+                            "last_name": "Фамилия *",
+                            "phone": "Телефон *",
+                            "email": "Эл. почта *",
+                            "cv_label": "Прикрепить CV *",
+                            "cv_upload": "Нажмите, чтобы загрузить файл",
+                            "captcha": "Код"
+                        },
+                        "bridge": {
+                            "title": "Evoca Bridge",
+                            "text1": "Evocabank реализует специальную образовательную программу Evoca Bridge, целью которой является объединение образования и рынка труда.",
+                            "text2": "Мы верим, что образование — это основа успеха, и Evoca Bridge — это та площадка, где начинается ваш профессиональный рост."
+                        }
                     }
                 }
             }, "calculator": {
