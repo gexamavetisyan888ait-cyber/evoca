@@ -95,7 +95,7 @@ function App() {
             <Route path="/about/about" element={<EvocaiMasin />} />
             <Route path="/about/sakagin" element={<Sakagner />} />
             <Route path="/about/hayter" element={<Haytararutyunner />} />
-            <Route path="/news" element={<Norutyunner/>} />
+            <Route path="/norutyunner" element={<Norutyunner/>} />
             <Route path="/blog" element={<Blog/>} />
             <Route path="*" element={
               <div className="flex items-center justify-center h-[500px] text-2xl font-black text-[#6600cc] uppercase tracking-widest">

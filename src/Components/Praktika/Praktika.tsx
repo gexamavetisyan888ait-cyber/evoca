@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import {
     ChevronLeft, ChevronRight, Clock, MapPin, Calendar,
     Briefcase, Share2, Link as LinkIcon, ChevronDown,
-    UploadCloud, RefreshCw
+    UploadCloud, RefreshCw, LayoutGrid, Grid3X3
 } from 'lucide-react';
 
 // --- Firebase Imports ---
@@ -27,6 +27,7 @@ const WorkAtEvoca: React.FC = () => {
     const [activeTab, setActiveTab] = useState('work'); 
     const [selectedJob, setSelectedJob] = useState<Job | null>(null);
     const [openStep, setOpenStep] = useState<number | null>(1);
+    const [viewMode, setViewMode] = useState<number>(2); // View mode state
     
     // --- Firebase Data States ---
     const [jobs, setJobs] = useState<Job[]>([]);
@@ -34,7 +35,6 @@ const WorkAtEvoca: React.FC = () => {
 
     // --- Fetch Data from Firebase ---
     useEffect(() => {
-        // Օգտագործում ենք 'praktika' հանգույցը, ինչպես նշված էր քո կոդում
         const jobsRef = ref(db, 'praktika');
         const unsubscribe = onValue(jobsRef, (snapshot) => {
             const data = snapshot.val();
@@ -115,14 +115,33 @@ const WorkAtEvoca: React.FC = () => {
             </section>
 
             <section className="max-w-[1450px] mx-auto px-6 space-y-6">
-                <h3 className="text-2xl font-[1000] italic uppercase text-[#1a1a1a]">Բաց մի թող քո նոր հնարավորությունը</h3>
+                <div className="flex justify-between items-center flex-wrap gap-4">
+                    <h3 className="text-2xl font-[1000] italic uppercase text-[#1a1a1a]">Բաց մի թող քո նոր հնարավորությունը</h3>
+                    <div className="hidden md:flex items-center gap-2 bg-[#f8f9fb] p-1.5 rounded-2xl border border-gray-100">
+                        <button 
+                            onClick={() => setViewMode(2)}
+                            className={`p-2.5 rounded-xl transition-all ${viewMode === 2 ? 'bg-white shadow-sm text-[#6610f2]' : 'text-gray-300 hover:text-gray-400'}`}
+                        >
+                            <LayoutGrid size={20} />
+                        </button>
+                        <button 
+                            onClick={() => setViewMode(3)}
+                            className={`p-2.5 rounded-xl transition-all ${viewMode === 3 ? 'bg-white shadow-sm text-[#6610f2]' : 'text-gray-300 hover:text-gray-400'}`}
+                        >
+                            <Grid3X3 size={20} />
+                        </button>
+                    </div>
+                </div>
                 
                 {loading ? (
                     <div className="flex justify-center items-center py-20">
                         <RefreshCw className="animate-spin text-[#6610f2]" size={40} />
                     </div>
                 ) : (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <motion.div 
+                        layout
+                        className={`grid grid-cols-1 gap-6 ${viewMode === 2 ? 'md:grid-cols-2' : 'md:grid-cols-3'}`}
+                    >
                         {jobs.map((job) => (
                             <div key={job.id} className="bg-[#f8f9fb] rounded-[45px] p-10 border border-gray-100 flex flex-col justify-between hover:shadow-xl transition-shadow">
                                 <div>
@@ -143,7 +162,7 @@ const WorkAtEvoca: React.FC = () => {
                                 </button>
                             </div>
                         ))}
-                    </div>
+                    </motion.div>
                 )}
             </section>
         </motion.div>

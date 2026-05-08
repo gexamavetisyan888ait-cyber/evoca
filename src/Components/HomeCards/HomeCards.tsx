@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { ChevronRight } from 'lucide-react';
+import { Link } from 'react-router-dom'; // Ավելացրու սա
 
 // Firebase imports
 import { ref, onValue } from "firebase/database";
-import { db } from "../../lib/firebase"; 
+import { db } from "../../lib/firebase";
 
 interface NewsItem {
   id?: string;
@@ -20,8 +21,7 @@ const LatestNews: React.FC = () => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Բեռնում ենք նորությունները Firebase-ից (օգտագործում ենք 'homecards' կամ 'latest_news' ըստ քո բազայի)
-    const newsRef = ref(db, 'homecards'); 
+    const newsRef = ref(db, 'homecards');
     const unsubscribe = onValue(newsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
@@ -38,7 +38,7 @@ const LatestNews: React.FC = () => {
     <section className="py-24 px-4 md:px-20 max-w-[1440px] mx-auto bg-[#f8f9fb]">
       <div className="flex justify-between items-end mb-12">
         <div className="space-y-2">
-          <motion.span 
+          <motion.span
             initial={{ opacity: 0, x: -20 }}
             whileInView={{ opacity: 1, x: 0 }}
             className="text-[11px] font-black uppercase tracking-[0.3em] text-[#7d2ae8]"
@@ -49,14 +49,15 @@ const LatestNews: React.FC = () => {
             Վերջին <br className="md:hidden" /> նորությունները
           </h2>
         </div>
-        
-        <motion.button 
-          whileHover={{ x: 5 }}
+
+        {/* Այստեղ օգտագործում ենք Link կոմպոնենտը */}
+        <Link
+          to="/norutyunner"
           className="hidden sm:flex items-center gap-3 bg-white text-[#1a1a1a] px-8 py-4 rounded-full font-black text-[12px] uppercase tracking-widest shadow-sm hover:shadow-md transition-all group border border-gray-100"
         >
-          Տեսնել բոլորը 
+          Տեսնել բոլորը
           <ChevronRight size={18} className="text-[#7d2ae8] group-hover:translate-x-1 transition-transform" />
-        </motion.button>
+        </Link>
       </div>
 
       {loading ? (
@@ -66,7 +67,7 @@ const LatestNews: React.FC = () => {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-10">
           {news.map((item, idx) => (
-            <motion.div 
+            <motion.div
               key={item.id || idx}
               initial={{ opacity: 0, y: 30 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -75,13 +76,13 @@ const LatestNews: React.FC = () => {
               className="bg-white rounded-[45px] overflow-hidden shadow-[0_10px_40px_rgba(0,0,0,0.03)] hover:shadow-[0_40px_80px_rgba(125,42,232,0.12)] transition-all duration-500 cursor-pointer group border border-gray-50"
             >
               <div className="h-64 overflow-hidden relative">
-                <img 
-                  src={item.image} 
-                  alt={item.title} 
-                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out" 
+                <img
+                  src={item.image}
+                  alt={item.title}
+                  className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000 ease-out"
                 />
                 <div className="absolute top-6 left-6">
-                  <span 
+                  <span
                     className="px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest text-white shadow-lg"
                     style={{ backgroundColor: item.color || '#7d2ae8' }}
                   >
@@ -109,27 +110,27 @@ const LatestNews: React.FC = () => {
       )}
 
       <div className="mt-12 sm:hidden flex justify-center">
-        <button className="bg-white border border-gray-100 text-[#1a1a1a] px-10 py-5 rounded-full font-black text-xs uppercase tracking-widest shadow-sm">
-          Բոլոր նորությունները
-        </button>
+        <Link
+          to="/news"  // Փոխվեց /norutyunner-ից /news-ի
+          className="hidden sm:flex items-center gap-3 bg-white text-[#1a1a1a] px-8 py-4 rounded-full font-black text-[12px] uppercase tracking-widest shadow-sm hover:shadow-md transition-all group border border-gray-100"
+        >
+          Տեսնել բոլորը
+          <ChevronRight size={18} className="text-[#7d2ae8] group-hover:translate-x-1 transition-transform" />
+        </Link>
       </div>
 
       <style>{`
         @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,900;1,900&display=swap');
-        
         .line-clamp-2 {
           display: -webkit-box;
           -webkit-line-clamp: 2;
           -webkit-box-orient: vertical;
           overflow: hidden;
         }
-
-        section {
-          font-family: 'Montserrat', sans-serif;
-        }
+        section { font-family: 'Montserrat', sans-serif; }
       `}</style>
     </section>
   );
 };
 
-export default LatestNews;
+export default LatestNews;  

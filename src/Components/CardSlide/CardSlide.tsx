@@ -1,7 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Swiper, SwiperSlide } from 'swiper/react';
+import { Navigation, FreeMode, Mousewheel } from 'swiper/modules';
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
+import { ChevronUp, ChevronDown } from 'lucide-react';
 
+// Swiper Styles
 interface CardType {
   id: number | string;
   name: string;
@@ -13,51 +18,29 @@ interface CardType {
 const CardSlider: React.FC = () => {
   const [cardsData, setCardsData] = useState<CardType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
-  const [startIndex, setStartIndex] = useState(0);
   const [loading, setLoading] = useState(true);
-  const visibleCount = 3;
+  const swiperRef = useRef<any>(null);
 
-  // Տվյալների ստացում Firebase-ից
   useEffect(() => {
-    // Միանում ենք Firebase-ի 'cardslide' ճյուղին
     const cardsRef = ref(db, 'cardslide'); 
-    
     const unsubscribe = onValue(cardsRef, (snapshot) => {
       const data = snapshot.val();
       if (data) {
-        // Եթե տվյալները պահված են որպես օբյեկտ (Map), դարձնում ենք զանգված
         const formattedData = Array.isArray(data) 
           ? data 
           : Object.keys(data).map(key => ({ ...data[key], firebaseId: key }));
-        
         setCardsData(formattedData as CardType[]);
       }
       setLoading(false);
     });
-
     return () => unsubscribe();
   }, []);
 
-  const nextSlide = () => {
-    if (startIndex + visibleCount < cardsData.length) {
-      setStartIndex(startIndex + 1);
-    }
-  };
-
-  const prevSlide = () => {
-    if (startIndex > 0) {
-      setStartIndex(startIndex - 1);
-    }
-  };
-
-  const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
-
-  // Loading վիճակ
   if (loading || cardsData.length === 0) {
     return (
       <div className="w-full py-20 bg-white flex justify-center items-center">
         <div className="animate-pulse text-[#6610f2] font-black italic uppercase tracking-widest">
-          Բեռնվում է...
+          ԲԵՌՆՎՈՒՄ Է...
         </div>
       </div>
     );
@@ -65,65 +48,89 @@ const CardSlider: React.FC = () => {
 
   return (
     <section className="w-full py-20 bg-white select-none overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-6 grid grid-cols-12 items-center gap-8">
+      <div className="max-w-[1300px] mx-auto px-6 grid grid-cols-1 lg:grid-cols-12 items-center gap-10">
         
-        {/* Thumbnails Sidebar (Ձախ կողմի փոքր նկարները) */}
-        <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
+        {/* --- Thumbnails Sidebar (Ձախ կողմ) --- */}
+        <div className="col-span-12 lg:col-span-3 flex flex-col items-center relative h-[400px] md:h-[500px]">
           
-          <button 
-            onClick={prevSlide}
-            disabled={startIndex === 0}
-            className={`transition-colors p-2 ${startIndex === 0 ? "text-gray-100" : "text-gray-400 hover:text-[#6610f2]"}`}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="rotate-90 md:rotate-0"><path d="M18 15l-6-6-6 6"/></svg>
+          {/* Սլաք Վերև */}
+          <button className="thumb-prev mb-2 text-gray-300 hover:text-[#6610f2] transition-colors cursor-pointer z-20">
+            <ChevronUp size={45} strokeWidth={3} />
           </button>
 
-          <div className="flex md:flex-col gap-4 transition-all duration-500">
-            {visibleCards.map((card) => {
-              const globalIndex = cardsData.findIndex(c => c.id === card.id);
-              return (
+          <Swiper
+            direction={'vertical'}
+            slidesPerView={3} // Միաժամանակ ցուցադրվում է 3 քարտ
+            spaceBetween={15}
+            loop={cardsData.length > 3}
+            navigation={{
+              prevEl: '.thumb-prev',
+              nextEl: '.thumb-next',
+            }}
+            modules={[Navigation, FreeMode, Mousewheel]}
+            className="w-full h-full vertical-swiper"
+            onSlideChange={(swiper) => setActiveTab(swiper.realIndex)}
+          >
+            {cardsData.map((card, index) => (
+              <SwiperSlide key={card.id} className="flex justify-center items-center">
                 <div 
-                  key={card.id}
-                  onClick={() => setActiveTab(globalIndex)}
-                  className={`cursor-pointer transition-all duration-300 flex flex-col items-center p-2 rounded-xl border-2 ${
-                    activeTab === globalIndex 
-                    ? "opacity-100 scale-105 bg-gray-50 shadow-sm border-[#6610f2]" 
-                    : "opacity-40 scale-95 hover:opacity-70 border-transparent"
+                  onClick={() => setActiveTab(index)}
+                  className={`w-full cursor-pointer transition-all duration-500 flex flex-col items-center p-3 rounded-2xl border-2 ${
+                    activeTab === index 
+                    ? "bg-gray-50 border-[#6610f2] shadow-md scale-105" 
+                    : "border-transparent opacity-40 grayscale hover:opacity-100"
                   }`}
                 >
-                  <img src={card.thumb} alt={card.name} className="w-24 md:w-32 h-auto rounded-md shadow-sm" />
-                  <span className="text-[10px] font-bold mt-2 text-gray-500 uppercase tracking-tighter">{card.name}</span>
+                  <img 
+                    src={card.thumb} 
+                    alt={card.name} 
+                    className="w-[80%] h-auto rounded-lg shadow-sm" 
+                  />
+                  <span className={`text-[10px] font-black mt-2 uppercase italic ${
+                    activeTab === index ? "text-[#6610f2]" : "text-gray-400"
+                  }`}>
+                    {card.name}
+                  </span>
                 </div>
-              );
-            })}
-          </div>
+              </SwiperSlide>
+            ))}
+          </Swiper>
 
-          <button 
-            onClick={nextSlide}
-            disabled={startIndex + visibleCount >= cardsData.length}
-            className={`transition-colors p-2 ${startIndex + visibleCount >= cardsData.length ? "text-gray-100" : "text-gray-400 hover:text-[#6610f2]"}`}
-          >
-            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="rotate-90 md:rotate-0"><path d="M6 9l6 6 6-6"/></svg>
+          {/* Սլաք Ներքև */}
+          <button className="thumb-next mt-2 text-gray-300 hover:text-[#6610f2] transition-colors cursor-pointer z-20">
+            <ChevronDown size={45} strokeWidth={3} />
           </button>
         </div>
 
-        {/* Main Display (Կենտրոնական մեծ նկարը) */}
-        <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[400px]">
-          <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
-          <img 
-            key={activeTab}
-            src={cardsData[activeTab].mainImg} 
-            alt={cardsData[activeTab].title} 
-            className="w-full max-w-[480px] object-contain animate-cardSwap"
-          />
+        {/* --- Կենտրոնական Մաս (Մեծ նկար) --- */}
+        <div className="col-span-12 lg:col-span-6 flex justify-center items-center relative h-[350px] md:h-[450px]">
+          <div className="absolute w-[250px] h-[250px] bg-[#6610f2] rounded-full filter blur-[100px] opacity-5 -z-10"></div>
+          
+          <AnimatePresence mode="wait">
+            <motion.img 
+              key={activeTab}
+              initial={{ opacity: 0, scale: 0.8, x: 20 }}
+              animate={{ opacity: 1, scale: 1, x: 0 }}
+              exit={{ opacity: 0, scale: 0.8, x: -20 }}
+              transition={{ duration: 0.4, ease: "easeOut" }}
+              src={cardsData[activeTab].mainImg} 
+              alt={cardsData[activeTab].title} 
+              className="w-full max-w-[450px] object-contain drop-shadow-2xl"
+            />
+          </AnimatePresence>
         </div>
 
-        {/* Info Section (Աջ կողմի տեքստային մասը) */}
-        <div className="col-span-12 md:col-span-3 text-center md:text-left">
-          <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none tracking-tighter">
+        {/* --- Աջ կողմ (Տեքստ) --- */}
+        <div className="col-span-12 lg:col-span-3 text-center lg:text-left">
+          <motion.h2 
+            key={activeTab}
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="text-[36px] md:text-[50px] font-[1000] text-[#1a1a1a] mb-8 italic uppercase leading-[0.95] tracking-tighter"
+          >
             {cardsData[activeTab].title}
-          </h2>
-          <button className="bg-[#6610f2] text-white px-10 py-4 rounded-full font-black italic uppercase hover:bg-[#520dc2] transition-all shadow-xl active:scale-95 tracking-wide">
+          </motion.h2>
+          <button className="bg-[#6610f2] text-white px-12 py-4 rounded-full font-black italic uppercase hover:bg-[#520dc2] transition-all shadow-lg active:scale-95 text-xs tracking-widest">
             Պատվիրել
           </button>
         </div>
@@ -131,12 +138,11 @@ const CardSlider: React.FC = () => {
       </div>
 
       <style>{`
-        @keyframes cardSwap {
-          0% { opacity: 0; transform: translateX(30px) rotate(5deg); }
-          100% { opacity: 1; transform: translateX(0) rotate(0deg); }
+        .vertical-swiper {
+          padding: 5px 0;
         }
-        .animate-cardSwap {
-          animation: cardSwap 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        .vertical-swiper .swiper-slide {
+          height: 33.33% !important; /* Սա ապահովում է, որ միշտ 3 հատ երևա */
         }
       `}</style>
     </section>

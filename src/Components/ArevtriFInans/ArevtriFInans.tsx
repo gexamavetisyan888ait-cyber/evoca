@@ -24,7 +24,7 @@ const TradeFinancing: React.FC = () => {
 
   useEffect(() => {
     // Ենթադրում ենք, որ բազայում տվյալները պահված են 'trade_financing' ճյուղի տակ
-    const tradeRef = ref(db, 'tabs');
+    const tradeRef = ref(db, 'avand');
     
     const unsubscribe = onValue(tradeRef, (snapshot) => {
       const data = snapshot.val();

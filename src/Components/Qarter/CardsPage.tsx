@@ -60,11 +60,11 @@ export const CardsPage: React.FC = () => {
     const filters: FilterType[] = ['բոլորը', 'premium', 'նվեր քարտեր', 'թվային քարտեր', 'arca', 'visa', 'mastercard', 'unionpay'];
 
     return (
-        <div className="w-full min-h-screen bg-white font-sans text-[#1a1a1a] overflow-x-hidden">
+        <div className="w-full min-h-screen bg-white font-sans text-[#1a1a1a] overflow-x-hidden mt-[-80px]">
             
             {/* Sticky Navigation Header */}
-            <div className="w-full bg-[#6610f2] sticky top-0 md:top-20 z-40 overflow-x-auto no-scrollbar shadow-lg">
-                <div className="max-w-[1200px] mx-auto flex whitespace-nowrap">
+            <div className="w-full bg-[#6610f2] sticky top-0 md:top-20 z-40 overflow-x-auto no-scrollbar shadow-lg mt-[50px]">
+                <div className="max-w-[1200px] mx-auto flex whitespace-nowrap ">
                     {[
                         { id: 'qarter', label: 'Քարտեր', icon: <CreditCard size={14} /> },
                         { id: 'spasarkum', label: 'Սպասարկում', icon: <LayoutGrid size={14} /> },
@@ -92,8 +92,7 @@ export const CardsPage: React.FC = () => {
                             key="qarter"
                             initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, y: -20 }}
                         >
-                            <h1 className="text-[40px] md:text-[50px] font-black uppercase mb-10 italic leading-none tracking-tighter">Քարտեր</h1>
-
+                   
                             <div className="flex flex-wrap gap-2 mb-12 md:mb-16">
                                 {filters.map((f) => (
                                     <button
