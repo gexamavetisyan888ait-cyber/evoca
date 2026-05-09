@@ -158,9 +158,6 @@ const Header: React.FC = () => {
             )}
           </div>
           <div className="flex items-center gap-4">
-            <button className="hidden sm:block px-7 py-2 rounded-full font-semibold text-[12px] uppercase bg-[#6610f2] text-white">
-              {t('common.login')}
-            </button>
             <button onClick={toggleMenu} className={`p-2 z-[130] transition-colors ${isOpen ? 'text-white' : 'text-[#1a1a1a]'}`}>
               {isOpen ? <X size={32} /> : <Menu size={32} />}
             </button>

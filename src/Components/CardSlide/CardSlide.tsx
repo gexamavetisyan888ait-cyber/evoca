@@ -1,12 +1,6 @@
 import React, { useState, useEffect } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Swiper, SwiperSlide } from 'swiper/react';
-import { Navigation, Autoplay } from 'swiper/modules';
 import { ref, onValue } from "firebase/database";
 import { db } from "../../lib/firebase"; 
-import { ChevronUp, ChevronDown } from 'lucide-react';
-
-import 'swiper/css';
 
 interface CardType {
   id: number | string;
@@ -16,10 +10,12 @@ interface CardType {
   mainImg: string;
 }
 
-const EvocaCardSlider: React.FC = () => {
+const CardSlider: React.FC = () => {
   const [cardsData, setCardsData] = useState<CardType[]>([]);
   const [activeTab, setActiveTab] = useState(0);
+  const [startIndex, setStartIndex] = useState(0);
   const [loading, setLoading] = useState(true);
+  const visibleCount = 3;
 
   useEffect(() => {
     const cardsRef = ref(db, 'cardslide'); 
@@ -36,116 +32,119 @@ const EvocaCardSlider: React.FC = () => {
     return () => unsubscribe();
   }, []);
 
-  if (loading || cardsData.length === 0) return null;
+  const nextSlide = () => {
+    if (startIndex + visibleCount < cardsData.length) {
+      setStartIndex(startIndex + 1);
+    }
+  };
+
+  const prevSlide = () => {
+    if (startIndex > 0) {
+      setStartIndex(startIndex - 1);
+    }
+  };
+
+  const visibleCards = cardsData.slice(startIndex, startIndex + visibleCount);
 
   return (
-    <section className="w-full py-24 bg-white select-none overflow-hidden">
-      <div className="max-w-[1200px] mx-auto px-4 grid grid-cols-12 items-center">
-        
-        {/* --- Ձախ սյունակ (Vertical Swiper) --- */}
-        <div className="col-span-3 flex flex-col items-center h-[400px] relative">
-          <button className="evoca-prev mb-2 text-[#9b51e0] cursor-pointer hover:opacity-70 transition-opacity">
-            <ChevronUp size={24} />
-          </button>
-
-          <div className="w-full h-full relative overflow-visible">
-            <Swiper
-              direction={'vertical'}
-              slidesPerView={3}
-              centeredSlides={true}
-              loop={true}
-              autoplay={{
-                delay: 2000, // Ամեն 2 վայրկյանը մեկ թերթվում է
-                disableOnInteraction: false,
-              }}
-              navigation={{
-                prevEl: '.evoca-prev',
-                nextEl: '.evoca-next',
-              }}
-              modules={[Navigation, Autoplay]}
-              className="evocaSwiper w-full h-full !overflow-visible"
-              onSlideChange={(swiper) => setActiveTab(swiper.realIndex)}
+    <section className="w-full py-20 bg-white select-none overflow-hidden min-h-[700px] flex items-center">
+      <div className="max-w-[1200px] mx-auto px-6 w-full">
+        <div className="grid grid-cols-12 items-center gap-8">
+          
+          {/* Thumbnails Sidebar - Skeleton կամ Բովանդակություն */}
+          <div className="col-span-12 md:col-span-3 flex md:flex-col items-center justify-center space-x-4 md:space-x-0 md:space-y-4">
+            <button 
+              onClick={prevSlide}
+              disabled={loading || startIndex === 0}
+              className={`transition-colors p-2 ${loading || startIndex === 0 ? "text-gray-100" : "text-gray-400 hover:text-[#6610f2]"}`}
             >
-              {cardsData.map((card, index) => (
-                <SwiperSlide key={card.id} className="!flex items-center justify-center">
-                  <div 
-                    onClick={() => setActiveTab(index)}
-                    className={`w-full max-w-[180px] cursor-pointer transition-all duration-500 flex flex-col items-center ${
-                      activeTab === index 
-                      ? "opacity-100 scale-110" 
-                      : "opacity-40 scale-90 grayscale"
-                    }`}
-                  >
-                    <div className={`p-1 rounded-[15px] border-2 ${activeTab === index ? "border-[#9b51e0]" : "border-transparent"}`}>
-                       <img src={card.thumb} alt="" className="w-full h-auto rounded-[12px]" />
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="rotate-90 md:rotate-0"><path d="M18 15l-6-6-6 6"/></svg>
+            </button>
+
+            <div className="flex md:flex-col gap-4 min-h-[300px] justify-center">
+              {loading ? (
+                // Skeleton thumbnails
+                [1, 2, 3].map((i) => (
+                  <div key={i} className="w-24 md:w-32 h-20 md:h-24 bg-gray-100 rounded-xl animate-pulse" />
+                ))
+              ) : (
+                visibleCards.map((card) => {
+                  const globalIndex = cardsData.findIndex(c => c.id === card.id);
+                  return (
+                    <div 
+                      key={card.id}
+                      onClick={() => setActiveTab(globalIndex)}
+                      className={`cursor-pointer transition-all duration-300 flex flex-col items-center p-2 rounded-xl border-2 ${
+                        activeTab === globalIndex 
+                        ? "opacity-100 scale-105 bg-gray-50 shadow-sm border-[#6610f2]" 
+                        : "opacity-40 scale-95 hover:opacity-70 border-transparent"
+                      }`}
+                    >
+                      <img src={card.thumb} alt={card.name} className="w-24 md:w-32 h-auto rounded-md shadow-sm" />
+                      <span className="text-[10px] font-bold mt-2 text-gray-500 uppercase tracking-tighter">{card.name}</span>
                     </div>
-                    <p className={`text-[11px] mt-2 font-medium text-center ${activeTab === index ? "text-black" : "text-gray-400"}`}>
-                      {card.name}
-                    </p>
-                  </div>
-                </SwiperSlide>
-              ))}
-            </Swiper>
+                  );
+                })
+              )}
+            </div>
+
+            <button 
+              onClick={nextSlide}
+              disabled={loading || startIndex + visibleCount >= cardsData.length}
+              className={`transition-colors p-2 ${loading || startIndex + visibleCount >= cardsData.length ? "text-gray-100" : "text-gray-400 hover:text-[#6610f2]"}`}
+            >
+              <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" className="rotate-90 md:rotate-0"><path d="M6 9l6 6 6-6"/></svg>
+            </button>
           </div>
 
-          <button className="evoca-next mt-2 text-[#9b51e0] cursor-pointer hover:opacity-70 transition-opacity">
-            <ChevronDown size={24} />
-          </button>
-        </div>
-
-        {/* --- Կենտրոն (Մեծ քարտը) --- */}
-        <div className="col-span-6 flex justify-center items-center h-[450px]">
-          <AnimatePresence mode="wait">
-            <motion.div
-              key={activeTab}
-              initial={{ opacity: 0, x: 20 }}
-              animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
-              transition={{ duration: 0.4 }}
-              className="w-full flex justify-center"
-            >
+          {/* Main Display - Ամրագրված տարածքով */}
+          <div className="col-span-12 md:col-span-6 flex justify-center items-center relative h-[300px] md:h-[450px]">
+            <div className="absolute inset-0 bg-[#6610f2] rounded-full filter blur-[120px] opacity-10 -z-10"></div>
+            {loading ? (
+              <div className="w-full max-w-[400px] h-full bg-gray-50 rounded-3xl animate-pulse" />
+            ) : (
               <img 
+                key={activeTab}
                 src={cardsData[activeTab].mainImg} 
-                className="w-full max-w-[480px] h-auto object-contain drop-shadow-sm" 
-                alt=""
+                alt={cardsData[activeTab].title} 
+                className="w-full max-w-[480px] h-full object-contain animate-cardSwap"
               />
-            </motion.div>
-          </AnimatePresence>
-        </div>
+            )}
+          </div>
 
-        {/* --- Աջ կողմ (Տեքստ) --- */}
-        <div className="col-span-3 pl-8 flex flex-col justify-center items-start">
-          <motion.h2 
-            key={activeTab}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="text-[34px] font-bold text-[#1a1a1a] mb-6 leading-tight"
-          >
-            {cardsData[activeTab].title}
-          </motion.h2>
-          <button className="bg-[#6610f2] text-white px-8 py-3 rounded-full font-semibold text-sm hover:bg-[#520dc2] transition-colors shadow-md">
-            Պատվիրել օնլայն
-          </button>
-        </div>
+          {/* Info Section - Ամրագրված տարածքով */}
+          <div className="col-span-12 md:col-span-3 text-center md:text-left min-h-[200px] flex flex-col justify-center">
+            {loading ? (
+              <div className="space-y-4">
+                <div className="h-10 w-full bg-gray-100 rounded animate-pulse" />
+                <div className="h-12 w-40 bg-gray-200 rounded-full animate-pulse mx-auto md:mx-0" />
+              </div>
+            ) : (
+              <>
+                <h2 className="text-3xl md:text-5xl font-black text-[#1a1a1a] mb-8 italic uppercase leading-none tracking-tighter">
+                  {cardsData[activeTab].title}
+                </h2>
+                <button className="bg-[#6610f2] text-white px-10 py-4 rounded-full font-black italic uppercase hover:bg-[#520dc2] transition-all shadow-xl active:scale-95 tracking-wide w-fit mx-auto md:mx-0">
+                  Պատվիրել
+                </button>
+              </>
+            )}
+          </div>
 
+        </div>
       </div>
 
       <style>{`
-        .evocaSwiper {
-          overflow: visible !important;
+        @keyframes cardSwap {
+          0% { opacity: 0; transform: scale(0.95) translateY(10px); }
+          100% { opacity: 1; transform: scale(1) translateY(0); }
         }
-        .evocaSwiper .swiper-wrapper {
-          height: 100% !important;
-        }
-        .evocaSwiper .swiper-slide {
-          height: 33.33% !important;
-          display: flex;
-          align-items: center;
-          justify-content: center;
+        .animate-cardSwap {
+          animation: cardSwap 0.5s ease-out forwards;
         }
       `}</style>
     </section>
   );
 };
 
-export default EvocaCardSlider;
+export default CardSlider;
